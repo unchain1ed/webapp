@@ -6,7 +6,8 @@ import (
 )
 
 func main() {
-	router := controller.GetRouter()
 	log.Println("Start App...")
-	router.Run(":8080")
+	controller.GetRouter()
+	// router := controller.GetRouter()
+	// router.Run(":8080")
 }

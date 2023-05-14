@@ -1,14 +1,13 @@
 package controller
 
 import (
-	// "net/http"
 	"github.com/gin-gonic/gin"
 )
 
 func GetRouter() *gin.Engine {
 	router := gin.Default()
-
-	// router.LoadHTMLGlob("../../view/*.html")
+	
+	router.LoadHTMLGlob("../../view/*.html")
 
 	// // 静的ファイルのパスを指定
 	// router.Static("/view", "../view/home.html")
@@ -23,14 +22,21 @@ func GetRouter() *gin.Engine {
 	// router.GET("/login", getLogin)
 	// router.POST("/login", postLogin)
 
-	// 静的ファイルを提供する
-	router.Static("/", "../../frontend-app/public")
+	// // 静的ファイルを提供する
+	// router.Static("/", "../../frontend-app/public")
 
-	// SPAのために、すべてのルートにindex.htmlを返すように設定する
-	router.NoRoute(func(c *gin.Context) {
-		c.File("../../frontend-app/public/home.html")
+	// // SPAのために、すべてのルートにindex.htmlを返すように設定する
+	// router.NoRoute(func(c *gin.Context) {
+	// 	c.File("../../frontend-app/public/home.html")
+	// })
+
+	// router.LoadHTMLGlob("../../view/*.html")
+	router.GET("/", func(c *gin.Context) {
+		w := c.Writer
+		getTop(c, w)
 	})
-
+	// router.GET("/", getTop) // ログイン画面（GET処理）
+	router.RunTLS(":8080", "../../certificate/server.pem", "../../certificate/server.key")
 
 	return router
 }
