@@ -17,9 +17,7 @@ const Home: NextPage = () => {
   //     </Head>
   //    </div>
   // )
-
-
-
+  
   useEffect(() => {
     
     (async() => {

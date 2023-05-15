@@ -16,7 +16,7 @@ type User struct {
 
 func init() {
 	//MySQLのストレージエンジンInnoDB,Userテーブル自動生成
-	Db.Set("gorm:table_options", "ENGINE = InnoDB").AutoMigrate(User{})
+	 Db.Table("USERS").Set("gorm:table_options", "ENGINE = InnoDB").AutoMigrate(User{})
 }
 
 func (u *User) LoggedIn() bool {
@@ -29,7 +29,8 @@ func (u *User) LoggedIn() bool {
 //gormのCreate関数で新規会員登録
 func Signup(userId, password string) (*User, error){
 	user := User{}
-	Db.Where("user_id = ?", userId).First(&user)
+
+	Db.Table("USERS").Where("user_id = ?", userId).First(&user)
 
 	if user.ID != 0 {
 		err := errors.New("同一名のUserIdが既に登録されています。")
@@ -62,7 +63,9 @@ func Login(userId, password string) (*User, error) {
 			return nil, err
 		}
 
+		//ハッシュ化したpasswordを比較
 		compareErr := crypto.CompareHashAndPassword(user.Password, password)
+	
 		if compareErr != nil {
 			fmt.Println("パスワードが一致しません。:", compareErr)
 			return nil, compareErr
@@ -70,3 +73,11 @@ func Login(userId, password string) (*User, error) {
 
 		return &user, nil
 }
+
+// func Index(w http.ResponseWriter, r *http.Request) {
+// 	var allArticles []Article
+// 	utility.Db.Find(&allArticles)
+// 	if err := tmpl.ExecuteTemplate(w, "index.html", allArticles); err != nil {
+// 		log.Fatal(err)
+// 	}
+// }

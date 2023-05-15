@@ -3,6 +3,8 @@ package controller
 import (
 	"net/http"
 	"github.com/gin-gonic/gin"
+
+	"github.com/unchain1ed/server-app/model/db"
 )
 
 
@@ -17,15 +19,51 @@ import (
 // 	})
 // }
 
+// func init(c *gin.Context) {
+// 	c.http.ResponseWriter.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+// }
+
 func getTop(c *gin.Context,w http.ResponseWriter) {
-	// next := http.Handler.ServeHTTP()
-	// CORS()
 	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
 	c.HTML(http.StatusOK, "home.html", gin.H{})
-	// c.HTML(http.StatusOK, "home.html", nil)
 }
 
+func getLogin(c *gin.Context,w http.ResponseWriter) {
+	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+	c.HTML(http.StatusOK, "login.html", gin.H{})
+}
 
+func postLogin(c *gin.Context,w http.ResponseWriter) {
+	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+
+	id := c.PostForm("user_id")
+	pw := c.PostForm("password")
+	user, err := db.Login(id, pw)
+	if err != nil {
+		c.Redirect(301, "/login")
+		return
+	}
+	c.HTML(http.StatusOK, "signup.html", gin.H{"user": user})
+}
+
+func getSignup(c *gin.Context,w http.ResponseWriter) {
+	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+	c.HTML(http.StatusOK, "signup.html", gin.H{})
+}
+
+//新規会員登録(id,password)
+func postSignup(c *gin.Context,w http.ResponseWriter) {
+	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+	id := c.PostForm("user_id")
+	pw := c.PostForm("password")
+
+	user, err := db.Signup(id, pw)
+	if err != nil {
+		c.Redirect(301, "/signup")
+		return
+	}
+	c.HTML(http.StatusOK, "signup.html", gin.H{"user": user})
+}
 
 
 // func postSignup(c *gin.Context) {
