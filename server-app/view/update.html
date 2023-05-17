@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>会員情報編集</title>
+</head>
+<body>
+    <h1>会員情報編集</h1>
+    {{ if .user.LoggedIn }}
+    <p>ログイン中【{{ .user.UserId }}】</p>
+    {{ end }}
+
+    <form method="post" action="/update">
+        <div>
+            <label for="name">ユーザーID:</label>
+            <input type="text" id="user_id" name="user_id" required minlength="4" maxlength="16">
+        </div>
+        <div>
+            <label for="password">パスワード:</label>
+            <input type="password" id="password" name="password" required minlength="4" maxlength="20">
+        </div>
+        <p><input type="submit" value="保存" /></p>
+    </form>
+</body>
+</html>

@@ -1,0 +1,9 @@
+<h1>TOP</h1>
+{{ if .user.LoggedIn }}
+<p>ログイン中【{{ .user}}】</p>
+<p>ログイン成功</p>
+{{ end }}
+<a href="/">ホーム</a>
+<a href="/update">会員情報編集</a>
+<a href="/signup">会員登録</a>
+<a href="/login">ログイン</a>

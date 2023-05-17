@@ -33,7 +33,7 @@ func getLogin(c *gin.Context,w http.ResponseWriter) {
 	c.HTML(http.StatusOK, "login.html", gin.H{})
 }
 
-func postLogin(c *gin.Context,w http.ResponseWriter) {
+func postLogin(c *gin.Context,w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
 
 	id := c.PostForm("user_id")
@@ -43,7 +43,12 @@ func postLogin(c *gin.Context,w http.ResponseWriter) {
 		c.Redirect(301, "/login")
 		return
 	}
-	c.HTML(http.StatusOK, "signup.html", gin.H{"user": user})
+	c.HTML(http.StatusOK, "blog.html", gin.H{"user": user})
+
+	//ログイン成功後のリダイレクト処理
+	// http.Redirect(w, r, "/login", http.StatusFound)
+
+	
 }
 
 func getSignup(c *gin.Context,w http.ResponseWriter) {
@@ -65,15 +70,27 @@ func postSignup(c *gin.Context,w http.ResponseWriter) {
 	c.HTML(http.StatusOK, "signup.html", gin.H{"user": user})
 }
 
+func getUpdate(c *gin.Context,w http.ResponseWriter) {
+	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
 
-// func postSignup(c *gin.Context) {
-// 	id := c.PostForm("user_id")
-// 	pw := c.PostForm("password")
-// 	user, err := model.Signup(id,pw)
-// 	if err != nil {
-// 		c.Redirrect(301, "/signup")
-// 		return
-// 	}
-// 	c.HTML(http.StatusOK, "home.html", gin.H{"user": user})
+	//dbパッケージからUser型のポインタを作成
+	db := &db.User{}
+	//ポインタを使ってLoggedInを呼び出し
+	user := db.LoggedIn()
 
-// }
+	c.HTML(http.StatusOK, "update.html", gin.H{"user": user})
+}
+
+//会員情報編集(id,password)
+func postUpdate(c *gin.Context,w http.ResponseWriter) {
+	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+	id := c.PostForm("user_id")
+	pw := c.PostForm("password")
+
+	user, err := db.Update(id, pw)
+	if err != nil {
+		c.Redirect(301, "/update")
+		return
+	}
+	c.HTML(http.StatusOK, "login.html", gin.H{"user": user})
+}
