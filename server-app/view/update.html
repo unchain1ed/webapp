@@ -6,7 +6,7 @@
 </head>
 <body>
     <h1>会員情報編集</h1>
-    {{ if .user.LoggedIn }}
+    {{ if .user }}
     <p>ログイン中【{{ .user.UserId }}】</p>
     {{ end }}
 
@@ -20,6 +20,7 @@
             <input type="password" id="password" name="password" required minlength="4" maxlength="20">
         </div>
         <p><input type="submit" value="保存" /></p>
+        <a href="/"><input type="button" value="戻る" /></a>
     </form>
 </body>
 </html>

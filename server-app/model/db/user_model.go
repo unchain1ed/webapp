@@ -32,7 +32,8 @@ func (u *User) LoggedIn() *User {
 //UserのLoggedInメソッドはtop.htmlで現在ログイン中かの確認に使います
 func Login(userId, password string) (*User, error) {
 	user :=User{}
-	Db.Where("user_id = ?",userId).First(&user)
+	//MySQLからuserIdに一致する構造体userを取得
+	Db.Table("USERS").Where("user_id = ?",userId).First(&user)
 
 		if user.ID == 0 {
 			err := errors.New("UserIdが一致するユーザーが存在しません。")
@@ -111,4 +112,12 @@ func Update(userId, password string) (*User, error){
 
 
 	return &user, nil
+}
+
+func GetOneUser(UserId string) (User) {
+	user := User{}
+	//MySQLからuserIdに一致する構造体userを取得
+	Db.Table("USERS").Where("user_id = ?", UserId).First(&user)
+
+	return user
 }

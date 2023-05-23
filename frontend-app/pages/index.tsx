@@ -8,16 +8,9 @@ import { useEffect } from 'react'
 
 const Home: NextPage = () => {
 
+  //TLS/SSL接続時に証明書を検証せずに接続を許可するかどうかを制御 "0" 検証を無効
   process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-  // return (
-  //   <div className={styles.container}>
-  //     <Head>
-  //       <title>Create Next App</title>
-  //       <h1>NextPage</h1>
-  //     </Head>
-  //    </div>
-  // )
-  
+
   useEffect(() => {
     
     (async() => {
@@ -35,7 +28,7 @@ const Home: NextPage = () => {
 
 export const getServerSideProps = async () => {
 
-  //以下のconsole.logはブラウザで実行されないサーバーサイドからの処理
+    //TLS/SSL接続時に証明書を検証せずに接続を許可するかどうかを制御 "0" 検証を無効
   process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
     console.log("hello HH")
