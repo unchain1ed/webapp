@@ -1,6 +1,7 @@
 package controller
 
 import (
+	// "time"
 	"fmt"
 	"net/http"
 	"github.com/unchain1ed/server-app/model/redis"
@@ -12,44 +13,105 @@ import (
 
 func GetRouter() *gin.Engine {
 	router := gin.Default()
-	// クロスオリジンリソース共有を有効化
-	router.Use(cors.Default()) 
 
 	//静的ファイル
 	router.LoadHTMLGlob("../../view/*.html")
+	
+	//クロスオリジンリソース共有を有効化
+	// router.Use(cors.Default()) 
+
+	    // // CORS設定
+		// config := cors.DefaultConfig()
+		// config.AllowOrigins = []string{"http://localhost:3000"} // フロントエンドのURLを許可
+		// config.AllowHeaders = []string{"Authorization", "Content-Type"}
+		// config.AllowCredentials = true
+	
+		// router.Use(cors.New(config))
+
+		// config := cors.DefaultConfig()
+		// config.AllowAllOrigins = true
+		// router.Use(cors.New(config))
+
+
+		// CORS設定
+		config := cors.DefaultConfig()
+		config.AllowOrigins = []string{"http://localhost:3000","http://localhost:3000/","http://localhost:3000/login"}
+		config.AllowMethods = []string{"POST", "GET", "OPTIONS"}
+		config.AllowHeaders = []string{
+			"Access-Control-Allow-Credentials",
+			"Access-Control-Allow-Headers",
+			"Content-Type",
+			"Content-Length",
+			"Accept-Encoding",
+			"Authorization",
+		}
+		config.AllowCredentials = true
+		router.Use(cors.New(config))
+
+	  // ここからCorsの設定
+	//   router.Use(cors.New(cors.Config{
+	// 	// アクセスを許可したいアクセス元
+	// 	AllowOrigins: []string{
+	// 		"http://localhost:3000/",
+	// 		"http://localhost:3000",
+	// 		"http://localhost:3000/login",
+	// 		"http://localhost:3000/mypage",
+	// 	},
+	// 	// アクセスを許可したいHTTPメソッド(以下の例だとPUTやDELETEはアクセスできません)
+	// 	AllowMethods: []string{
+	// 		"POST",
+	// 		"GET",
+	// 		"OPTIONS",
+	// 	},
+	// 	// 許可したいHTTPリクエストヘッダ
+	// 	AllowHeaders: []string{
+	// 		"Access-Control-Allow-Credentials",
+	// 		"Access-Control-Allow-Headers",
+	// 		"Content-Type",
+	// 		"Content-Length",
+	// 		"Accept-Encoding",
+	// 		"Authorization",
+	// 	},
+	// 	// cookieなどの情報を必要とするかどうか
+	// 	AllowCredentials: true,
+	// 	// preflightリクエストの結果をキャッシュする時間
+	// 	MaxAge: 24 * time.Hour,
+	//   }))
+
 
 	//ホーム画面
 	router.GET("/", func(c *gin.Context) {getTop(c, c.Writer)})
+	//ログイン画面
+	router.GET("/login", func(c *gin.Context) {getLogin(c, c.Writer)})
+	router.POST("/login", func(c *gin.Context) {postLogin(c, c.Writer, c.Request)})
+	//マイページ画面
+	router.GET("/mypage", func(c *gin.Context) {getMypage(c, c.Writer)})
+
 	
-
-
-	// router.GET("/login", func(c *gin.Context) {getLogin(c, c.Writer)})
-
-	
-
 	//loginCheckGroupで/mypageと/logoutのルートパスをグループ化し、ログインチェック実施
 	//ログインされていない場合はリダイレクト、ログインしている場合はそれぞれのハンドラ関数を呼び出し
-	loginCheckGroup := router.Group("/", checkLogin())
-	{
+	// loginCheckGroup := router.Group("/", checkLogin())
+	// {
 
-		//ログイン画面
-		loginCheckGroup.GET("/mypage", func(c *gin.Context) {getMypage(c, c.Writer)})
-		loginCheckGroup.GET("/logout", func(c *gin.Context) {getLogout(c, c.Writer)})
-	}
+	// 	//ログイン画面
+	// 	loginCheckGroup.GET("/mypage", func(c *gin.Context) {getMypage(c, c.Writer)})
+	// 	loginCheckGroup.GET("/logout", func(c *gin.Context) {getLogout(c, c.Writer)})
+	// }
 
-	//ログアウトされている場合はそれぞれのハンドラ関数を呼び出し、ログインしている場合はリダイレクト
-	logoutCheckGroup := router.Group("/", checkLogout())
-	{
-		//ログイン画面
-		logoutCheckGroup.GET("/login", func(c *gin.Context) {getLogin(c, c.Writer)})
-		logoutCheckGroup.POST("/login", func(c *gin.Context) {postLogin(c, c.Writer, c.Request)})
-		//サインアップ画面
-		logoutCheckGroup.GET("/signup", func(c *gin.Context) {getSignup(c, c.Writer)})
-		logoutCheckGroup.POST("/signup", func(c *gin.Context) {postSignup(c, c.Writer)})
-		//会員情報編集画面
-		logoutCheckGroup.GET("/update", func(c *gin.Context) {getUpdate(c, c.Writer)})
-		logoutCheckGroup.POST("/update", func(c *gin.Context) {postUpdate(c, c.Writer)})
-	}
+	// //ログアウトされている場合はそれぞれのハンドラ関数を呼び出し、ログインしている場合はリダイレクト
+	// logoutCheckGroup := router.Group("/", checkLogout())
+	// {
+	// 	fmt.Println("通過B")
+	// 	//ログイン画面
+	// 	logoutCheckGroup.GET("/login", func(c *gin.Context) {getLogin(c, c.Writer)})
+	// 	logoutCheckGroup.POST("/login", func(c *gin.Context) {postLogin(c, c.Writer, c.Request)})
+	// 	//サインアップ画面
+	// 	logoutCheckGroup.GET("/signup", func(c *gin.Context) {getSignup(c, c.Writer)})
+	// 	logoutCheckGroup.POST("/signup", func(c *gin.Context) {postSignup(c, c.Writer)})
+	// 	//会員情報編集画面
+	// 	logoutCheckGroup.GET("/update", func(c *gin.Context) {getUpdate(c, c.Writer)})
+	// 	logoutCheckGroup.POST("/update", func(c *gin.Context) {postUpdate(c, c.Writer)})
+	// }
 
 	//HTTPSサーバーを起動LSプロトコル使用※ハンドラの登録後に実行
 	//第1引数にはポート番号 ":8080" 、第2引数にはTLS証明書のパス、第3引数には秘密鍵のパス

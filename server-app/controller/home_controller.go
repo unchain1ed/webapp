@@ -1,10 +1,11 @@
 package controller
 
 import (
-	"os"
+	"fmt"
+	"github.com/gin-gonic/gin"
 	"github.com/unchain1ed/server-app/model/redis"
 	"net/http"
-	"github.com/gin-gonic/gin"
+	"os"
 
 	"github.com/unchain1ed/server-app/model/db"
 )
@@ -13,18 +14,23 @@ import (
 // 	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
 // }
 
-func getTop(c *gin.Context,w http.ResponseWriter) {
+func getTop(c *gin.Context, w http.ResponseWriter) {
+	fmt.Println("通過N")
 	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
 	c.HTML(http.StatusOK, "home.html", gin.H{})
+	// c.JSON(http.StatusOK, gin.H{})
 }
 
-func getLogin(c *gin.Context,w http.ResponseWriter) {
+func getLogin(c *gin.Context, w http.ResponseWriter) {
+	fmt.Println("通過G")
 	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
 	c.HTML(http.StatusOK, "login.html", gin.H{})
 }
 
 func postLogin(c *gin.Context, w http.ResponseWriter, r *http.Request) {
+	fmt.Println("通過A")
 	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+	// c.Header("Access-Control-Allow-Origin", "http://localhost:3000")
 
 	id := c.PostForm("user_id")
 	pw := c.PostForm("password")
@@ -33,25 +39,22 @@ func postLogin(c *gin.Context, w http.ResponseWriter, r *http.Request) {
 		c.Redirect(http.StatusMovedPermanently, "/login")
 		return
 	}
-	
 
-	//ログイン成功後のリダイレクト処理
-	// http.Redirect(w, r, "/login", http.StatusFound)
 
 	//セッションとCookieにUserIdを登録
 	cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
 	redis.NewSession(c, cookieKey, user.UserId)
-	
-	// c.Redirect(http.StatusFound, "/")
+
 	c.HTML(http.StatusOK, "mypage.html", gin.H{"user": user})
+	// c.JSON(http.StatusOK, gin.H{"user": user})
 }
 
-func getSignup(c *gin.Context,w http.ResponseWriter) {
+func getSignup(c *gin.Context, w http.ResponseWriter) {
 	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
 	c.HTML(http.StatusOK, "signup.html", gin.H{})
 }
 
-//新規会員登録(id,password)
+// 新規会員登録(id,password)
 func postSignup(c *gin.Context, w http.ResponseWriter) {
 	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
 	id := c.PostForm("user_id")
@@ -67,7 +70,7 @@ func postSignup(c *gin.Context, w http.ResponseWriter) {
 	// c.JSON(http.StatusOK, gin.H{"user": user})
 }
 
-func getUpdate(c *gin.Context,w http.ResponseWriter) {
+func getUpdate(c *gin.Context, w http.ResponseWriter) {
 	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
 
 	// //dbパッケージからUser型のポインタを作成
@@ -82,8 +85,8 @@ func getUpdate(c *gin.Context,w http.ResponseWriter) {
 	c.HTML(http.StatusOK, "update.html", gin.H{"user": user})
 }
 
-//会員情報編集(id,password)
-func postUpdate(c *gin.Context,w http.ResponseWriter) {
+// 会員情報編集(id,password)
+func postUpdate(c *gin.Context, w http.ResponseWriter) {
 	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
 	id := c.PostForm("user_id")
 	pw := c.PostForm("password")
@@ -102,10 +105,10 @@ func postUpdate(c *gin.Context,w http.ResponseWriter) {
 	// c.HTML(http.StatusOK, "login.html", gin.H{"user": user})
 }
 
-//マイページ画面
-func getMypage(c *gin.Context,w http.ResponseWriter) {
+// マイページ画面
+func getMypage(c *gin.Context, w http.ResponseWriter) {
 	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
-	
+
 	user := db.User{}
 
 	//セッションからuserを取得
@@ -120,11 +123,11 @@ func getMypage(c *gin.Context,w http.ResponseWriter) {
 
 }
 
-//ログアウト処理
+// ログアウト処理
 func getLogout(c *gin.Context, w http.ResponseWriter) {
 	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
 	cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
 	redis.DeleteSession(c, cookieKey)
-	
+
 	c.Redirect(http.StatusFound, "/")
 }
