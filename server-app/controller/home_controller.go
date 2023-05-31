@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/unchain1ed/server-app/model/redis"
 	"net/http"
@@ -11,35 +10,32 @@ import (
 )
 
 // func allowOrigin(w http.ResponseWriter) {
-// 	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+// c.Header("Access-Control-Allow-Origin", "http://localhost:3000")
 // }
 
-func getTop(c *gin.Context, w http.ResponseWriter) {
-	fmt.Println("通過N")
-	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+func getTop(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "http://localhost:3000")
 	c.HTML(http.StatusOK, "home.html", gin.H{})
 	// c.JSON(http.StatusOK, gin.H{})
 }
 
-func getLogin(c *gin.Context, w http.ResponseWriter) {
-	fmt.Println("通過G")
-	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+func getLogin(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "http://localhost:3000")
 	c.HTML(http.StatusOK, "login.html", gin.H{})
 }
 
-func postLogin(c *gin.Context, w http.ResponseWriter, r *http.Request) {
-	fmt.Println("通過A")
-	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
-	// c.Header("Access-Control-Allow-Origin", "http://localhost:3000")
+func postLogin(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "http://localhost:3000")
 
-	id := c.PostForm("user_id")
+	//フォームの値を取得
+	id := c.PostForm("userId")
 	pw := c.PostForm("password")
+		
 	user, err := db.Login(id, pw)
 	if err != nil {
 		c.Redirect(http.StatusMovedPermanently, "/login")
 		return
 	}
-
 
 	//セッションとCookieにUserIdを登録
 	cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
@@ -49,15 +45,15 @@ func postLogin(c *gin.Context, w http.ResponseWriter, r *http.Request) {
 	// c.JSON(http.StatusOK, gin.H{"user": user})
 }
 
-func getSignup(c *gin.Context, w http.ResponseWriter) {
-	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+func getSignup(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "http://localhost:3000")
 	c.HTML(http.StatusOK, "signup.html", gin.H{})
 }
 
 // 新規会員登録(id,password)
-func postSignup(c *gin.Context, w http.ResponseWriter) {
-	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
-	id := c.PostForm("user_id")
+func postSignup(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "http://localhost:3000")
+	id := c.PostForm("userId")
 	pw := c.PostForm("password")
 
 	user, err := db.Signup(id, pw)
@@ -70,8 +66,8 @@ func postSignup(c *gin.Context, w http.ResponseWriter) {
 	// c.JSON(http.StatusOK, gin.H{"user": user})
 }
 
-func getUpdate(c *gin.Context, w http.ResponseWriter) {
-	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+func getUpdate(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "http://localhost:3000")
 
 	// //dbパッケージからUser型のポインタを作成
 	// db := &db.User{}
@@ -86,9 +82,9 @@ func getUpdate(c *gin.Context, w http.ResponseWriter) {
 }
 
 // 会員情報編集(id,password)
-func postUpdate(c *gin.Context, w http.ResponseWriter) {
-	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
-	id := c.PostForm("user_id")
+func postUpdate(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "http://localhost:3000")
+	id := c.PostForm("userId")
 	pw := c.PostForm("password")
 
 	user, err := db.Update(id, pw)
@@ -106,8 +102,8 @@ func postUpdate(c *gin.Context, w http.ResponseWriter) {
 }
 
 // マイページ画面
-func getMypage(c *gin.Context, w http.ResponseWriter) {
-	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+func getMypage(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "http://localhost:3000")
 
 	user := db.User{}
 
@@ -124,8 +120,8 @@ func getMypage(c *gin.Context, w http.ResponseWriter) {
 }
 
 // ログアウト処理
-func getLogout(c *gin.Context, w http.ResponseWriter) {
-	w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
+func getLogout(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "http://localhost:3000")
 	cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
 	redis.DeleteSession(c, cookieKey)
 

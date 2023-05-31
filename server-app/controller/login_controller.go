@@ -12,7 +12,7 @@ package controller
 // }
 
 // func postSignup(c *gin.Context) {
-// 	id := c.PostForm("user_id")
+// 	id := c.PostForm("userId")
 // 	pw := c.PostForm("password")
 // 	user, err := model.Signup(id, pw)
 // 	if err != nil {
@@ -27,7 +27,7 @@ package controller
 // }
 
 // func postLogin(c *gin.Context) {
-// 	id := c.PostForm("user_id")
+// 	id := c.PostForm("userId")
 // 	pw := c.PostForm("password")
 
 // 	user, err := model.Login(id, pw)

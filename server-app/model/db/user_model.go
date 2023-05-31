@@ -48,7 +48,7 @@ func Login(userId, password string) (*User, error) {
 			fmt.Println("パスワードが一致しません。:", compareErr)
 			return nil, compareErr
 		}
-
+		
 		return &user, nil
 }
 
