@@ -20,26 +20,6 @@ func GetRouter() *gin.Engine {
 	//クロスオリジンリソース共有を有効化
 	// router.Use(cors.Default()) 
 
-	//OKだった
-	// config := cors.DefaultConfig()
-    // config.AllowOrigins = []string{"http://localhost:3000"} // 許可するオリジンのリストを設定
-    // router.Use(cors.New(config))
-
-
-
-	    // // CORS設定
-		// config := cors.DefaultConfig()
-		// config.AllowOrigins = []string{"http://localhost:3000"} // フロントエンドのURLを許可
-		// config.AllowHeaders = []string{"Authorization", "Content-Type"}
-		// config.AllowCredentials = true
-	
-		// router.Use(cors.New(config))
-
-		// config := cors.DefaultConfig()
-		// config.AllowAllOrigins = true
-		// router.Use(cors.New(config))
-
-
 		// CORS設定
 		config := cors.DefaultConfig()
 		config.AllowOrigins = []string{"http://localhost:3000"}
@@ -56,34 +36,6 @@ func GetRouter() *gin.Engine {
 		config.AllowCredentials = true
 		router.Use(cors.New(config))
 
-	  //CORS設定
-	//   router.Use(cors.New(cors.Config{
-	// 	// アクセスを許可したいアクセス元
-	// 	AllowOrigins: []string{
-	// 		"http://localhost:3000",
-	// 	},
-	// 	// アクセスを許可したいHTTPメソッド(以下の例だとPUTやDELETEはアクセスできません)
-	// 	AllowMethods: []string{
-	// 		"POST",
-	// 		"GET",
-	// 		"OPTIONS",
-	// 	},
-	// 	// 許可したいHTTPリクエストヘッダ
-	// 	AllowHeaders: []string{
-	// 		"Access-Control-Allow-Credentials",
-	// 		"Access-Control-Allow-Headers",
-	// 		"Content-Type",
-	// 		"Content-Length",
-	// 		"Accept-Encoding",
-	// 		"Authorization",
-	// 	},
-	// 	// cookieなどの情報を必要とするかどうか
-	// 	AllowCredentials: true,
-	// 	// preflightリクエストの結果をキャッシュする時間
-	// 	MaxAge: 24 * time.Hour,
-	//   }))
-
-
 	//ホーム画面
 	router.GET("/", func(c *gin.Context) {getTop(c)})
 
@@ -91,7 +43,6 @@ func GetRouter() *gin.Engine {
 	//ログインされていない場合はリダイレクト、ログインしている場合はそれぞれのハンドラ関数を呼び出し
 	loginCheckGroup := router.Group("/", checkLogin())
 	{
-		fmt.Println("通過A")
 		//ログイン画面
 		loginCheckGroup.GET("/mypage", func(c *gin.Context) {getMypage(c)})
 		loginCheckGroup.GET("/logout", func(c *gin.Context) {getLogout(c)})
@@ -100,7 +51,6 @@ func GetRouter() *gin.Engine {
 	//ログアウトされている場合はそれぞれのハンドラ関数を呼び出し、ログインしている場合はリダイレクト
 	logoutCheckGroup := router.Group("/", checkLogout())
 	{
-		fmt.Println("通過B")
 		//ログイン画面
 		logoutCheckGroup.GET("/login", func(c *gin.Context) {getLogin(c)})
 		logoutCheckGroup.POST("/login", func(c *gin.Context) {postLogin(c)})

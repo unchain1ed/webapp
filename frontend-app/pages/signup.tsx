@@ -1,7 +1,15 @@
 import axios from "axios";
-import { NextPage } from "next";
+import { GetServerSideProps, NextPage } from "next";
 import router from "next/router";
 import { useState } from "react";
+
+type User = {
+  LoggedIn: boolean;
+  UserId: string;
+};
+type SignupPageProps = {
+  user: User;
+};
 
 const SignupPage: NextPage = () => {
   const [userId, setUserId] = useState("");
@@ -18,14 +26,6 @@ const SignupPage: NextPage = () => {
       // ログイン失敗時の処理
       console.error(error);
     });
-    // try {
-    //   axios.post("http://localhost:8080/signup", { userId, password });
-    //   // 登録成功時の処理
-    //   window.location.href = "/"; // リダイレクト先のURLを指定
-    // } catch (error) {
-    //   // 登録失敗時の処理
-    //   console.error(error);
-    // }
   };
 
   return (

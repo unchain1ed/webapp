@@ -9,24 +9,18 @@ import (
 	"github.com/unchain1ed/server-app/model/db"
 )
 
-// func allowOrigin(w http.ResponseWriter) {
-// c.Header("Access-Control-Allow-Origin", "http://localhost:3000")
-// }
 
 func getTop(c *gin.Context) {
-	c.Header("Access-Control-Allow-Origin", "http://localhost:3000")
-	c.HTML(http.StatusOK, "home.html", gin.H{})
+	// c.HTML(http.StatusOK, "home.html", gin.H{})
 	// c.JSON(http.StatusOK, gin.H{})
 }
 
 func getLogin(c *gin.Context) {
-	c.Header("Access-Control-Allow-Origin", "http://localhost:3000")
-	c.HTML(http.StatusOK, "login.html", gin.H{})
+	// c.HTML(http.StatusOK, "login.html", gin.H{})
+	// c.JSON(http.StatusOK, gin.H{})
 }
 
 func postLogin(c *gin.Context) {
-	c.Header("Access-Control-Allow-Origin", "http://localhost:3000")
-
 	//フォームの値を取得
 	id := c.PostForm("userId")
 	pw := c.PostForm("password")
@@ -46,13 +40,11 @@ func postLogin(c *gin.Context) {
 }
 
 func getSignup(c *gin.Context) {
-	c.Header("Access-Control-Allow-Origin", "http://localhost:3000")
 	c.HTML(http.StatusOK, "signup.html", gin.H{})
 }
 
 // 新規会員登録(id,password)
 func postSignup(c *gin.Context) {
-	c.Header("Access-Control-Allow-Origin", "http://localhost:3000")
 	id := c.PostForm("userId")
 	pw := c.PostForm("password")
 
@@ -67,8 +59,6 @@ func postSignup(c *gin.Context) {
 }
 
 func getUpdate(c *gin.Context) {
-	c.Header("Access-Control-Allow-Origin", "http://localhost:3000")
-
 	// //dbパッケージからUser型のポインタを作成
 	// db := &db.User{}
 	// //ポインタを使ってLoggedInを呼び出し
@@ -83,7 +73,6 @@ func getUpdate(c *gin.Context) {
 
 // 会員情報編集(id,password)
 func postUpdate(c *gin.Context) {
-	c.Header("Access-Control-Allow-Origin", "http://localhost:3000")
 	id := c.PostForm("userId")
 	pw := c.PostForm("password")
 
@@ -103,8 +92,6 @@ func postUpdate(c *gin.Context) {
 
 // マイページ画面
 func getMypage(c *gin.Context) {
-	c.Header("Access-Control-Allow-Origin", "http://localhost:3000")
-
 	user := db.User{}
 
 	//セッションからuserを取得
@@ -115,15 +102,14 @@ func getMypage(c *gin.Context) {
 		user = db.GetOneUser(UserId.(string))
 	}
 
-	c.HTML(http.StatusOK, "mypage.html", gin.H{"user": user})
-
+	// c.HTML(http.StatusOK, "mypage.html", gin.H{"user": user})
+	c.JSON(http.StatusOK, gin.H{"user": user})
 }
 
 // ログアウト処理
 func getLogout(c *gin.Context) {
-	c.Header("Access-Control-Allow-Origin", "http://localhost:3000")
 	cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
 	redis.DeleteSession(c, cookieKey)
 
-	c.Redirect(http.StatusFound, "/")
+	c.Redirect(http.StatusFound, "/login")
 }

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { NextPage } from "next";
+import { GetServerSideProps, NextPage } from "next";
 import { useState } from "react";
 
 
@@ -85,5 +85,24 @@ const MyPage: NextPage<MyPageProps> = ({ user }) => {
     </>
   );
 };
+
+// export const getServerSideProps: GetServerSideProps<MyPageProps> = async () => {
+//   //TLS/SSL接続時に証明書を検証せずに接続を許可するかどうかを制御 "0" 検証を無効
+//   // process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+
+//   const response = await axios.get("http://localhost:8080/mypage", {
+//       // headers: {
+//       //   "Content-Type": "application/x-www-form-urlencoded",
+//       // },
+//       withCredentials: true,
+//     });
+//   const user = response.data;
+
+//   return {
+//     props: {
+//       user,
+//     },
+//   };
+// };
 
 export default MyPage;

@@ -20,8 +20,13 @@ const Home: NextPage<HomeProps> = ({ user }) => {
   // process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
   useEffect(() => {
     (async () => {
-    await axios.get("http://localhost:8080");
-    });
+    await axios.get("http://localhost:8080"),  {
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    withCredentials: true,
+    }
+  });
   }, []);
 
   return (
@@ -46,7 +51,14 @@ export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
   //TLS/SSL接続時に証明書を検証せずに接続を許可するかどうかを制御 "0" 検証を無効
   // process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
-  const response = await axios.get("http://localhost:8080");
+  // const response = await axios.get("http://localhost:8080");
+
+  const response = await axios.get("http://localhost:8080",  {
+  headers: {
+    "Content-Type": "application/x-www-form-urlencoded",
+  },
+  withCredentials: true,
+})
   const user = response.data;
 
   return {
@@ -63,7 +75,15 @@ const handleLogout = (event: React.MouseEvent<HTMLElement>) => {
       "Content-Type": "application/x-www-form-urlencoded",
     },
     withCredentials: true,
-  });
-};
+  })
+  .then(() => {
+        // ログイン成功時の処理
+        window.location.href = "/login"; // リダイレクト先のURLを指定
+      })
+      .catch((error) => {
+        // ログイン失敗時の処理
+        console.error(error);
+      });
+  };
 
 export default Home;

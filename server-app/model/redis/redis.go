@@ -34,8 +34,6 @@ func NewSession(c *gin.Context, cookieKey, redisValue string) {
 	//バイト配列を base64 エンコードして文字列に変換
 	newRedisKey := base64.URLEncoding.EncodeToString(slice)
 
-	fmt.Println("通過redisValue"+redisValue)
-
 	//Redisにセッションを登録
 	if err := conn.Set(c, newRedisKey, redisValue, 0).Err(); err != nil {
 		panic("Session登録時にエラーが発生：" + err.Error())
@@ -43,8 +41,6 @@ func NewSession(c *gin.Context, cookieKey, redisValue string) {
 	fmt.Println("HTTPレスポンスヘッダcookieKey"+cookieKey)
 	fmt.Println("HTTPレスポンスヘッダnewRedisKey"+newRedisKey)
 	//HTTPレスポンスヘッダーにCookieを設定
-	// c.SetCookie(cookieKey, newRedisKey, 0, "/", "localhost", false, false)
-	// クッキーの設定
 	cookie := &http.Cookie{
 		Name:     cookieKey,
 		Value:    newRedisKey,
@@ -61,23 +57,11 @@ func NewSession(c *gin.Context, cookieKey, redisValue string) {
 
 func GetSession(c *gin.Context, cookieKey string) interface{} {
 	fmt.Println("通過cookieKey"+cookieKey)
-	c.Header("Access-Control-Allow-Origin", "http://localhost:3000")
+
 	//クライアントのリクエストに含まれるセッションのクッキー値を取得
 	redisKey, _ := c.Cookie(cookieKey)
 
-	// クライアントのリクエストに含まれるセッションのクッキー値を取得
-	// 以下が今NG　redisKeyが空
-    // cookie, err := c.Request.Cookie(cookieKey)
-
-
-    // if err != nil {
-    //     fmt.Println("Cookieの取得に失敗しました:", err)
-    //     return nil
-    // }
-    // redisKey := cookie.Value
-
 	fmt.Println("通過redisKey"+redisKey)
-
 
 	//取得したセッションのクッキー値を使用して、Redisから対応するセッションデータを取得
 	redisValue, err := conn.Get(c, redisKey).Result()
@@ -96,10 +80,31 @@ func GetSession(c *gin.Context, cookieKey string) interface{} {
 }
 
 func DeleteSession(c *gin.Context, cookieKey string) {
-	redisId, _ := c.Cookie(cookieKey)
-	fmt.Println("通過redisId"+redisId)
+	fmt.Println("通過VVV")
+	redisId, err := c.Cookie(cookieKey)
+	if err != nil {
+		fmt.Println("セッションのクッキーが見つかりませんでした。")
+		return
+	}
 	//Redisからセッションを削除
-	conn.Del(c, redisId)
+	cmd := conn.Del(c, redisId)
+	if cmd.Val() == 0 {
+		fmt.Println("Redisからセッションを削除できませんでした。")
+	} else {
+		fmt.Println("Redisからセッションを削除しました。：", cmd.String())
+	}
+	
 	//クライアントのブラウザに保存されているセッションのクッキーを削除
-	c.SetCookie(cookieKey, "", -1, "/", "localhost", false, true)
+	cookie := &http.Cookie{
+		Name:     cookieKey,
+		Value:    "",
+		Path:     "/",
+		Domain:   "localhost",
+		MaxAge:    -1,
+		HttpOnly: false,
+		Secure:   true,
+		SameSite: http.SameSiteNoneMode,
+	}
+	// クッキーをレスポンスに設定
+	http.SetCookie(c.Writer, cookie)
 }
