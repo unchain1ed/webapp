@@ -117,8 +117,9 @@ func checkLogout() gin.HandlerFunc {
 			//リダイレクト処理
 			//セッションにユーザーIDが存在する場合中断
 			fmt.Println("セッションにユーザーIDが存在リダイレクトTo /mypage")
-			c.Redirect(http.StatusFound, "/mypage")
-			c.Abort()
+			// c.Redirect(http.StatusFound, "/mypage")
+			// c.Abort()
+			c.Next()
 		} else {
 			//セッションにユーザーIDが存在しない場合ハンドラ関数に処理を渡します
 			c.Next()

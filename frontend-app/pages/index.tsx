@@ -37,7 +37,7 @@ const Home: NextPage<HomeProps> = ({ user }) => {
       <button type="button" onClick={() => router.push("/signup")}>
         会員登録
       </button>
-      <button type="button" onClick={() => router.push("/login")}>
+      <button type="button" onClick={handleLogin}>
         ログイン
       </button>
       <button type="button" onClick={handleLogout}>
@@ -85,5 +85,23 @@ const handleLogout = (event: React.MouseEvent<HTMLElement>) => {
         console.error(error);
       });
   };
+
+  const handleLogin = (event: React.MouseEvent<HTMLElement>) => {
+
+    axios.get("http://localhost:8080/login", {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      withCredentials: true,
+    })
+    .then(() => {
+          // ログイン成功時の処理
+          window.location.href = "/login"; // リダイレクト先のURLを指定
+        })
+        .catch((error) => {
+          // ログイン失敗時の処理
+          console.error(error);
+        });
+    };
 
 export default Home;

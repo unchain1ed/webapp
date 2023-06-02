@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/unchain1ed/server-app/model/redis"
 	"net/http"
@@ -16,8 +17,22 @@ func getTop(c *gin.Context) {
 }
 
 func getLogin(c *gin.Context) {
+	user := db.User{}
+	// //セッションからuserを取得
+	// cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
+	// user := redis.GetSession(c, cookieKey)
+
+	//セッションからuserを取得
+	cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
+	UserId := redis.GetSession(c, cookieKey)
+
+	if UserId != nil {
+		user = db.GetOneUser(UserId.(string))
+	}
+	// fmt.Println("UserId"+UserId.(string))
+	// fmt.Println("user.UserId"+user.UserId)
 	// c.HTML(http.StatusOK, "login.html", gin.H{})
-	// c.JSON(http.StatusOK, gin.H{})
+	c.JSON(http.StatusOK, gin.H{"user": user})
 }
 
 func postLogin(c *gin.Context) {
@@ -30,6 +45,8 @@ func postLogin(c *gin.Context) {
 		c.Redirect(http.StatusMovedPermanently, "/login")
 		return
 	}
+	fmt.Println("user.UserId"+user.UserId)
+	fmt.Println("id password"+id +pw)
 
 	//セッションとCookieにUserIdを登録
 	cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
@@ -92,17 +109,20 @@ func postUpdate(c *gin.Context) {
 
 // マイページ画面
 func getMypage(c *gin.Context) {
-	user := db.User{}
+	// user := db.User{}
 
+	// //セッションからuserを取得
+	// cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
+	// UserId := redis.GetSession(c, cookieKey)
+
+	// if UserId != nil {
+	// 	user = db.GetOneUser(UserId.(string))
+	// }
 	//セッションからuserを取得
 	cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
-	UserId := redis.GetSession(c, cookieKey)
+	user := redis.GetSession(c, cookieKey)
 
-	if UserId != nil {
-		user = db.GetOneUser(UserId.(string))
-	}
-
-	// c.HTML(http.StatusOK, "mypage.html", gin.H{"user": user})
+	// c.HTML(http.StatusOK, "login.html", gin.H{})
 	c.JSON(http.StatusOK, gin.H{"user": user})
 }
 

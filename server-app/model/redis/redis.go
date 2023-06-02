@@ -59,7 +59,10 @@ func GetSession(c *gin.Context, cookieKey string) interface{} {
 	fmt.Println("通過cookieKey"+cookieKey)
 
 	//クライアントのリクエストに含まれるセッションのクッキー値を取得
-	redisKey, _ := c.Cookie(cookieKey)
+	redisKey, err := c.Cookie(cookieKey)
+	if err != nil {
+		fmt.Println("セッションのクッキーが見つかりませんでした。,err："+err.Error())
+	}
 
 	fmt.Println("通過redisKey"+redisKey)
 
@@ -80,7 +83,6 @@ func GetSession(c *gin.Context, cookieKey string) interface{} {
 }
 
 func DeleteSession(c *gin.Context, cookieKey string) {
-	fmt.Println("通過VVV")
 	redisId, err := c.Cookie(cookieKey)
 	if err != nil {
 		fmt.Println("セッションのクッキーが見つかりませんでした。")

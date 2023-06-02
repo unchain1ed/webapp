@@ -1,36 +1,68 @@
 import axios from "axios";
 import { GetServerSideProps, NextPage } from "next";
-import router from "next/router";
-import { useState } from "react";
-import { serialize } from 'cookie';
-
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
 type User = {
   LoggedIn: boolean;
   UserId: string;
 };
+
 type HomeProps = {
   user: User;
 };
 
-const LoginPage: NextPage = () => {
-    //TLS/SSL接続時に証明書を検証せずに接続を許可するかどうかを制御 "0" 検証を無効
-    // process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-
+const LoginPage: NextPage<HomeProps> = ({ user }) => {
   const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
+  const router = useRouter();
+  const [loggedIn, setLoggedIn] = useState(user.LoggedIn);
+
+  useEffect(() => {
+    // userの変更を監視する
+    if (user.LoggedIn) {
+      // ログイン済みの場合の処理
+      console.log("ユーザーはログイン済みです");
+    } else {
+      // ログインしていない場合の処理
+      console.log("ユーザーはログインしていません");
+    }
+
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/login", {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          withCredentials: true,
+        });
+        const data = response.data;
+        // レスポンスデータの処理
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    // コンポーネントのマウント時にリクエストを実行
+    fetchData();
+  }, [user]);
 
   const handleSubmit = (event: React.MouseEvent<HTMLElement>) => {
-
-    axios.post("http://localhost:8080/login", { userId, password }, {
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      withCredentials: true,
-    })
+    axios
+      .post(
+        "http://localhost:8080/login",
+        { userId, password },
+        {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          withCredentials: true,
+        }
+      )
       .then(() => {
         // ログイン成功時の処理
-        window.location.href = "/mypage"; // リダイレクト先のURLを指定
+        // window.location.hrefを使用してリダイレクト
+        window.location.href = "/mypage";
       })
       .catch((error) => {
         // ログイン失敗時の処理
@@ -69,7 +101,7 @@ const LoginPage: NextPage = () => {
         <p>
           <button type="button" onClick={handleSubmit}>
             ログイン
-            </button>
+          </button>
           <button type="button" onClick={() => router.push("/")}>
             戻る
           </button>
@@ -80,17 +112,15 @@ const LoginPage: NextPage = () => {
 };
 
 export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
-  //TLS/SSL接続時に証明書を検証せずに接続を許可するかどうかを制御 "0" 検証を無効
-  // process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-
   const response = await axios.get("http://localhost:8080/login", {
-      withCredentials: true,
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-    });
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    withCredentials: true,
+  });
   const user = response.data;
-
+console.log(response.data)
+// console.log(response)
   return {
     props: {
       user,
