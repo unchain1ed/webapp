@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import Head from 'next/head';
 import NextLink from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import {
@@ -19,22 +19,23 @@ import {
 import { useAuth } from 'src/hooks/use-auth';
 import { Layout as AuthLayout } from 'src/layouts/auth/layout';
 
-const Page = () => {
+const Page: React.FC = () => {
+
   const router = useRouter();
   const auth = useAuth();
-  const [method, setMethod] = useState('email');
+  const [method, setMethod] = useState('id');
+
   const formik = useFormik({
     initialValues: {
-      email: 'demo@devias.io',
-      password: 'Password123!',
+      id: 'root',
+      password: 'root',
       submit: null
     },
     validationSchema: Yup.object({
-      email: Yup
+      id: Yup
         .string()
-        .email('Must be a valid email')
         .max(255)
-        .required('Email is required'),
+        .required('ID is required'),
       password: Yup
         .string()
         .max(255)
@@ -42,7 +43,7 @@ const Page = () => {
     }),
     onSubmit: async (values, helpers) => {
       try {
-        await auth.signIn(values.email, values.password);
+        await auth.signIn(values.id, values.password);
         router.push('/');
       } catch (err) {
         helpers.setStatus({ success: false });
@@ -53,7 +54,7 @@ const Page = () => {
   });
 
   const handleMethodChange = useCallback(
-    (event, value) => {
+    (event: React.SyntheticEvent, value: string) => {
       setMethod(value);
     },
     []
@@ -71,7 +72,7 @@ const Page = () => {
     <>
       <Head>
         <title>
-          Login | Devias Kit
+          Login
         </title>
       </Head>
       <Box
@@ -121,30 +122,26 @@ const Page = () => {
               value={method}
             >
               <Tab
-                label="Email"
-                value="email"
-              />
-              <Tab
-                label="Phone Number"
-                value="phoneNumber"
+                label="Acoount"
+                value="id"
               />
             </Tabs>
-            {method === 'email' && (
+            {method === 'id' && (
               <form
                 noValidate
                 onSubmit={formik.handleSubmit}
               >
                 <Stack spacing={3}>
                   <TextField
-                    error={!!(formik.touched.email && formik.errors.email)}
+                    error={!!(formik.touched.id && formik.errors.id)}
                     fullWidth
-                    helperText={formik.touched.email && formik.errors.email}
-                    label="Email Address"
-                    name="email"
+                    helperText={formik.touched.id && formik.errors.id}
+                    label="ID"
+                    name="id"
                     onBlur={formik.handleBlur}
                     onChange={formik.handleChange}
-                    type="email"
-                    value={formik.values.email}
+                    type="id"
+                    value={formik.values.id}
                   />
                   <TextField
                     error={!!(formik.touched.password && formik.errors.password)}
@@ -193,23 +190,10 @@ const Page = () => {
                   sx={{ mt: 3 }}
                 >
                   <div>
-                    You can use <b>demo@devias.io</b> and password <b>Password123!</b>
+                    You can use <b>root</b> and password <b>root</b>
                   </div>
                 </Alert>
               </form>
-            )}
-            {method === 'phoneNumber' && (
-              <div>
-                <Typography
-                  sx={{ mb: 1 }}
-                  variant="h6"
-                >
-                  Not available in the demo
-                </Typography>
-                <Typography color="text.secondary">
-                  To prevent unnecessary costs we disabled this feature in the demo.
-                </Typography>
-              </div>
             )}
           </div>
         </Box>
@@ -218,7 +202,7 @@ const Page = () => {
   );
 };
 
-Page.getLayout = (page) => (
+Page.getLayout = (page: React.ReactNode) => (
   <AuthLayout>
     {page}
   </AuthLayout>

@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import { subDays, subHours } from 'date-fns';
-import { Box, Container, Unstable_Grid2 as Grid } from '@mui/material';
+import { Box, Container, Grid } from '@mui/material';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
 import { OverviewBudget } from 'src/sections/overview/overview-budget';
 import { OverviewLatestOrders } from 'src/sections/overview/overview-latest-orders';
@@ -13,7 +13,7 @@ import { OverviewTraffic } from 'src/sections/overview/overview-traffic';
 
 const now = new Date();
 
-const Page = () => (
+const Page = (): JSX.Element => (
   <>
     <Head>
       <title>
@@ -33,6 +33,7 @@ const Page = () => (
           spacing={3}
         >
           <Grid
+            item
             xs={12}
             sm={6}
             lg={3}
@@ -45,6 +46,7 @@ const Page = () => (
             />
           </Grid>
           <Grid
+            item
             xs={12}
             sm={6}
             lg={3}
@@ -57,6 +59,7 @@ const Page = () => (
             />
           </Grid>
           <Grid
+            item
             xs={12}
             sm={6}
             lg={3}
@@ -67,6 +70,7 @@ const Page = () => (
             />
           </Grid>
           <Grid
+            item
             xs={12}
             sm={6}
             lg={3}
@@ -77,6 +81,7 @@ const Page = () => (
             />
           </Grid>
           <Grid
+            item
             xs={12}
             lg={8}
           >
@@ -95,6 +100,7 @@ const Page = () => (
             />
           </Grid>
           <Grid
+            item
             xs={12}
             md={6}
             lg={4}
@@ -106,6 +112,7 @@ const Page = () => (
             />
           </Grid>
           <Grid
+            item
             xs={12}
             md={6}
             lg={4}
@@ -147,6 +154,7 @@ const Page = () => (
             />
           </Grid>
           <Grid
+            item
             xs={12}
             md={12}
             lg={8}
@@ -223,7 +231,7 @@ const Page = () => (
   </>
 );
 
-Page.getLayout = (page) => (
+Page.getLayout = (page: JSX.Element) => (
   <DashboardLayout>
     {page}
   </DashboardLayout>
