@@ -75,6 +75,7 @@ export const AuthProvider = (props) => {
     let isAuthenticated = false;
 
     try {
+      //ウェブブラウザのセッションストレージから取得
       isAuthenticated = window.sessionStorage.getItem('authenticated') === 'true';
     } catch (err) {
       console.error(err);
@@ -128,8 +129,11 @@ export const AuthProvider = (props) => {
   };
 
   const signIn = async (email, password) => {
+
+    console.log("通過"+email)
+    
     if (email !== 'root' || password !== 'root') {
-      throw new Error('Please check your email and password');
+      throw new Error('Please check your id and password');
     }
 
     try {

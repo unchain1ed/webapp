@@ -13,8 +13,35 @@ import {
   Unstable_Grid2 as Grid
 } from '@mui/material';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
-import { CompanyCard } from 'src/sections/companies/company-card';
-import { CompaniesSearch } from 'src/sections/companies/companies-search';
+import { CompanyCard } from 'src/sections/blog/company-card';
+import { CompaniesSearch } from 'src/sections/blog/companies-search';
+import axios from 'axios';
+import router from 'next/router';
+
+
+const handleAdd = (event: React.MouseEvent<HTMLElement>) => {
+  axios
+    .get(
+      "http://localhost:8080/",
+      {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        withCredentials: true,
+      }
+    )
+    .then(() => {
+      // ログイン成功時の処理
+      router.push('/blog/post');
+      // helpers.setStatus({ success: false });
+      // helpers.setErrors({ submit: err.message });
+      // helpers.setSubmitting(false);
+    })
+    .catch((error) => {
+      // ログイン失敗時の処理
+      console.error(error);
+    });
+};
 
 const companies = [
   {
@@ -71,7 +98,7 @@ const Page = () => (
   <>
     <Head>
       <title>
-        Companies | Devias Kit
+        Blog
       </title>
     </Head>
     <Box
@@ -90,7 +117,7 @@ const Page = () => (
           >
             <Stack spacing={1}>
               <Typography variant="h4">
-                Companies
+                Blog
               </Typography>
               <Stack
                 alignItems="center"
@@ -126,7 +153,8 @@ const Page = () => (
                     <PlusIcon />
                   </SvgIcon>
                 )}
-                variant="contained"
+                // variant="contained"
+                onClick={handleAdd}
               >
                 Add
               </Button>
@@ -165,7 +193,7 @@ const Page = () => (
   </>
 );
 
-Page.getLayout = (page) => (
+Page.getLayout = (page: any) => (
   <DashboardLayout>
     {page}
   </DashboardLayout>

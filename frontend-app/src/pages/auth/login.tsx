@@ -22,6 +22,7 @@ import axios from 'axios';
 import { useAuth } from 'src/hooks/use-auth';
 import { Layout as AuthLayout } from 'src/layouts/auth/layout';
 
+
 type User = {
   LoggedIn: boolean;
   UserId: string;
@@ -31,9 +32,7 @@ type HomeProps = {
   user: User;
 };
 
-
 const Page: NextPage<HomeProps> = ({ user }) => {
-
   const router = useRouter();
   const auth = useAuth();
   const [method, setMethod] = useState('userId');
@@ -64,7 +63,6 @@ const Page: NextPage<HomeProps> = ({ user }) => {
         console.error(error);
       }
     };
-
     // コンポーネントのマウント時にリクエストを実行
     fetchData();
   }, [user]);
@@ -81,10 +79,14 @@ const Page: NextPage<HomeProps> = ({ user }) => {
           withCredentials: true,
         }
       )
-      .then(() => {
+      .then(async () => {
         // ログイン成功時の処理
-        // window.location.hrefを使用してリダイレクト
-        window.location.href = "/mypage";
+        await auth.signIn(userId, password);
+        router.push('/');
+        // helpers.setStatus({ success: false });
+        // helpers.setErrors({ submit: err.message });
+        // helpers.setSubmitting(false);
+
       })
       .catch((error) => {
         // ログイン失敗時の処理
@@ -102,21 +104,14 @@ const Page: NextPage<HomeProps> = ({ user }) => {
       userId: Yup
         .string()
         .max(20)
-        .required('ID is required'),
+        .required('IDを入力してください'),
       password: Yup
         .string()
         .max(20)
-        .required('Password is required')
+        .required('Passwordを入力してください')
     }),
     onSubmit: async (values, helpers) => {
-      // try {
-      //   await auth.signIn(values.id, values.password);
-      //   router.push('/');
-      // } catch (err) {
-      //   helpers.setStatus({ success: false });
-      //   helpers.setErrors({ submit: err.message });
-      //   helpers.setSubmitting(false);
-      // }
+
     }
   });
 
@@ -290,7 +285,7 @@ export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
     withCredentials: true,
   });
   const user = response.data;
-console.log(response.data)
+// console.log(response.data)
 // console.log(response)
   return {
     props: {

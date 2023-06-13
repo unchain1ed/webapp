@@ -17,7 +17,7 @@ const Page = (): JSX.Element => (
   <>
     <Head>
       <title>
-        Overview | Devias Kit
+        Overview
       </title>
     </Head>
     <Box

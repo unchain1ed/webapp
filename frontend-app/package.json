@@ -1,9 +1,5 @@
 {
-  "name": "material-kit-react",
-  "version": "3.0.0",
-  "author": "Devias",
-  "licence": "MIT",
-  "homepage": "https://devias.io",
+  "name": "frontend-app",
   "private": false,
   "scripts": {
     "dev": "next",
@@ -19,6 +15,7 @@
     "@emotion/server": "11.10.0",
     "@emotion/styled": "11.10.6",
     "@heroicons/react": "2.0.16",
+    "@material-ui/core": "^4.12.4",
     "@mui/lab": "5.0.0-alpha.120",
     "@mui/material": "5.11.10",
     "@mui/system": "5.11.9",
