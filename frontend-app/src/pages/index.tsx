@@ -10,6 +10,11 @@ import { OverviewTasksProgress } from 'src/sections/overview/overview-tasks-prog
 import { OverviewTotalCustomers } from 'src/sections/overview/overview-total-customers';
 import { OverviewTotalProfit } from 'src/sections/overview/overview-total-profit';
 import { OverviewTraffic } from 'src/sections/overview/overview-traffic';
+import { Provider } from 'react-redux';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './App';
+import { store } from './app/store';
 
 const now = new Date();
 
@@ -235,6 +240,15 @@ Page.getLayout = (page: JSX.Element) => (
   <DashboardLayout>
     {page}
   </DashboardLayout>
+);
+
+ReactDOM.render(
+  <React.StrictMode>
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </React.StrictMode>,
+  document.getElementById('root'),
 );
 
 export default Page;

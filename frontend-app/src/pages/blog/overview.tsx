@@ -153,7 +153,7 @@ const Page = () => (
                     <PlusIcon />
                   </SvgIcon>
                 )}
-                // variant="contained"
+                variant="contained"
                 onClick={handleAdd}
               >
                 Add
