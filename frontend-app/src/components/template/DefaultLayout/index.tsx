@@ -11,7 +11,7 @@ import {
   selectMessage,
   selectStatus,
 } from 'src/features/posts/postsEntitySlice';
-import { useToast } from 'src/hooks/useToast';
+// import { useToast } from 'src/hooks/useToast';
 // import { Spinner } from 'src/components/molecules';
 import ErrorMessage from 'src/components/molecules/ErrorMessage';
 
@@ -25,7 +25,7 @@ const DefaultLayout: React.VFC<Props> = memo((props) => {
   const status = useAppSelector(selectStatus);
   const errorMessage = useAppSelector(selectMessage);
   const dispatch = useAppDispatch();
-  const { showToast } = useToast();
+  // const { showToast } = useToast();
 
   useEffect(() => {
     if (!posts.length) {

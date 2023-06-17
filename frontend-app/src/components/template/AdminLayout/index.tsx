@@ -29,7 +29,7 @@ const AdminLayout: React.VFC<Props> = memo((props) => {
   // const errorMessage = useAppSelector(selectMessage);
   // const dispatch = useAppDispatch();
   // const history = useHistory();
-  const { showToast } = useToast();
+  // const { showToast } = useToast();
 
   const newPostHandler = () => {
     history.push('/admin/posts/new');

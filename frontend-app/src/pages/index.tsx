@@ -242,13 +242,13 @@ Page.getLayout = (page: JSX.Element) => (
   </DashboardLayout>
 );
 
-ReactDOM.render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <App />
-    </Provider>
-  </React.StrictMode>,
-  document.getElementById('root'),
-);
+// ReactDOM.render(
+//   <React.StrictMode>
+//     <Provider store={store}>
+//       <App />
+//     </Provider>
+//   </React.StrictMode>,
+//   document.getElementById('root'),
+// );
 
 export default Page;
