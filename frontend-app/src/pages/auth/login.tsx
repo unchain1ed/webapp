@@ -23,13 +23,14 @@ import { useAuth } from "src/hooks/use-auth";
 import { Layout as AuthLayout } from "src/layouts/auth/layout";
 
 type User = {
-  LoggedIn: boolean;
   UserId: string;
 };
 
 type HomeProps = {
   user: User;
 };
+
+let UserId;
 
 const Page: NextPage<HomeProps> = ({ user }) => {
   const router = useRouter();
@@ -40,14 +41,14 @@ const Page: NextPage<HomeProps> = ({ user }) => {
 
   useEffect(() => {
     console.log("通過useEffect" + user);
-    // // userの変更を監視する
-    // if (user.LoggedIn) {
-    //   // ログイン済みの場合の処理
-    //   console.log("ユーザーはログイン済みです");
-    // } else {
-    //   // ログインしていない場合の処理
-    //   console.log("ユーザーはログインしていません");
-    // }
+    // userの変更を監視する
+    if (user.UserId) {
+      // ログイン済みの場合の処理
+      console.log("ユーザーはログイン済みです");
+    } else {
+      // ログインしていない場合の処理
+      console.log("ユーザーはログインしていません");
+    }
 
     const fetchData = async () => {
       try {
@@ -105,7 +106,8 @@ const Page: NextPage<HomeProps> = ({ user }) => {
           withCredentials: true,
         }
       );
-      const responseData = response; // レスポンスデータを取得
+      
+      user.UserId = response.data.user.UserId; // レスポンスデータを取得
   
       // フロントエンドのビューで表示するための状態を作成
       // const [displayData, setDisplayData] = useState("");
@@ -114,10 +116,10 @@ const Page: NextPage<HomeProps> = ({ user }) => {
       // useEffect(() => {
       //   setDisplayData(responseData);
       // }, []);
-      // setDisplayData(responseData);
 
-      console.log("通過displayData", responseData.data.user.UserId);
+      console.log("通過displayData", response.data.user.UserId);
 
+      console.log("通過displayData2", user.UserId);
 
       
       // ログイン成功時の処理
