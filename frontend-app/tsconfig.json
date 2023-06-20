@@ -7,7 +7,7 @@
     ],
     "allowJs": true,
     "skipLibCheck": true,
-    "strict": true, //厳格な型チェック
+    "strict": false, //厳格な型チェック
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "incremental": true,

@@ -10,6 +10,10 @@ import (
 	"github.com/unchain1ed/server-app/model/db"
 )
 
+type BlogPost struct {
+	Title   string `json:"title"`
+	Content string `json:"content"`
+}
 
 func getTop(c *gin.Context) {
 	// c.HTML(http.StatusOK, "home.html", gin.H{})
@@ -132,4 +136,27 @@ func getLogout(c *gin.Context) {
 	redis.DeleteSession(c, cookieKey)
 
 	c.Redirect(http.StatusFound, "/login")
+}
+
+func postBlog(c *gin.Context) {
+	// c.Request.Header.Set("Content-Type", "application/json")
+	c.Request.Header.Set("Content-Type", "text/plain")
+
+	// JSON形式のリクエストボディを構造体にバインドする
+	var blogPost BlogPost
+	if err := c.ShouldBindJSON(&blogPost); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+		
+	// user, err := db.Login(id, pw)
+	// if err != nil {
+	// 	c.Redirect(http.StatusMovedPermanently, "/login")
+	// 	return
+	// }
+	fmt.Println("title"+blogPost.Title)
+	fmt.Println("content"+blogPost.Content)
+
+	// c.JSON(http.StatusOK, gin.H{"user": user})
+	// c.JSON(http.StatusOK, gin.H{"message": "Blog post created successfully"})
 }

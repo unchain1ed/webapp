@@ -39,6 +39,8 @@ func GetRouter() *gin.Engine {
 	//ホーム画面
 	router.GET("/", func(c *gin.Context) {getTop(c)})
 
+	router.POST("/blog/post", func(c *gin.Context) {postBlog(c)})
+
 	//loginCheckGroupで/mypageと/logoutのルートパスをグループ化し、ログインチェック実施
 	//ログインされていない場合はリダイレクト、ログインしている場合はそれぞれのハンドラ関数を呼び出し
 	loginCheckGroup := router.Group("/", checkLogin())
@@ -61,6 +63,8 @@ func GetRouter() *gin.Engine {
 		//会員情報編集画面
 		logoutCheckGroup.GET("/update", func(c *gin.Context) {getUpdate(c)})
 		logoutCheckGroup.POST("/update", func(c *gin.Context) {postUpdate(c)})
+		//ブログ記事作成画面
+		// logoutCheckGroup.POST("/blog/post", func(c *gin.Context) {postBlog(c)})
 	}
 
 	//HTTPSサーバーを起動LSプロトコル使用※ハンドラの登録後に実行登録後に実行**TODO**

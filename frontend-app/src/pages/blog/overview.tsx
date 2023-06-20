@@ -17,6 +17,7 @@ import { CompanyCard } from 'src/sections/blog/company-card';
 import { CompaniesSearch } from 'src/sections/blog/companies-search';
 import axios from 'axios';
 import router from 'next/router';
+import React from 'react';
 
 
 const handleAdd = (event: React.MouseEvent<HTMLElement>) => {

@@ -6,19 +6,20 @@ import { Layout as BlogLayout } from "src/layouts/blog/layout";
 
 import { Box, Button, Grid, Stack, TextField } from "@mui/material";
 import { useFormik } from "formik";
+import axios from "axios";
+
+interface BlogForm {
+  title: string;
+  content: string;
+}
 
 const Page: React.FC = () => {
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
   const router = useRouter();
 
-  const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setTitle(e.target.value);
-  };
-
-  const handleContentChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    setContent(e.target.value);
-  };
+  const [blogForm, setBlogForm] = useState<BlogForm>({
+    title: "",
+    content: "",
+  });
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -27,20 +28,45 @@ const Page: React.FC = () => {
     // APIリクエストなどが含まれます
 
     // ブログ投稿後にブログ一覧ページにリダイレクト
-    router.push("/blogs");
+    router.push("/blog/overview");
+  };
+
+  const handlePost = async (event: React.MouseEvent<HTMLElement>) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/blog/post",
+        blogForm, // blogFormオブジェクトを直接送信
+        {
+          headers: {
+            "Content-Type": "application/json", // JSON形式で送信するためのヘッダー設定
+          },
+          withCredentials: true,
+        }
+      );
+
+      router.push("/blog/overview");
+      // ログイン成功時の追加の処理を追記する場合はここに記述する
+    } catch (error) {
+      // ログイン失敗時の処理
+      console.error(error);
+      // ログイン失敗時の追加の処理を追記する場合はここに記述する
+    }
   };
 
   const formik = useFormik({
     initialValues: {
-      // userId: "root",
-      // password: "root",
-      // submit: null,
+      title: "",
+      content: "",
     },
     validationSchema: Yup.object({
-      title: Yup.string().max(30).required("タイトルを入力してください"),
-      content: Yup.string().max(20).required("記事内容を入力してください"),
+      title: Yup.string().max(50).required("タイトルを入力してください"),
+      content: Yup.string().max(1000).required("記事内容を入力してください"),
     }),
-    onSubmit: async (values, helpers) => {},
+    onSubmit: async (values, helpers) => {
+      // フォームの送信時の処理
+      // 例: APIリクエストなど
+      // helpers.setSubmitting(false);  // 必要に応じてフォームを再度利用可能にする
+    },
   });
 
   return (
@@ -68,10 +94,10 @@ const Page: React.FC = () => {
                     id="title"
                     label="Title"
                     onBlur={formik.handleBlur}
-                    value={title && formik.values.title}
+                    value={blogForm.title && formik.values.title}
                     onChange={(event) => {
                       formik.handleChange(event);
-                      setTitle(event.target.value);
+                      setBlogForm({ ...blogForm, title: event.target.value });
                     }}
                     fullWidth
                   />
@@ -81,35 +107,55 @@ const Page: React.FC = () => {
                     id="content"
                     label="Content"
                     onBlur={formik.handleBlur}
-                    value={content && formik.values.content}
+                    value={blogForm.content && formik.values.content}
                     onChange={(event) => {
                       formik.handleChange(event);
-                      setContent(event.target.value);
+                      setBlogForm({ ...blogForm, content: event.target.value });
                     }}
                     multiline
                     rows={15}
                     fullWidth
                   />
                 </Stack>
-                <Button type="submit" variant="contained">
+                <Button
+                  fullWidth
+                  size="large"
+                  sx={{ mt: 3 }}
+                  type="submit"
+                  variant="contained"
+                  onClick={handlePost}
+                >
                   Submit
                 </Button>
               </form>
             </Box>
           </Grid>
           <Grid item xs={12} md={6}>
-            <Box
-              sx={{
-                width: "100%",
-                backgroundColor: "#f5f5f5",
-                padding: "16px",
-                borderRadius: "4px",
-              }}
-            >
-              <h2>Preview</h2>
-              <pre style={{ marginTop: "8px", whiteSpace: "pre-wrap" }}>{title}</pre>
-              <pre style={{ whiteSpace: "pre-wrap" }}>{content}</pre>
-            </Box>
+            <h2>Preview</h2>
+            {formik.values.title && (
+              <Box
+                sx={{
+                  width: "100%",
+                  backgroundColor: "#d4d4d4",
+                  padding: "16px",
+                  borderRadius: "4px",
+                }}
+              >
+                <pre style={{ marginTop: "8px", whiteSpace: "pre-wrap" }}>{formik.values.title}</pre>
+              </Box>
+            )}
+            {formik.values.content && (
+              <Box
+                sx={{
+                  width: "100%",
+                  backgroundColor: "#f5f5f1",
+                  padding: "16px",
+                  borderRadius: "4px",
+                }}
+              >
+                <pre style={{ whiteSpace: "pre-wrap" }}>{formik.values.content}</pre>
+              </Box>
+            )}
           </Grid>
         </Grid>
       </Box>

@@ -5,6 +5,7 @@ import { Box, Divider, MenuItem, MenuList, Popover, Typography } from '@mui/mate
 import axios from 'axios';
 
 import { useAuth } from 'src/hooks/use-auth';
+import React from 'react';
 
 
 interface AccountPopoverProps {
