@@ -157,6 +157,14 @@ func postBlog(c *gin.Context) {
 	fmt.Println("title"+blogPost.Title)
 	fmt.Println("content"+blogPost.Content)
 
-	// c.JSON(http.StatusOK, gin.H{"user": user})
-	// c.JSON(http.StatusOK, gin.H{"message": "Blog post created successfully"})
+	//DBにブログ記事内容を登録
+	blog, err := db.Create(blogPost.Title, blogPost.Content)
+	if err != nil {
+		
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+
+	c.JSON(http.StatusOK, gin.H{"blog": blog, "url": "/blog/overview"})
 }

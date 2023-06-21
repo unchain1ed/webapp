@@ -15,8 +15,9 @@ type User struct {
 }
 
 func init() {
-	//MySQLのストレージエンジンInnoDB,Userテーブル自動生成
-	 Db.Table("USERS").Set("gorm:table_options", "ENGINE = InnoDB").AutoMigrate(User{})
+	//MySQLのストレージエンジンInnoDB,テーブル自動生成
+	Db.Table("BLOGS").Set("gorm:table_options", "ENGINE = InnoDB").AutoMigrate(Blog{})
+	Db.Table("USERS").Set("gorm:table_options", "ENGINE = InnoDB").AutoMigrate(User{})
 }
 
 func (u *User) LoggedIn() *User {
