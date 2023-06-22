@@ -65,6 +65,8 @@ func GetRouter() *gin.Engine {
 		logoutCheckGroup.POST("/update", func(c *gin.Context) {postUpdate(c)})
 		//ブログ記事作成画面
 		logoutCheckGroup.POST("/blog/post", func(c *gin.Context) {postBlog(c)})
+		//BlogOverview画面
+		logoutCheckGroup.GET("/blog/overview", func(c *gin.Context) {getBlogOverview(c)})
 	}
 
 	//HTTPSサーバーを起動LSプロトコル使用※ハンドラの登録後に実行登録後に実行**TODO**

@@ -46,6 +46,16 @@ func Create(title, content string) (*Blog, error){
 	return &blog, nil
 }
 
+//DBかBLOGSテーブル情報を全件取得
+func GetBlogOverview() ([]Blog) {
+	var blogs []Blog
+	
+	//MySQLからuserIdに一致する構造体userを取得
+	Db.Table("BLOGS").Find(&blogs)
+	
+	return blogs
+}
+
 // //gormのUpdate関数で記事情報を編集
 // func Update(userId, password string) (*User, error){
 // 	user := User{}

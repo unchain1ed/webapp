@@ -4,7 +4,7 @@ import Head from "next/head";
 import * as Yup from "yup";
 import { Layout as BlogLayout } from "src/layouts/blog/layout";
 
-import { Box, Button, Grid, Stack, TextField } from "@mui/material";
+import { Box, Button, Grid, Stack, TextField, Typography } from "@mui/material";
 import { useFormik } from "formik";
 import axios from "axios";
 
@@ -85,7 +85,9 @@ const Page: React.FC = () => {
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
             <Box sx={{ width: "100%" }}>
-              <h1>Create</h1>
+              <Typography variant="h1" component="h1" gutterBottom>
+                Create
+              </Typography>
               <form onSubmit={handleSubmit}>
                 <Stack spacing={2}>
                   <TextField
@@ -131,7 +133,9 @@ const Page: React.FC = () => {
             </Box>
           </Grid>
           <Grid item xs={12} md={6}>
-            <h2>Preview</h2>
+            <Typography variant="h2" component="h2" gutterBottom>
+              Preview
+            </Typography>
             {formik.values.title && (
               <Box
                 sx={{
@@ -141,7 +145,9 @@ const Page: React.FC = () => {
                   borderRadius: "4px",
                 }}
               >
-                <pre style={{ marginTop: "8px", whiteSpace: "pre-wrap" }}>{formik.values.title}</pre>
+                <Typography variant="pre" style={{ marginTop: "8px", whiteSpace: "pre-wrap" }}>
+                  {formik.values.title}
+                </Typography>
               </Box>
             )}
             {formik.values.content && (
@@ -153,7 +159,9 @@ const Page: React.FC = () => {
                   borderRadius: "4px",
                 }}
               >
-                <pre style={{ whiteSpace: "pre-wrap" }}>{formik.values.content}</pre>
+                <Typography variant="pre" style={{ whiteSpace: "pre-wrap" }}>
+                  {formik.values.content}
+                </Typography>
               </Box>
             )}
           </Grid>

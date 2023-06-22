@@ -2,9 +2,10 @@ import PropTypes from 'prop-types';
 import ArrowDownOnSquareIcon from '@heroicons/react/24/solid/ArrowDownOnSquareIcon';
 import ClockIcon from '@heroicons/react/24/solid/ClockIcon';
 import { Avatar, Box, Card, CardContent, Divider, Stack, SvgIcon, Typography } from '@mui/material';
+import { format } from 'date-fns';
 
-export const CompanyCard = (props) => {
-  const { company } = props;
+export const BlogCard = (props) => {
+  const { blog } = props;
 
   return (
     <Card
@@ -15,30 +16,18 @@ export const CompanyCard = (props) => {
       }}
     >
       <CardContent>
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            pb: 3
-          }}
-        >
-          <Avatar
-            src={company.logo}
-            variant="square"
-          />
-        </Box>
         <Typography
           align="center"
           gutterBottom
           variant="h5"
         >
-          {company.title}
+          {blog.title}
         </Typography>
         <Typography
           align="center"
           variant="body1"
         >
-          {company.description}
+          {blog.content.split('\n')[0]}
         </Typography>
       </CardContent>
       <Box sx={{ flexGrow: 1 }} />
@@ -66,7 +55,7 @@ export const CompanyCard = (props) => {
             display="inline"
             variant="body2"
           >
-            Updated 2hr ago
+            {format(new Date(blog.updatedAt), 'yyyy/MM/dd HH:mm')}
           </Typography>
         </Stack>
         <Stack
@@ -85,7 +74,7 @@ export const CompanyCard = (props) => {
             display="inline"
             variant="body2"
           >
-            {company.downloads} Downloads
+            {blog.downloads} Good
           </Typography>
         </Stack>
       </Stack>
@@ -93,6 +82,6 @@ export const CompanyCard = (props) => {
   );
 };
 
-CompanyCard.propTypes = {
-  company: PropTypes.object.isRequired
+BlogCard.propTypes = {
+  blog: PropTypes.object.isRequired
 };

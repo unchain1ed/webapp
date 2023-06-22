@@ -168,3 +168,21 @@ func postBlog(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"blog": blog, "url": "/blog/overview"})
 }
+
+// BlogOverview画面
+func getBlogOverview(c *gin.Context) {
+	// blog := db.Blog{}
+	var blogs []db.Blog
+
+	// //セッションからuserを取得
+	// cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
+	// UserId := redis.GetSession(c, cookieKey)
+
+	blogs = db.GetBlogOverview()
+
+	//セッションからuserを取得
+
+
+	// c.HTML(http.StatusOK, "login.html", gin.H{})
+	c.JSON(http.StatusOK, gin.H{"blogs": blogs})
+}
