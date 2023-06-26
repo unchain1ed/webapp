@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"gorm.io/gorm"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/unchain1ed/server-app/model/redis"
@@ -13,6 +14,12 @@ import (
 type BlogPost struct {
 	Title   string `json:"title"`
 	Content string `json:"content"`
+}
+
+type Blog struct {
+	gorm.Model //共通カラム
+	Title string
+	Content string
 }
 
 func getTop(c *gin.Context) {
@@ -185,4 +192,31 @@ func getBlogOverview(c *gin.Context) {
 
 	// c.HTML(http.StatusOK, "login.html", gin.H{})
 	c.JSON(http.StatusOK, gin.H{"blogs": blogs})
+}
+
+// BlogView IDによる画面
+func getBlogViewById(c *gin.Context) {
+	
+	//  var blog = Blog{}
+	//  blog := Blog{}
+
+	//  blog := &Blog{}
+	// var blogs []db.Blog
+
+	id := c.Param("id")
+fmt.Println("Param"+id)
+	// //セッションからuserを取得
+	// cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
+	// UserId := redis.GetSession(c, cookieKey)
+
+	blog ,err := db.GetBlogViewInfoById(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	//セッションからuserを取得
+
+
+	c.JSON(http.StatusOK, gin.H{"blog": blog})
 }

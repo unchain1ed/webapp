@@ -2,7 +2,6 @@ import React, { useState, ChangeEvent, FormEvent } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import * as Yup from "yup";
-import { Layout as BlogLayout } from "src/layouts/blog/layout";
 
 import { Box, Button, Grid, Stack, TextField, Typography } from "@mui/material";
 import { useFormik } from "formik";
@@ -13,7 +12,7 @@ interface BlogForm {
   content: string;
 }
 
-const Page: React.FC = () => {
+const Post: React.FC = () => {
   const router = useRouter();
 
   const [blogForm, setBlogForm] = useState<BlogForm>({
@@ -171,6 +170,6 @@ const Page: React.FC = () => {
   );
 };
 
-// Page.getLayout = (page) => <BlogLayout>{page}</BlogLayout>;
+// Post.getLayout = (page) => <BlogLayout>{page}</BlogLayout>;
 
-export default Page;
+export default Post;

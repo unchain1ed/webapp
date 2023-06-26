@@ -1,13 +1,29 @@
-import PropTypes from 'prop-types';
-import ArrowDownOnSquareIcon from '@heroicons/react/24/solid/ArrowDownOnSquareIcon';
-import ClockIcon from '@heroicons/react/24/solid/ClockIcon';
 import { Avatar, Box, Card, CardContent, Divider, Stack, SvgIcon, Typography } from '@mui/material';
 import { format } from 'date-fns';
 
-export const BlogCard = (props) => {
-  const { blog } = props;
+import ArrowDownOnSquareIcon from '@heroicons/react/24/solid/ArrowDownOnSquareIcon';
+import ClockIcon from '@heroicons/react/24/solid/ClockIcon';
+
+type Blog = {
+  ID: string;
+  title: string;
+  content: string;
+  updatedAt: string;
+};
+
+type BlogCardProps = {
+  blog: Blog;
+  onClick: (id: string) => void;
+};
+
+
+export const BlogCard: React.FC<BlogCardProps> = ({ blog, onClick }) => {
+  const handleClick = () => {
+    onClick(blog.ID);
+  };
 
   return (
+    <div onClick={handleClick}>
     <Card
       sx={{
         display: 'flex',
@@ -79,9 +95,8 @@ export const BlogCard = (props) => {
         </Stack>
       </Stack>
     </Card>
+    </div>
   );
 };
 
-BlogCard.propTypes = {
-  blog: PropTypes.object.isRequired
-};
+export default BlogCard;

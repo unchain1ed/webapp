@@ -55,18 +55,12 @@ const handleAdd = (event: React.MouseEvent<HTMLElement>) => {
     });
 };
 
-// const companies = [
-//   {
-//     id: '2569ce0d517a7f06d3ea1f24',
-//     createdAt: '27/03/2019',
-//     description: 'Dropbox is a file hosting service that offers cloud storage, file synchronization, a personal cloud.',
-//     logo: '/assets/logos/logo-dropbox.png',
-//     title: 'Dropbox',
-//     downloads: '594'
-//   }
-// ];
+const Overview = ({ blogs }: BlogProps) => {
+  const handleBlogClick = (id: string) => {
+    router.push(`/blog/${id}`); // ブログ記事の詳細ページに遷移
+  };
 
-const Page = ({ blogs }: BlogProps) => (
+  return (
   <>
     <Head>
       <title>
@@ -96,26 +90,6 @@ const Page = ({ blogs }: BlogProps) => (
                 direction="row"
                 spacing={1}
               >
-                <Button
-                  color="inherit"
-                  startIcon={(
-                    <SvgIcon fontSize="small">
-                      <ArrowUpOnSquareIcon />
-                    </SvgIcon>
-                  )}
-                >
-                  Import
-                </Button>
-                <Button
-                  color="inherit"
-                  startIcon={(
-                    <SvgIcon fontSize="small">
-                      <ArrowDownOnSquareIcon />
-                    </SvgIcon>
-                  )}
-                >
-                  Export
-                </Button>
               </Stack>
             </Stack>
             <div>
@@ -133,40 +107,21 @@ const Page = ({ blogs }: BlogProps) => (
             </div>
           </Stack>
           <CompaniesSearch />
-          <Grid
-            container
-            spacing={3}
-          >
-            {blogs.map((blogs) => (
-              <Grid
-                xs={12}
-                md={6}
-                lg={4}
-                key={blogs.ID}
-              >
-                <BlogCard blog={blogs} /> 
-                {/* ↑TODOここ */}
-              </Grid>
+          <Grid container spacing={3}>
+            {blogs.map((blog) => (
+          <Grid xs={12} md={6} lg={4} key={blog.ID}>
+            <BlogCard blog={blog} onClick={handleBlogClick} />
+          </Grid>
             ))}
           </Grid>
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'center'
-            }}
-          >
-            <Pagination
-              count={3}
-              size="small"
-            />
-          </Box>
         </Stack>
       </Container>
     </Box>
   </>
-);
+  );
+};
 
-Page.getLayout = (page: any) => (
+Overview.getLayout = (page: any) => (
   <DashboardLayout>
     {page}
   </DashboardLayout>
@@ -198,4 +153,4 @@ export const getServerSideProps: GetServerSideProps<BlogProps> = async (context)
   };
 };
 
-export default Page;
+export default Overview;
