@@ -59,7 +59,7 @@ const Post: React.FC = () => {
     },
     validationSchema: Yup.object({
       title: Yup.string().max(50).required("タイトルを入力してください"),
-      content: Yup.string().max(1000).required("記事内容を入力してください"),
+      content: Yup.string().max(10000).required("記事内容を入力してください"),
     }),
     onSubmit: async (values, helpers) => {
       // フォームの送信時の処理

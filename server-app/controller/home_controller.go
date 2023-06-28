@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"log"
 	"gorm.io/gorm"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -20,6 +21,9 @@ type Blog struct {
 	gorm.Model //共通カラム
 	Title string
 	Content string
+	CreatedAt string
+	UpdatedAt string
+	DeletedAt string
 }
 
 func getTop(c *gin.Context) {
@@ -169,6 +173,7 @@ func postBlog(c *gin.Context) {
 	if err != nil {
 		
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		log.Println("error", err.Error());
 		return
 	}
 

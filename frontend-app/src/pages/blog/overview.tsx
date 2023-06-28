@@ -24,7 +24,8 @@ type Blog = {
   ID: string;
   title: string;
   content: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 type BlogProps = {
@@ -143,6 +144,7 @@ export const getServerSideProps: GetServerSideProps<BlogProps> = async (context)
     ID: item.ID,
     title: item.Title,
     content: item.Content,
+    createdAt: item.CreatedAt,
     updatedAt: item.UpdatedAt
     }));
 

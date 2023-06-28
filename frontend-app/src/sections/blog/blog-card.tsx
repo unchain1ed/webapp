@@ -8,7 +8,8 @@ type Blog = {
   ID: string;
   title: string;
   content: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 type BlogCardProps = {
@@ -71,7 +72,7 @@ export const BlogCard: React.FC<BlogCardProps> = ({ blog, onClick }) => {
             display="inline"
             variant="body2"
           >
-            {format(new Date(blog.updatedAt), 'yyyy/MM/dd HH:mm')}
+            {format(new Date(blog.createdAt), 'yyyy/MM/dd HH:mm')}
           </Typography>
         </Stack>
         <Stack

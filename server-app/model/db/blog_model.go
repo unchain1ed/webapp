@@ -1,6 +1,7 @@
 package db
 
 import (
+	"log"
 	"fmt"
 	"gorm.io/gorm"
 )
@@ -9,6 +10,17 @@ type Blog struct {
 	gorm.Model //共通カラム
 	Title string
 	Content string
+	// CreatedAt string
+	// UpdatedAt string
+	// DeletedAt string
+}
+
+type BlogInfo struct {
+	Title string
+	Content string
+	CreatedAt string
+	UpdatedAt string
+	DeletedAt string
 }
 
 //送られてきたタイトルと内容をDBに登録
@@ -18,6 +30,7 @@ func Create(title, content string) (*Blog, error){
 
 	result := Db.Create(&blog)
 	if result.Error != nil {
+		log.Println("error", result.Error);
 		// エラーが発生した場合はエラーを返す
 		return nil, result.Error
 	}
