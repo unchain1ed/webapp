@@ -13,7 +13,7 @@ interface BlogForm {
   content: string;
 }
 
-const Post: React.FC = () => {
+const Edit: React.FC = () => {
   const router = useRouter();
 
   const [blogForm, setBlogForm] = useState<BlogForm>({
@@ -87,7 +87,7 @@ const Post: React.FC = () => {
           <Grid item xs={12} md={6}>
             <Box sx={{ width: "100%" }}>
               <Typography variant="h1" component="h1" gutterBottom>
-                Create
+                Edit
               </Typography>
               <form onSubmit={handleSubmit}>
                 <Stack spacing={2}>
@@ -121,7 +121,7 @@ const Post: React.FC = () => {
                   />
                 </Stack>
                 <Button
-                  // fullWidth
+                //   fullWidth
                   size="medium"
                   sx={{ mt: 3 }}
                   type="submit"
@@ -172,6 +172,4 @@ const Post: React.FC = () => {
   );
 };
 
-// Post.getLayout = (page) => <BlogLayout>{page}</BlogLayout>;
-
-export default Post;
+export default Edit;

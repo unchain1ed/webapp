@@ -2,7 +2,7 @@ import Head from 'next/head';
 import { Box, Container, Stack, Typography } from '@mui/material';
 import { SettingsNotifications } from 'src/sections/settings/settings-notifications';
 import { SettingsPassword } from 'src/sections/settings/settings-password';
-import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
+import Layout from 'src/layouts/dashboard/layout';
 import React from 'react';
 
 const Page = () => (
@@ -33,9 +33,9 @@ const Page = () => (
 );
 
 Page.getLayout = (page) => (
-  <DashboardLayout>
+  <Layout>
     {page}
-  </DashboardLayout>
+  </Layout>
 );
 
 export default Page;

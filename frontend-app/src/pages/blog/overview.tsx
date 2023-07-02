@@ -12,7 +12,7 @@ import {
   Typography,
   Unstable_Grid2 as Grid
 } from '@mui/material';
-import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
+import Layout from 'src/layouts/dashboard/layout';
 import { BlogCard } from 'src/sections/blog/blog-card';
 import { CompaniesSearch } from 'src/sections/blog/companies-search';
 import axios from 'axios';
@@ -22,6 +22,7 @@ import { GetServerSideProps } from 'next';
 
 type Blog = {
   ID: string;
+  LoginID: string;
   title: string;
   content: string;
   createdAt: Date;
@@ -58,7 +59,7 @@ const handleAdd = (event: React.MouseEvent<HTMLElement>) => {
 
 const Overview = ({ blogs }: BlogProps) => {
   const handleBlogClick = (id: string) => {
-    router.push(`/blog/${id}`); // ブログ記事の詳細ページに遷移
+    // router.push(`/blog/${id}`); // ブログ記事の詳細ページに遷移
   };
 
   return (
@@ -123,9 +124,9 @@ const Overview = ({ blogs }: BlogProps) => {
 };
 
 Overview.getLayout = (page: any) => (
-  <DashboardLayout>
+  <Layout>
     {page}
-  </DashboardLayout>
+  </Layout>
 );
 
 
@@ -139,9 +140,11 @@ export const getServerSideProps: GetServerSideProps<BlogProps> = async (context)
   });
 
   const blogsInfo = response.data.blogs;
+  console.log(blogsInfo)
 
   const blogs: Blog[] = blogsInfo.map((item: any) => ({
     ID: item.ID,
+    LoginID: item.LoginID,
     title: item.Title,
     content: item.Content,
     createdAt: item.CreatedAt,

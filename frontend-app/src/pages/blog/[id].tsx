@@ -12,6 +12,7 @@ import format from 'date-fns/format';
 
 type Blog = {
   ID: string;
+  LoginID: string;
   title: string;
   content: string;
   createdAt: Date;
@@ -53,7 +54,7 @@ export default function Blog(props) {
     'header-p1': `${props.blog.Title}`,
     // 'header-p2': 'turpis non sapien lobortis pretium',
     'avatar': 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=256&q=80',
-    'name': 'Linda Williams',
+    'name': `${props.blog.LoginID}`,
     // 'job': 'Founder and CEO',
     'paragraph1': `${props.blog.Content}`,
     // 'paragraph2': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi dictum lacus lorem, ut tincidunt massa accumsan at. Vestibulum libero mauris, facilisis ut nisl vel, dignissim feugiat mi. Curabitur dapibus tortor eu arcu volutpat, a pellentesque mauris auctor. Nunc vel magna felis. Praesent tristique viverra nibh porta ultricies. In iaculis faucibus sapien at tincidunt. Phasellus ut lacinia lorem. Nulla venenatis finibus tincidunt. Maecenas auctor augue odio, in accumsan sem molestie eget. Aliquam at lectus et lectus tempor luctus vel id est. Fusce vel vehicula urna. Donec pretium maximus aliquet. Aliquam felis nisl, tincidunt non lectus vitae, pulvinar iaculis justo.',

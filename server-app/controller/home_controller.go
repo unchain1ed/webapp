@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"github.com/joho/godotenv"
 	"log"
 	"gorm.io/gorm"
 	"fmt"
@@ -13,12 +14,14 @@ import (
 )
 
 type BlogPost struct {
+	LoginID string `json:"loginID"`
 	Title   string `json:"title"`
 	Content string `json:"content"`
 }
 
 type Blog struct {
 	gorm.Model //共通カラム
+	LoginID string
 	Title string
 	Content string
 	CreatedAt string
@@ -27,8 +30,17 @@ type Blog struct {
 }
 
 func getTop(c *gin.Context) {
-	// c.HTML(http.StatusOK, "home.html", gin.H{})
-	// c.JSON(http.StatusOK, gin.H{})
+	c.Request.Header.Set("Content-Type", "text/plain")
+	//環境変数設定
+	envErr := godotenv.Load("../../build/app/.env")
+	if envErr != nil {
+		fmt.Println("Error loading .env file", envErr)
+	}
+	//セッションからloginIDを取得
+	cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
+	loginID := redis.GetSession(c, cookieKey)
+fmt.Println(loginID)
+	c.JSON(http.StatusOK, gin.H{"loginID": loginID})
 }
 
 func getLogin(c *gin.Context) {
@@ -165,11 +177,12 @@ func postBlog(c *gin.Context) {
 	// 	c.Redirect(http.StatusMovedPermanently, "/login")
 	// 	return
 	// }
+	fmt.Println("loginID"+blogPost.LoginID)
 	fmt.Println("title"+blogPost.Title)
 	fmt.Println("content"+blogPost.Content)
 
 	//DBにブログ記事内容を登録
-	blog, err := db.Create(blogPost.Title, blogPost.Content)
+	blog, err := db.Create(blogPost.LoginID, blogPost.Title, blogPost.Content)
 	if err != nil {
 		
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -209,7 +222,7 @@ func getBlogViewById(c *gin.Context) {
 	// var blogs []db.Blog
 
 	id := c.Param("id")
-fmt.Println("Param"+id)
+	fmt.Println("Param"+id)
 	// //セッションからuserを取得
 	// cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
 	// UserId := redis.GetSession(c, cookieKey)

@@ -135,3 +135,13 @@ func checkLogout() gin.HandlerFunc {
 	}	
 } 
 
+//セッションからログインIDを取得
+func getLoginIdBySession(c *gin.Context) {
+
+	//セッションからuserを取得
+	cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
+	//セッションから取得
+	id := redis.GetSession(c, cookieKey)
+
+	c.JSON(http.StatusOK, gin.H{"id": id})
+}

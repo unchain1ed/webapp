@@ -31,8 +31,6 @@ type HomeProps = {
   user: User;
 };
 
-let UserId;
-
 const Page: NextPage<HomeProps> = ({ user }) => {
   const router = useRouter();
   const auth = useAuth();

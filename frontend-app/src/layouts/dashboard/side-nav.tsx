@@ -1,3 +1,4 @@
+import React, { useEffect } from 'react';
 import NextLink from 'next/link';
 import { usePathname } from 'next/navigation';
 import PropTypes from 'prop-types';
@@ -17,12 +18,28 @@ import { Logo } from 'src/components/logo';
 import { Scrollbar } from 'src/components/scrollbar';
 import { items } from './config';
 import { SideNavItem } from './side-nav-item';
+import { GetServerSideProps } from 'next';
+import axios from 'axios';
+// import Blog from '../../pages/blog/[id]';
 
-export const SideNav = (props) => {
-  const { open, onClose } = props;
+type SideNavProps = {
+  onClose?: () => void;
+  open?: boolean;
+  loginID: string;
+};
+
+// type Blog = {
+//   loginID: string;
+// };
+
+// type BlogProps = {
+//   blog: Blog;
+// };
+
+export const SideNav: React.FC<SideNavProps> = ({ onClose, open, loginID }) => {
   const pathname = usePathname();
   const lgUp = useMediaQuery((theme) => theme.breakpoints.up('lg'));
-
+  
   const content = (
     <Scrollbar
       sx={{
@@ -77,7 +94,7 @@ export const SideNav = (props) => {
                 color="neutral.400"
                 variant="body2"
               >
-                -
+                {loginID}
               </Typography>
             </div>
             <SvgIcon
@@ -130,6 +147,7 @@ export const SideNav = (props) => {
             py: 3
           }}
         >
+          {/* Additional content */}
         </Box>
       </Box>
     </Scrollbar>
@@ -176,5 +194,23 @@ export const SideNav = (props) => {
 
 SideNav.propTypes = {
   onClose: PropTypes.func,
-  open: PropTypes.bool
+  open: PropTypes.bool.isRequired
 };
+
+// export const getServerSideProps: GetServerSideProps<SideNavProps> = async () => {
+  
+//     const response = await axios.get("http://localhost:8080/", {
+//       headers: {
+//         "Content-Type": "application/x-www-form-urlencoded",
+//       },
+//       withCredentials: true,
+//     });
+  
+//     const blog  = response.data.id;
+  
+//     return {
+//       props: {
+//         blog,
+//       },
+//     };
+//   };

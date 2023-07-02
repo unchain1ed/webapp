@@ -8,25 +8,22 @@ import (
 
 type Blog struct {
 	gorm.Model //共通カラム
+	LoginID string
 	Title string
 	Content string
-	// CreatedAt string
-	// UpdatedAt string
-	// DeletedAt string
 }
-
-type BlogInfo struct {
-	Title string
-	Content string
-	CreatedAt string
-	UpdatedAt string
-	DeletedAt string
-}
+// type BlogInfo struct {
+// 	Title string
+// 	Content string
+// 	CreatedAt string
+// 	UpdatedAt string
+// 	DeletedAt string
+// }
 
 //送られてきたタイトルと内容をDBに登録
-func Create(title, content string) (*Blog, error){
+func Create(loginID, title, content string) (*Blog, error){
 	blog := Blog{}
-	blog = Blog{Title: title, Content: content}
+	blog = Blog{LoginID: loginID, Title: title, Content: content}
 
 	result := Db.Create(&blog)
 	if result.Error != nil {
