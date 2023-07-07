@@ -108,7 +108,7 @@ export const getServerSideProps: GetServerSideProps<BlogProps> = async (context)
   });
 
   const blog: Blog = response.data.blog;
-console.log(blog)
+
   return {
     props: {
       blog,

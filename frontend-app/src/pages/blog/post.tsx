@@ -121,7 +121,6 @@ const Post: React.FC = () => {
                   />
                 </Stack>
                 <Button
-                  // fullWidth
                   size="medium"
                   sx={{ mt: 3 }}
                   type="submit"

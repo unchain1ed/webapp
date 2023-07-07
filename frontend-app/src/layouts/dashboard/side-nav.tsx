@@ -18,9 +18,6 @@ import { Logo } from 'src/components/logo';
 import { Scrollbar } from 'src/components/scrollbar';
 import { items } from './config';
 import { SideNavItem } from './side-nav-item';
-import { GetServerSideProps } from 'next';
-import axios from 'axios';
-// import Blog from '../../pages/blog/[id]';
 
 type SideNavProps = {
   onClose?: () => void;
@@ -76,7 +73,7 @@ export const SideNav: React.FC<SideNavProps> = ({ onClose, open, loginID }) => {
               alignItems: 'center',
               backgroundColor: 'rgba(255, 255, 255, 0.04)',
               borderRadius: 1,
-              cursor: 'pointer',
+              // cursor: 'pointer',
               display: 'flex',
               justifyContent: 'space-between',
               mt: 2,
@@ -92,6 +89,7 @@ export const SideNav: React.FC<SideNavProps> = ({ onClose, open, loginID }) => {
               </Typography>
               <Typography
                 color="neutral.400"
+                fontSize="large"
                 variant="body2"
               >
                 {loginID}
@@ -196,21 +194,3 @@ SideNav.propTypes = {
   onClose: PropTypes.func,
   open: PropTypes.bool.isRequired
 };
-
-// export const getServerSideProps: GetServerSideProps<SideNavProps> = async () => {
-  
-//     const response = await axios.get("http://localhost:8080/", {
-//       headers: {
-//         "Content-Type": "application/x-www-form-urlencoded",
-//       },
-//       withCredentials: true,
-//     });
-  
-//     const blog  = response.data.id;
-  
-//     return {
-//       props: {
-//         blog,
-//       },
-//     };
-//   };

@@ -14,7 +14,7 @@ import {
 import { format } from 'date-fns';
 import { SelectChangeEvent } from '@mui/material/SelectChangeEvent'; // 追加
 
-import ArrowDownOnSquareIcon from '@heroicons/react/24/solid/ArrowDownOnSquareIcon';
+// import ArrowDownOnSquareIcon from '@heroicons/react/24/solid/ArrowDownOnSquareIcon';
 import ClockIcon from '@heroicons/react/24/solid/ClockIcon';
 import router from 'next/router';
 
@@ -26,52 +26,44 @@ type Blog = {
   updatedAt: Date;
 };
 
+type ClickValue = {
+  value: string;
+};
+
 type BlogCardProps = {
   blog: Blog;
+  clickValue: ClickValue;
   onClick: (id: string, action: string) => void;
 };
 
-export const BlogCard: React.FC<BlogCardProps> = ({ blog, onClick }) => {
+export const BlogCard: React.FC<BlogCardProps> = ({ blog }) => {
   const [selectedAction, setSelectedAction] = useState('');
 
-
   const handleActionChange = (event: SelectChangeEvent<string>) => {
-    // const selectedValue = event.target.value as string;
-    setSelectedAction(event.target.value as string);
-  
-    if (selectedAction === "edit") {
-      // 編集の処理
-      console.log("編集が選択されました");
+    const selectedValue = event.target.value as string;
+    setSelectedAction(selectedValue);
 
-      router.push(`/blog/edit`); 
-
-    
-    } else if (selectedAction === "delete") {
-      // 削除の処理
-      console.log("削除が選択されました");
+    if (selectedValue === "edit") {
+      router.push(`/blog/edit/${blog.ID}`); 
+    } else if (selectedValue === "delete") {
+      router.push(`/blog/delete/${blog.ID}`); 
     }
   };
-  
-
-  const handleClick = () => {
-    onClick(blog.ID, selectedAction);
-    // router.push(`/blog/post`); 
-  };
-
 
   const handleContainerClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    if (selectedAction != "edit") {
-    
-    
     // プルダウン以外の部分がクリックされた場合の処理
-    console.log("igaino選択されました");
-    event.stopPropagation();
-    // ここで必要な処理を実行する
-    }
+      router.push(`/blog/${blog.ID}`); // ブログ記事の詳細ページに遷移
+  };
+
+  const handleMouseEnter = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.currentTarget.style.cursor = "pointer";
+  };
+  const handleMouseLeave = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.currentTarget.style.cursor = "default";
   };
 
   return (
-    <div onClick={handleContainerClick}>
+    <div>
       <Card
         sx={{
           display: 'flex',
@@ -79,7 +71,8 @@ export const BlogCard: React.FC<BlogCardProps> = ({ blog, onClick }) => {
           height: '100%',
         }}
       >
-        <CardContent>
+        <CardContent onClick={handleContainerClick} onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}>
           <Typography align="center" gutterBottom variant="h5">
             {blog.title}
           </Typography>
@@ -99,12 +92,12 @@ export const BlogCard: React.FC<BlogCardProps> = ({ blog, onClick }) => {
             </Typography>
           </Stack>
           <Stack alignItems="center" direction="row" spacing={1}>
-            <SvgIcon color="action" fontSize="small">
+            {/* <SvgIcon color="action" fontSize="small">
               <ArrowDownOnSquareIcon />
-            </SvgIcon>
-            <Typography color="text.secondary" display="inline" variant="body2">
+            </SvgIcon> */}
+            {/* <Typography color="text.secondary" display="inline" variant="body2">
               {blog.downloads} Good
-            </Typography>
+            </Typography> */}
           </Stack>
           <Select value={selectedAction} onChange={handleActionChange} variant="outlined" size="small">
             <MenuItem value="edit">Edit</MenuItem>

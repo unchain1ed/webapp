@@ -214,7 +214,7 @@ func getBlogOverview(c *gin.Context) {
 
 // BlogView IDによる画面
 func getBlogViewById(c *gin.Context) {
-	
+	c.Request.Header.Set("Content-Type", "application/json")
 	//  var blog = Blog{}
 	//  blog := Blog{}
 
@@ -233,8 +233,7 @@ func getBlogViewById(c *gin.Context) {
 		return
 	}
 
-	//セッションからuserを取得
 
-
+fmt.Println(blog)
 	c.JSON(http.StatusOK, gin.H{"blog": blog})
 }

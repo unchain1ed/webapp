@@ -33,6 +33,10 @@ type BlogProps = {
   blogs: Blog[];
 };
 
+type ClickValue = {
+  value: string;
+};
+
 const handleAdd = (event: React.MouseEvent<HTMLElement>) => {
   axios
     .get(
@@ -57,9 +61,9 @@ const handleAdd = (event: React.MouseEvent<HTMLElement>) => {
     });
 };
 
-const Overview = ({ blogs }: BlogProps) => {
+const Overview = ({ blogs }: BlogProps, { value }: ClickValue) => {
+
   const handleBlogClick = (id: string) => {
-    // router.push(`/blog/${id}`); // ブログ記事の詳細ページに遷移
   };
 
   return (
@@ -112,7 +116,7 @@ const Overview = ({ blogs }: BlogProps) => {
           <Grid container spacing={3}>
             {blogs.map((blog) => (
           <Grid xs={12} md={6} lg={4} key={blog.ID}>
-            <BlogCard blog={blog} onClick={handleBlogClick} />
+            <BlogCard blog={blog} clickValue={value} onClick={handleBlogClick} />
           </Grid>
             ))}
           </Grid>
@@ -140,7 +144,7 @@ export const getServerSideProps: GetServerSideProps<BlogProps> = async (context)
   });
 
   const blogsInfo = response.data.blogs;
-  console.log(blogsInfo)
+
 
   const blogs: Blog[] = blogsInfo.map((item: any) => ({
     ID: item.ID,
