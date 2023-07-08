@@ -14,6 +14,7 @@ import (
 )
 
 type BlogPost struct {
+	ID string `json:"id"`
 	LoginID string `json:"loginID"`
 	Title   string `json:"title"`
 	Content string `json:"content"`

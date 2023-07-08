@@ -35,6 +35,21 @@ func Create(loginID, title, content string) (*Blog, error){
 	return &blog, nil
 }
 
+//送られてきたタイトルと内容をDBに更新
+func Edit(id, loginID, title, content string) (*Blog, error){
+	blog := Blog{}
+	blog = Blog{LoginID: loginID, Title: title, Content: content}
+
+	result := Db.Table("BLOGS").Where("id = ?", id).Updates(&blog)
+	if result.Error != nil {
+		log.Println("error", result.Error);
+		// エラーが発生した場合はエラーを返す
+		return nil, result.Error
+	}
+
+	return &blog, nil
+}
+
 //DBからBLOG情報を全件取得
 func GetBlogOverview() ([]Blog) {
 	var blogs []Blog

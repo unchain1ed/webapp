@@ -36,13 +36,14 @@ const initialValues = {
 const Edit: React.FC = (props: any, context: any) => {
 
   const { blog } = props;
+  const router = useRouter();
 
-  // const [blogForm, setBlogForm] = useState<BlogForm>({
-  //   ID: "",
-  //   LoginID: "",
-  //   title: "",
-  //   content: "",
-  // });
+  const [blogForm, setBlogForm] = useState<BlogForm>({
+    // ID: "1",
+    LoginID: "a",
+    title: "a",
+    content: "a",
+  });
 
   // const [blogForm, setBlogForm] = useState<BlogForm>({
   //   // ID: "",
@@ -56,6 +57,7 @@ const Edit: React.FC = (props: any, context: any) => {
 
   const formik = useFormik({
     initialValues: {
+      id: "blog.id",
       title: "blog.title",
       content: "blog.content",
     },
@@ -66,6 +68,14 @@ const Edit: React.FC = (props: any, context: any) => {
     onSubmit: async (values, helpers) => {
       // フォームの送信時の処理
       // helpers.setSubmitting(false);  // 必要に応じてフォームを再度利用可能にする
+      // try {
+      //   await auth.signIn(values.email, values.password);
+      //   router.push('/');
+      // } catch (err) {
+      //   helpers.setStatus({ success: false });
+      //   helpers.setErrors({ submit: err.message });
+      //   helpers.setSubmitting(false);
+      // }
     },
   });
 
@@ -91,18 +101,16 @@ const Edit: React.FC = (props: any, context: any) => {
   
   useEffect(() => {
         if (blog) {
+          formik.setFieldValue("id", String(blog.ID)); //数値型からstringに変換
           formik.setFieldValue("title", blog.Title);
           formik.setFieldValue("content", blog.Content);
         }
   }, [blog]);
 
-  // useEffect(() => {
-  //   if (blog) {
-  //     formik.handleChange({ target: { name: "title", value: blog.title } });
-  //     formik.handleChange({ target: { name: "content", value: blog.content } });
-  //   }
-  //   console.log("通過E" + formik.values.title);
-  // }, [blog]);
+  useEffect(() => {
+  console.log("通過E" + formik.values.title);
+  console.log("通過R" + formik.values);
+  }, []);
 
   // useEffect(() => {
   //   // サーバーから前回の入力内容を取得する非同期処理
@@ -164,25 +172,25 @@ const Edit: React.FC = (props: any, context: any) => {
 
 
   const handleSubmit = (e: FormEvent) => {
-    // e.preventDefault();
+    e.preventDefault();
     // ブログ投稿後にブログ一覧ページにリダイレクト
-    // router.push("/blog/overview");
+    router.push("/blog/overview");
   };
 
   const handlePost = async (event: React.MouseEvent<HTMLElement>) => {
     try {
-      // const response = await axios.post(
-      //   "http://localhost:8080/blog/post",
-      //   blogForm, // blogFormオブジェクトを直接送信
-      //   {
-      //     headers: {
-      //       "Content-Type": "application/json", // JSON形式で送信するためのヘッダー設定
-      //     },
-      //     withCredentials: true,
-      //   }
-      // );
+      const response = await axios.post(
+        "http://localhost:8080/blog/edit",
+        formik.values, 
+        {
+          headers: {
+            "Content-Type": "application/json", // JSON形式で送信するためのヘッダー設定
+          },
+          withCredentials: true,
+        }
+      );
 
-      // router.push("/blog/overview");
+      router.push("/blog/overview");
       // ログイン成功時の追加の処理を追記する場合はここに記述する
     } catch (error) {
       // ログイン失敗時の処理
@@ -292,7 +300,7 @@ export const getServerSideProps: GetServerSideProps<BlogProps> = async (context)
   
   const response = await axios.get(`http://localhost:8080/blog/overview/post/${edit}`, {
     headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
+      "Content-Type": "aapplication/json",
     },
     withCredentials: true,
   });
@@ -306,5 +314,5 @@ export const getServerSideProps: GetServerSideProps<BlogProps> = async (context)
   };
 };
 
-
 export default Edit;
+
