@@ -17,6 +17,7 @@ import { SelectChangeEvent } from '@mui/material/SelectChangeEvent'; // 追加
 // import ArrowDownOnSquareIcon from '@heroicons/react/24/solid/ArrowDownOnSquareIcon';
 import ClockIcon from '@heroicons/react/24/solid/ClockIcon';
 import router from 'next/router';
+import DeleteDialog from './delete-dialog';
 
 type Blog = {
   ID: string;
@@ -38,6 +39,15 @@ type BlogCardProps = {
 
 export const BlogCard: React.FC<BlogCardProps> = ({ blog }) => {
   const [selectedAction, setSelectedAction] = useState('');
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+
+  const handleOpen = () => {
+    setShowDeleteDialog(true);
+  };
+
+  const handleClose = () => {
+    setShowDeleteDialog(false);
+  };
 
   const handleActionChange = (event: SelectChangeEvent<string>) => {
     const selectedValue = event.target.value as string;
@@ -46,7 +56,7 @@ export const BlogCard: React.FC<BlogCardProps> = ({ blog }) => {
     if (selectedValue === "edit") {
       router.push(`/blog/edit/${blog.ID}`); 
     } else if (selectedValue === "delete") {
-      router.push(`/blog/delete/${blog.ID}`); 
+      setShowDeleteDialog(true);
     }
   };
 
@@ -104,6 +114,12 @@ export const BlogCard: React.FC<BlogCardProps> = ({ blog }) => {
             <MenuItem value="delete">Delete</MenuItem>
           </Select>
         </Stack>
+        {showDeleteDialog && (
+      <DeleteDialog
+        blogId={blog.ID} // ブログ記事のIDを渡す
+        handleClose={() => setShowDeleteDialog(false)} // ダイアログを閉じるためのハンドラー
+      />
+    )}
       </Card>
     </div>
   );

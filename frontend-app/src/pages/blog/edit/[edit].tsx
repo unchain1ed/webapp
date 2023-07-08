@@ -8,168 +8,49 @@ import { useFormik } from "formik";
 import axios from "axios";
 import { GetServerSideProps } from "next";
 
-interface BlogForm {
-  // ID: string;
-  LoginID: string;
-  title: string;
-  content: string;
-}
 type Blog = {
-  // ID: string;
+  ID: string;
   LoginID: string;
   title: string;
   content: string;
-  // createdAt: Date;
-  // updatedAt: Date;
-  // deletedAt: Date;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt: Date;
 };
 
 type BlogProps = {
   blog: Blog;
 };
 
-const initialValues = {
-  title: "",
-  content: "",
-};
-
 const Edit: React.FC = (props: any, context: any) => {
-
   const { blog } = props;
   const router = useRouter();
 
-  const [blogForm, setBlogForm] = useState<BlogForm>({
-    // ID: "1",
-    LoginID: "a",
-    title: "a",
-    content: "a",
-  });
-
-  // const [blogForm, setBlogForm] = useState<BlogForm>({
-  //   // ID: "",
-  //   LoginID: blog.LoginID,
-  //   title: blog.title,
-  //   content: blog.content,
-  //   // createdAt: new Date,
-  //   // updatedAt: new Date,
-  //   // deletedAt: new Date,
-  // });
-
   const formik = useFormik({
     initialValues: {
-      id: "blog.id",
-      title: "blog.title",
-      content: "blog.content",
+      id: "id",
+      title: "title",
+      content: "content",
     },
     validationSchema: Yup.object({
       title: Yup.string().max(50).required("タイトルを入力してください"),
       content: Yup.string().max(10000).required("記事内容を入力してください"),
     }),
-    onSubmit: async (values, helpers) => {
-      // フォームの送信時の処理
-      // helpers.setSubmitting(false);  // 必要に応じてフォームを再度利用可能にする
-      // try {
-      //   await auth.signIn(values.email, values.password);
-      //   router.push('/');
-      // } catch (err) {
-      //   helpers.setStatus({ success: false });
-      //   helpers.setErrors({ submit: err.message });
-      //   helpers.setSubmitting(false);
-      // }
-    },
+    onSubmit: async (values, helpers) => {},
   });
 
-  // useEffect(() => {
-  //   setBlogForm({
-  //     LoginID: blog.LoginID,
-  //     title: blog.title,
-  //     content: blog.content,
-  //   });
-  // }, [blog]);
-
-  // useEffect(() => {
-
-  //   const fetchData = () => {
-  //   setBlogForm({
-  //     LoginID: blog.LoginID,
-  //     title: blog.title,
-  //     content: blog.content,
-  //   })};
-  //   // コンポーネントのマウント時にリクエストを実行
-  //   fetchData();
-  // }, []);
-  
   useEffect(() => {
-        if (blog) {
-          formik.setFieldValue("id", String(blog.ID)); //数値型からstringに変換
-          formik.setFieldValue("title", blog.Title);
-          formik.setFieldValue("content", blog.Content);
-        }
+    if (blog) {
+      formik.setFieldValue("id", String(blog.ID)); //数値型からstringに変換
+      formik.setFieldValue("title", blog.Title);
+      formik.setFieldValue("content", blog.Content);
+    }
   }, [blog]);
 
   useEffect(() => {
-  console.log("通過E" + formik.values.title);
-  console.log("通過R" + formik.values);
+    console.log("通過E" + formik.values.title);
+    console.log("通過R" + formik.values);
   }, []);
-
-  // useEffect(() => {
-  //   // サーバーから前回の入力内容を取得する非同期処理
-  //   const fetchData = async () => {
-  //     try {
-  //       // const { edit } = context.params; // URLからedit(id)を取得
-  //       console.log("edit"+ router.query.edit)
-  //       const response = await axios.get(`http://localhost:8080/blog/overview/post/${router.query.edit}`, {
-  //         headers: {
-  //           "Content-Type": "application/x-www-form-urlencoded",
-  //         },
-  //         withCredentials: true,
-  //       });
-  //       const blog = response.data.blog;
-  //       console.log("通過B", JSON.stringify(blog));
-  //       // サーバーから取得した前回の入力内容を設定
-  //       formik.setValues({
-  //         title: blog.title,
-  //         content: blog.content,
-  //       });
-  //     } catch (error) {
-  //       console.error("Error fetching data:", error);
-  //     }
-  //   };
-
-  //   // fetchData(context);
-  // }, []);
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await axios.get(`http://localhost:8080/blog/overview/post/${router.query.edit}`, {
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //         withCredentials: true,
-  //       });
-  //       // console.log("response.data.blog", response.data.blog);
-        
-  //       const blog = response.data.blog;
-  //       // console.log("通過B", JSON.stringify(blog));
-  //       // console.log("通過C", blog.title);
-  //       // console.log("blog.title", JSON.stringify(blog.Title));
-  //       // console.log("blog.content", JSON.stringify(blog.Content));
-
-  //       if (blog) {
-  //         formik.setFieldValue("title", blog.Title);
-  //         formik.setFieldValue("content", blog.Content);
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching data:", error);
-  //     }
-  //   };
-  
-  //   fetchData(); // fetchData関数を呼び出す
-  // }, []); 
-  
-
-
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -179,16 +60,12 @@ const Edit: React.FC = (props: any, context: any) => {
 
   const handlePost = async (event: React.MouseEvent<HTMLElement>) => {
     try {
-      const response = await axios.post(
-        "http://localhost:8080/blog/edit",
-        formik.values, 
-        {
-          headers: {
-            "Content-Type": "application/json", // JSON形式で送信するためのヘッダー設定
-          },
-          withCredentials: true,
-        }
-      );
+      const response = await axios.post("http://localhost:8080/blog/edit", formik.values, {
+        headers: {
+          "Content-Type": "application/json", // JSON形式で送信するためのヘッダー設定
+        },
+        withCredentials: true,
+      });
 
       router.push("/blog/overview");
       // ログイン成功時の追加の処理を追記する場合はここに記述する
@@ -198,7 +75,6 @@ const Edit: React.FC = (props: any, context: any) => {
       // ログイン失敗時の追加の処理を追記する場合はここに記述する
     }
   };
-
 
   return (
     <>
@@ -297,7 +173,7 @@ const Edit: React.FC = (props: any, context: any) => {
 
 export const getServerSideProps: GetServerSideProps<BlogProps> = async (context) => {
   const { edit } = context.params; // URLからedit(id)を取得
-  
+
   const response = await axios.get(`http://localhost:8080/blog/overview/post/${edit}`, {
     headers: {
       "Content-Type": "aapplication/json",
@@ -306,7 +182,7 @@ export const getServerSideProps: GetServerSideProps<BlogProps> = async (context)
   });
 
   const blog: Blog = response.data.blog;
-
+  console.log(blog);
   return {
     props: {
       blog,
@@ -315,4 +191,3 @@ export const getServerSideProps: GetServerSideProps<BlogProps> = async (context)
 };
 
 export default Edit;
-
