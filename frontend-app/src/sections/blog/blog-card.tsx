@@ -116,7 +116,7 @@ export const BlogCard: React.FC<BlogCardProps> = ({ blog }) => {
         </Stack>
         {showDeleteDialog && (
       <DeleteDialog
-        blogId={blog.ID} // ブログ記事のIDを渡す
+        id={blog.ID} // ブログ記事のIDを渡す
         handleClose={() => setShowDeleteDialog(false)} // ダイアログを閉じるためのハンドラー
       />
     )}

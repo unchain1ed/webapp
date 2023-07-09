@@ -23,7 +23,7 @@ func GetRouter() *gin.Engine {
 		// CORS設定
 		config := cors.DefaultConfig()
 		config.AllowOrigins = []string{"http://localhost:3000"}
-		config.AllowMethods = []string{"POST", "GET", "OPTIONS"}
+		config.AllowMethods = []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"}
 		config.AllowHeaders = []string{
 			"Access-Control-Allow-Credentials",
 			"Access-Control-Allow-Headers",
@@ -70,7 +70,9 @@ func GetRouter() *gin.Engine {
 		//BlogIDによるView画面
 		logoutCheckGroup.GET("/blog/overview/post/:id", func(c *gin.Context) {getBlogViewById(c)})
 		//ブログ記事編集API
-		logoutCheckGroup.POST("/blog/edit", func(c *gin.Context) {editBlog(c)})
+		logoutCheckGroup.POST("/blog/edit", func(c *gin.Context) {postEditBlog(c)})
+		//ブログ記事消去API
+		logoutCheckGroup.GET("/blog/delete/:id", func(c *gin.Context) {getDeleteBlog(c)})
 	}
 
 	//HTTPSサーバーを起動LSプロトコル使用※ハンドラの登録後に実行登録後に実行**TODO**

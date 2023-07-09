@@ -8,7 +8,7 @@ import (
 	"github.com/unchain1ed/server-app/model/db"
 )
 
-func editBlog(c *gin.Context) {
+func postEditBlog(c *gin.Context) {
 	// c.Request.Header.Set("Content-Type", "application/json")
 	c.Request.Header.Set("Content-Type", "text/plain")
 

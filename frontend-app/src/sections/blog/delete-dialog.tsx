@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 
-const DeleteDialog = ({ blogId }) => {
+const DeleteDialog = ({ id }) => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
 
@@ -25,10 +25,21 @@ const DeleteDialog = ({ blogId }) => {
   const handleDelete = async () => {
     try {
       // ブログ記事を削除するAPIエンドポイントにリクエストを送信
-      await axios.delete(`http://localhost:8080/blog/delete/${blogId}`, {
-        withCredentials: true,
-      });
+    //   await axios.delete(`http://localhost:8080/blog/delete/${blogId}`, {
+    //   headers: {
+    //     "Content-Type": "application/json", // JSON形式で送信するためのヘッダー設定
+    //   },
+    //     withCredentials: true,
+    //   });
 
+      const resoponse =await axios.get(`http://localhost:8080/blog/delete/${id}`, {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      withCredentials: true,
+    });
+
+    
       // 削除が成功した場合はブログ一覧ページにリダイレクト
       router.push("/blog/overview");
     } catch (error) {
