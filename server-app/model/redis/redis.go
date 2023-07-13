@@ -17,7 +17,7 @@ var conn *redis.Client
 func init() {
 	//Redisデータベース接続のためRedisクライアント作成
 	conn = redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
+		Addr:     "localhost:6379", //local環境軌道の場合
 		// Addr:     "redis:6379", //docker起動の場合
 		Password: "",
 		DB:       0,

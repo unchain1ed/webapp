@@ -2,7 +2,7 @@ package db
 
 import (
 	"fmt"
-	// "os"
+	"os"
 	"time"
 
 	"gorm.io/driver/mysql"
@@ -24,9 +24,17 @@ func init() {
 	// db_name := os.Getenv("MYSQL_DATABASE")
 	// var path string = fmt.Sprintf("%s:%s@tcp(localhost:3306)/%s?charset=utf8&parseTime=true", user, pw, db_name)
 
+	var dbHost string
+	// Dockerコンテナ内での接続先を指定
+	if os.Getenv("DOCKER_ENV") == "true" {
+		dbHost = "db:3306"
+	} else {
+		// ローカル環境での接続先を指定
+		dbHost = "localhost:3306"
+	}
 	//mysql接続path
 	var path string = fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=true",
-        "root", "password", "localhost:3306", "user_info")
+        "root", "password", dbHost, "user_info")
 
 	dialector := mysql.Open(path)
 	var err error

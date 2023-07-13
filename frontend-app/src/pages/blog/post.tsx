@@ -126,6 +126,7 @@ const Post: React.FC = () => {
                   type="submit"
                   variant="contained"
                   onClick={handlePost}
+                  disabled={!formik.isValid}
                 >
                   Submit
                 </Button>
@@ -145,7 +146,7 @@ const Post: React.FC = () => {
                   borderRadius: "4px",
                 }}
               >
-                <Typography variant="pre" style={{ marginTop: "8px", whiteSpace: "pre-wrap" }}>
+                <Typography variant="body1" style={{ marginTop: "8px", whiteSpace: "pre-wrap" }}>
                   {formik.values.title}
                 </Typography>
               </Box>
@@ -159,7 +160,7 @@ const Post: React.FC = () => {
                   borderRadius: "4px",
                 }}
               >
-                <Typography variant="pre" style={{ whiteSpace: "pre-wrap" }}>
+                <Typography variant="body1" style={{ whiteSpace: "pre-wrap" }}>
                   {formik.values.content}
                 </Typography>
               </Box>

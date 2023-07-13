@@ -19,8 +19,8 @@ import {
 import { GetServerSideProps, NextPage } from "next";
 import axios from "axios";
 
-import { useAuth } from "src/hooks/use-auth";
-import { Layout as AuthLayout } from "src/layouts/auth/layout";
+import { useAuth } from "../../hooks/use-auth";
+import { Layout as AuthLayout } from "../../layouts/auth/layout";
 import React from "react";
 
 type User = {
@@ -31,7 +31,8 @@ type HomeProps = {
   user: User;
 };
 
-const Page: NextPage<HomeProps> = ({ user }) => {
+const Page: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => React.ReactNode } = ({ user }) => {
+
   const router = useRouter();
   const auth = useAuth();
   const [method, setMethod] = useState("userId");
@@ -227,25 +228,20 @@ const Page: NextPage<HomeProps> = ({ user }) => {
                   />
                 </Stack>
                 <FormHelperText sx={{ mt: 1 }}>Optionally you can skip.</FormHelperText>
-                {formik.errors.submit && (
-                  <Typography color="error" sx={{ mt: 3 }} variant="body2">
-                    {formik.errors.submit}
-                  </Typography>
-                )}
                 <Button
                   fullWidth
                   size="large"
                   sx={{ mt: 3 }}
-                  // type="submit"
                   variant="contained"
                   onClick={handleLogin}
+                  disabled={!formik.isValid}
                 >
                   Continue
                 </Button>
                 <Button fullWidth size="large" sx={{ mt: 3 }} onClick={handleSkip}>
                   Skip authentication
                 </Button>
-                <Alert color="primary" severity="info" sx={{ mt: 3 }}>
+                <Alert color="info" severity="info" sx={{ mt: 3 }}>
                   <div>
                     You can use <b>root</b> and password <b>root</b>
                   </div>
@@ -259,7 +255,6 @@ const Page: NextPage<HomeProps> = ({ user }) => {
   );
 };
 
-Page.getLayout = (page: React.ReactNode) => <AuthLayout>{page}</AuthLayout>;
 
 export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
   const response = await axios.get("http://localhost:8080/login", {
@@ -277,5 +272,7 @@ export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
     },
   };
 };
+
+Page.getLayout = (page: React.ReactNode) => <AuthLayout>{page}</AuthLayout>;
 
 export default Page;

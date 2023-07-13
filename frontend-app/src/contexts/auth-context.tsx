@@ -20,7 +20,6 @@ const handlers = {
     return {
       ...state,
       ...(
-        // if payload (user) is provided, then is authenticated
         user
           ? ({
             isAuthenticated: true,
@@ -55,9 +54,10 @@ const reducer = (state, action) => (
   handlers[action.type] ? handlers[action.type](state, action) : state
 );
 
-// The role of this context is to propagate authentication state through the App tree.
 
-export const AuthContext = createContext({ undefined });
+
+export const AuthContext = createContext<any>(undefined);
+
 
 export const AuthProvider = (props) => {
   const { children } = props;
@@ -65,7 +65,7 @@ export const AuthProvider = (props) => {
   const initialized = useRef(false);
 
   const initialize = async () => {
-    // Prevent from calling twice in development mode with React.StrictMode enabled
+
     if (initialized.current) {
       return;
     }
@@ -104,7 +104,6 @@ export const AuthProvider = (props) => {
     () => {
       initialize();
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
 
@@ -129,13 +128,7 @@ export const AuthProvider = (props) => {
   };
 
   const signIn = async (email, password) => {
-
-    console.log("通過"+email)
     
-    if (email !== 'root' || password !== 'root') {
-      throw new Error('Please check your id and password');
-    }
-
     try {
       window.sessionStorage.setItem('authenticated', 'true');
     } catch (err) {

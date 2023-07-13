@@ -1,8 +1,8 @@
 import Head from 'next/head';
 import { Box, Container, Stack, Typography } from '@mui/material';
-import { SettingsNotifications } from 'src/sections/settings/settings-notifications';
-import { SettingsPassword } from 'src/sections/settings/settings-password';
-import Layout from 'src/layouts/dashboard/layout';
+import { SettingsNotifications } from '../sections/settings/settings-notifications';
+import { SettingsPassword } from '../sections/settings/settings-password';
+import Layout from '../layouts/dashboard/layout';
 import React from 'react';
 
 const Page = () => (

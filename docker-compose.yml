@@ -3,6 +3,8 @@ version: '3.8'
 services:
   server-app:
     container_name: server-app
+    environment:
+      - DOCKER_ENV=true
     build:
       context: ./server-app/build/app
       dockerfile: Dockerfile
@@ -10,7 +12,7 @@ services:
     ports:
       - 8080:8080
     env_file:
-      - ./build/app/.env
+      - ./server-app/build/app/.env
     #   - ./build/db/.env
     depends_on:
       - db
@@ -24,6 +26,8 @@ services:
 
   frontend-app:
     container_name: frontend-app
+    environment:
+      - DOCKER_ENV=true
     build:
       context: ./frontend-app/build/frontend
       dockerfile: Dockerfile
@@ -41,7 +45,7 @@ services:
     # command: >
     #   bash -c "npm run dev"
     command: >
-      bash -c "npm install && npm run build && npm run dev"
+      bash -c "npm install --force && npm run build && npm run dev"
     ports:
       - 3000:3000
     networks:
@@ -56,7 +60,7 @@ services:
     #         # 永続化するときにマウントするディレクトリ
       - ./server-app/build/db/data:/var/lib/db
     environment: 
-      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_ROOT_PASSWORD=password
       # TZ: 'Asia/Tokyo'
     #       MYSQL_USER: admin
     #       MYSQL_PASSWORD: admin

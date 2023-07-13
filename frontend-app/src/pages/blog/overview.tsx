@@ -12,9 +12,9 @@ import {
   Typography,
   Unstable_Grid2 as Grid
 } from '@mui/material';
-import Layout from 'src/layouts/dashboard/layout';
-import { BlogCard } from 'src/sections/blog/blog-card';
-import { CompaniesSearch } from 'src/sections/blog/companies-search';
+import Layout from '../../layouts/dashboard/layout';
+import { BlogCard } from '../../sections/blog/blog-card';
+import { CompaniesSearch } from '../../sections/blog/companies-search';
 import axios from 'axios';
 import router from 'next/router';
 import React from 'react';
@@ -108,7 +108,7 @@ const Overview = ({ blogs }: BlogProps, { value }: ClickValue) => {
                 variant="contained"
                 onClick={handleAdd}
               >
-                Add
+                Create New Blog
               </Button>
             </div>
           </Stack>

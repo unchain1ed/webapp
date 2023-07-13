@@ -144,6 +144,7 @@ const Page = () => {
                 sx={{ mt: 3 }}
                 type="submit"
                 variant="contained"
+                disabled={!formik.isValid}
               >
                 Continue
               </Button>

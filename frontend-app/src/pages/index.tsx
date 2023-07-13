@@ -1,15 +1,15 @@
 import Head from "next/head";
 import { subDays, subHours } from "date-fns";
 import { Box, Container, Grid } from "@mui/material";
-import Layout from "src/layouts/dashboard/layout";
-import { OverviewBudget } from "src/sections/overview/overview-budget";
-import { OverviewLatestOrders } from "src/sections/overview/overview-latest-orders";
-import { OverviewLatestProducts } from "src/sections/overview/overview-latest-products";
-import { OverviewSales } from "src/sections/overview/overview-sales";
-import { OverviewTasksProgress } from "src/sections/overview/overview-tasks-progress";
-import { OverviewTotalCustomers } from "src/sections/overview/overview-total-customers";
-import { OverviewTotalProfit } from "src/sections/overview/overview-total-profit";
-import { OverviewTraffic } from "src/sections/overview/overview-traffic";
+import Layout from "../layouts/dashboard/layout";
+import { OverviewBudget } from "../sections/overview/overview-budget";
+import { OverviewLatestOrders } from "../sections/overview/overview-latest-orders";
+import { OverviewLatestProducts } from "../sections/overview/overview-latest-products";
+import { OverviewSales } from "../sections/overview/overview-sales";
+import { OverviewTasksProgress } from "../sections/overview/overview-tasks-progress";
+import { OverviewTotalCustomers } from "../sections/overview/overview-total-customers";
+import { OverviewTotalProfit } from "../sections/overview/overview-total-profit";
+import { OverviewTraffic } from "../sections/overview/overview-traffic";
 import React, { useEffect, useState } from "react";
 
 type IndexProps = {
@@ -18,7 +18,8 @@ type IndexProps = {
 
 const now = new Date();
 
-const Page: React.FC<IndexProps> = () => {
+// const Page: React.FC<IndexProps> = () => {
+const Page: React.FC<IndexProps> & { getLayout: (page: React.ReactNode) => React.ReactNode } = () => {
   return (
     <>
       <Head>

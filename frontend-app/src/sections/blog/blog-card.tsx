@@ -12,7 +12,7 @@ import {
   Typography,
 } from '@mui/material';
 import { format } from 'date-fns';
-import { SelectChangeEvent } from '@mui/material/SelectChangeEvent'; // 追加
+import { SelectChangeEvent } from '@mui/material/Select';  // 追加
 
 // import ArrowDownOnSquareIcon from '@heroicons/react/24/solid/ArrowDownOnSquareIcon';
 import ClockIcon from '@heroicons/react/24/solid/ClockIcon';
@@ -33,7 +33,7 @@ type ClickValue = {
 
 type BlogCardProps = {
   blog: Blog;
-  clickValue: ClickValue;
+  clickValue: string;
   onClick: (id: string, action: string) => void;
 };
 
@@ -117,7 +117,7 @@ export const BlogCard: React.FC<BlogCardProps> = ({ blog }) => {
         {showDeleteDialog && (
       <DeleteDialog
         id={blog.ID} // ブログ記事のIDを渡す
-        handleClose={() => setShowDeleteDialog(false)} // ダイアログを閉じるためのハンドラー
+        // handleClose={() => setShowDeleteDialog(false)} // ダイアログを閉じるためのハンドラー
       />
     )}
       </Card>

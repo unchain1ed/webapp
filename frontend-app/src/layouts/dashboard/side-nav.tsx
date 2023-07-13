@@ -14,10 +14,11 @@ import {
   Typography,
   useMediaQuery
 } from '@mui/material';
-import { Logo } from 'src/components/logo';
-import { Scrollbar } from 'src/components/scrollbar';
+import { Logo } from '../../components/logo';
+import { Scrollbar } from '../../components/scrollbar';
 import { items } from './config';
 import { SideNavItem } from './side-nav-item';
+import { AnyMxRecord } from 'dns';
 
 type SideNavProps = {
   onClose?: () => void;
@@ -35,7 +36,7 @@ type SideNavProps = {
 
 export const SideNav: React.FC<SideNavProps> = ({ onClose, open, loginID }) => {
   const pathname = usePathname();
-  const lgUp = useMediaQuery((theme) => theme.breakpoints.up('lg'));
+  const lgUp = useMediaQuery((theme: any) => theme.breakpoints.up('lg'));
   
   const content = (
     <Scrollbar

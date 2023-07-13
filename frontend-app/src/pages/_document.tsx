@@ -1,7 +1,7 @@
 import { Children } from 'react';
 import Document, { Head, Html, Main, NextScript } from 'next/document';
 import createEmotionServer from '@emotion/server/create-instance';
-import { createEmotionCache } from 'src/utils/create-emotion-cache';
+import { createEmotionCache } from '../utils/create-emotion-cache';
 import React from 'react';
 
 const Favicon = () => (
@@ -72,14 +72,14 @@ CustomDocument.getInitialProps = async (ctx) => {
   const cache = createEmotionCache();
   const { extractCriticalToChunks } = createEmotionServer(cache);
 
-  ctx.renderPage = () => originalRenderPage({
-    enhanceApp: (App) => (props) => (
-      <App
-        emotionCache={cache}
-        {...props}
-      />
-    )
-  });
+ctx.renderPage = () => originalRenderPage({
+  enhanceApp: (App) => (props: any) => (
+    <App
+      {...props}
+      emotionCache={cache}
+    />
+  )
+});
 
   const initialProps = await Document.getInitialProps(ctx);
   const emotionStyles = extractCriticalToChunks(initialProps.html);
