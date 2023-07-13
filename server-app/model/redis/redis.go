@@ -1,6 +1,7 @@
 package redis
 
 import (
+	"os"
 	"net/http"
 	"log"
 	"crypto/rand"
@@ -15,10 +16,17 @@ import (
 var conn *redis.Client
 
 func init() {
+	var dbHost string
+	// Dockerコンテナ内での接続先を指定
+	if os.Getenv("DOCKER_ENV") == "true" {
+		dbHost = "redis:6379"
+	} else {
+		// ローカル環境での接続先を指定
+		dbHost = "localhost:6379"
+	}
 	//Redisデータベース接続のためRedisクライアント作成
 	conn = redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379", //local環境軌道の場合
-		// Addr:     "redis:6379", //docker起動の場合
+		Addr:     dbHost,
 		Password: "",
 		DB:       0,
 	})
