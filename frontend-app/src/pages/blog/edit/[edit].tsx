@@ -59,8 +59,9 @@ const Edit: React.FC = (props: any, context: any) => {
   };
 
   const handlePost = async (event: React.MouseEvent<HTMLElement>) => {
+    const hostname = process.env.NODE_ENV === 'production' ? 'server-app' : 'localhost';
     try {
-      const response = await axios.post("http://localhost:8080/blog/edit", formik.values, {
+      const response = await axios.post(`http://${hostname}:8080/blog/edit`, formik.values, {
         headers: {
           "Content-Type": "application/json", // JSON形式で送信するためのヘッダー設定
         },
@@ -173,9 +174,9 @@ const Edit: React.FC = (props: any, context: any) => {
 };
 
 export const getServerSideProps: GetServerSideProps<BlogProps> = async (context) => {
-  const { edit } = context.params; // URLからedit(id)を取得
-
-  const response = await axios.get(`http://localhost:8080/blog/overview/post/${edit}`, {
+  const { edit } = context.params; // idを取得
+  const hostname = process.env.NODE_ENV === 'production' ? 'server-app' : 'localhost';
+  const response = await axios.get(`http://${hostname}:8080/blog/overview/post/${edit}`, {
     headers: {
       "Content-Type": "aapplication/json",
     },

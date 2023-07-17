@@ -26,9 +26,11 @@ export const AccountPopover: React.FC<AccountPopoverProps> = (props) => {
   // }, [onClose, auth, router]);
 
   const handleSignOut = (event: React.MouseEvent<HTMLElement>) => {
+    const hostname = process.env.NODE_ENV === 'production' ? 'server-app' : 'localhost';
+
     axios
       .get(
-        "http://localhost:8080/logout",
+        `http://${hostname}:8080/logout`,
         {
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",

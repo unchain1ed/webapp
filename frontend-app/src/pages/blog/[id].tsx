@@ -99,8 +99,9 @@ export default function Blog(props) {
 
 export const getServerSideProps: GetServerSideProps<BlogProps> = async (context) => {
   const { id } = context.params; // idを取得
+  const hostname = process.env.NODE_ENV === 'production' ? 'server-app' : 'localhost';
   
-  const response = await axios.get(`http://localhost:8080/blog/overview/post/${id}`, {
+  const response = await axios.get(`http://${hostname}:8080/blog/overview/post/${id}`, {
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
     },

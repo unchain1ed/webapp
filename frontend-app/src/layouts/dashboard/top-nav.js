@@ -11,18 +11,20 @@ import {
   Stack,
   SvgIcon,
   Tooltip,
-  useMediaQuery
+  useMediaQuery,
+  useTheme
 } from '@mui/material';
 import { alpha } from '@mui/material/styles';
-import { usePopover } from 'src/hooks/use-popover';
+import { usePopover } from '../../hooks/use-popover';
 import { AccountPopover } from './account-popover';
 
 const SIDE_NAV_WIDTH = 280;
 const TOP_NAV_HEIGHT = 64;
 
 export const TopNav = (props) => {
+  const theme = useTheme(); 
   const { onNavOpen } = props;
-  const lgUp = useMediaQuery((theme) => theme.breakpoints.up('lg'));
+  // const lgUp = useMediaQuery((theme) => theme.breakpoints.up('lg'));
   const accountPopover = usePopover();
 
   return (
@@ -58,7 +60,7 @@ export const TopNav = (props) => {
             direction="row"
             spacing={2}
           >
-            {!lgUp && (
+            {(
               <IconButton onClick={onNavOpen}>
                 <SvgIcon fontSize="small">
                   <Bars3Icon />

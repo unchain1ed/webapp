@@ -51,8 +51,10 @@ const Page: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => React.
     }
 
     const fetchData = async () => {
+      const hostname = process.env.NODE_ENV === 'production' ? 'server-app' : 'localhost';
+
       try {
-        const response = await axios.get("http://localhost:8080/login", {
+        const response = await axios.get(`http://${hostname}:8080/login`, {
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
           },
@@ -95,9 +97,10 @@ const Page: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => React.
   // };
 
   const handleLogin = async (event: React.MouseEvent<HTMLElement>) => {
+    const hostname = process.env.NODE_ENV === 'production' ? 'server-app' : 'localhost';
     try {
       const response = await axios.post(
-        "http://localhost:8080/login",
+        `http://${hostname}:8080/login`,
         { userId, password },
         {
           headers: {
@@ -257,7 +260,8 @@ const Page: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => React.
 
 
 export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
-  const response = await axios.get("http://localhost:8080/login", {
+  const hostname = process.env.NODE_ENV === 'production' ? 'server-app' : 'localhost';
+  const response = await axios.get(`http://${hostname}:8080/login`, {
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
     },

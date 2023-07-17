@@ -19,15 +19,6 @@ export const items = [
     )
   },
   {
-    title: 'Customers',
-    path: '/customers',
-    icon: (
-      <SvgIcon fontSize="small">
-        <UsersIcon />
-      </SvgIcon>
-    )
-  },
-  {
     title: 'Blog',
     path: '/blog/overview',
     icon: (
@@ -60,15 +51,6 @@ export const items = [
     icon: (
       <SvgIcon fontSize="small">
         <UserPlusIcon />
-      </SvgIcon>
-    )
-  },
-  {
-    title: 'Error',
-    path: '/404',
-    icon: (
-      <SvgIcon fontSize="small">
-        <XCircleIcon />
       </SvgIcon>
     )
   },

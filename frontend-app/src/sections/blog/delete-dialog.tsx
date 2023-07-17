@@ -23,23 +23,14 @@ const DeleteDialog = ({ id }) => {
   };
 
   const handleDelete = async () => {
+    const hostname = process.env.NODE_ENV === 'production' ? 'server-app' : 'localhost';
     try {
-      // ブログ記事を削除するAPIエンドポイントにリクエストを送信
-    //   await axios.delete(`http://localhost:8080/blog/delete/${blogId}`, {
-    //   headers: {
-    //     "Content-Type": "application/json", // JSON形式で送信するためのヘッダー設定
-    //   },
-    //     withCredentials: true,
-    //   });
-
-      const resoponse =await axios.get(`http://localhost:8080/blog/delete/${id}`, {
+      const resoponse =await axios.get(`http://${hostname}:8080/blog/delete/${id}`, {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
       withCredentials: true,
     });
-
-    
       // 削除が成功した場合はブログ一覧ページにリダイレクト
       router.push("/blog/overview");
     } catch (error) {

@@ -44,8 +44,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     handlePathnameChange();
 
     const fetchData = async () => {
+      const hostname = process.env.NODE_ENV === 'production' ? 'server-app' : 'localhost';
       try {
-        const response = await axios.get("http://localhost:8080/", {
+        const response = await axios.get(`http://${hostname}:8080/`, {
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
           },

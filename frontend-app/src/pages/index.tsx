@@ -18,7 +18,6 @@ type IndexProps = {
 
 const now = new Date();
 
-// const Page: React.FC<IndexProps> = () => {
 const Page: React.FC<IndexProps> & { getLayout: (page: React.ReactNode) => React.ReactNode } = () => {
   return (
     <>
@@ -52,7 +51,7 @@ const Page: React.FC<IndexProps> & { getLayout: (page: React.ReactNode) => React
               <OverviewTotalProfit sx={{ height: "100%" }} value="$15k" />
             </Grid>
             <Grid item xs={12} lg={8}>
-              <OverviewSales
+              {/* <OverviewSales
                 chartSeries={[
                   {
                     name: "This year",
@@ -64,7 +63,7 @@ const Page: React.FC<IndexProps> & { getLayout: (page: React.ReactNode) => React
                   },
                 ]}
                 sx={{ height: "100%" }}
-              />
+              /> */}
             </Grid>
             <Grid item xs={12} md={6} lg={4}>
               <OverviewTraffic
@@ -74,7 +73,7 @@ const Page: React.FC<IndexProps> & { getLayout: (page: React.ReactNode) => React
               />
             </Grid>
             <Grid item xs={12} md={6} lg={4}>
-              <OverviewLatestProducts
+              {/* <OverviewLatestProducts
                 products={[
                   {
                     id: "5ece2c077e39da27658aa8a9",
@@ -108,7 +107,7 @@ const Page: React.FC<IndexProps> & { getLayout: (page: React.ReactNode) => React
                   },
                 ]}
                 sx={{ height: "100%" }}
-              />
+              /> */}
             </Grid>
             <Grid item xs={12} md={12} lg={8}>
               <OverviewLatestOrders

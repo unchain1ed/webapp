@@ -22,7 +22,7 @@ func GetRouter() *gin.Engine {
 
 		// CORS設定
 		config := cors.DefaultConfig()
-		config.AllowOrigins = []string{"http://localhost:3000"}
+		config.AllowOrigins = []string{"http://localhost:3000", "http://server-app:3000"}
 		config.AllowMethods = []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"}
 		config.AllowHeaders = []string{
 			"Access-Control-Allow-Credentials",

@@ -38,9 +38,10 @@ type ClickValue = {
 };
 
 const handleAdd = (event: React.MouseEvent<HTMLElement>) => {
+  const hostname = process.env.NODE_ENV === 'production' ? 'server-app' : 'localhost';
   axios
     .get(
-      "http://localhost:8080/",
+      `http://${hostname}:8080/`,
       {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
@@ -135,8 +136,9 @@ Overview.getLayout = (page: any) => (
 
 
 export const getServerSideProps: GetServerSideProps<BlogProps> = async (context) => {
-  
-  const response = await axios.get("http://localhost:8080/blog/overview", {
+  const hostname = process.env.NODE_ENV === 'production' ? 'server-app' : 'localhost';
+  const response = await axios.get(`http://${hostname}:8080/blog/overview`, 
+   {
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
     },

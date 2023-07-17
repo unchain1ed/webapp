@@ -33,9 +33,10 @@ const Post: React.FC = () => {
   };
 
   const handlePost = async (event: React.MouseEvent<HTMLElement>) => {
+    const hostname = process.env.NODE_ENV === 'production' ? 'server-app' : 'localhost';
     try {
       const response = await axios.post(
-        "http://localhost:8080/blog/post",
+        `http://${hostname}:8080/blog/post`,
         blogForm, // blogFormオブジェクトを直接送信
         {
           headers: {
