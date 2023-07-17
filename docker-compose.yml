@@ -13,7 +13,6 @@ services:
       - 8080:8080
     env_file:
       - ./server-app/build/app/.env
-    #   - ./build/db/.env
     depends_on:
       - db
       - redis
@@ -33,18 +32,9 @@ services:
       context: ./frontend-app/build/frontend
       dockerfile: Dockerfile
     tty: true
-    # volumes:
-    #   - type: bind
-    #     source: ./frontend-app
-    #     target: /frontend-app
     volumes:
       - ./frontend-app:/frontend-app
-      # - ./react-app/react-app:/app/react
-    # command: sh -c "cd /frontend-app && yarn install && yarn start"
-    #  command: sh -c "cd /frontend-app"
     working_dir: /frontend-app
-    # command: >
-    #   bash -c "npm run dev"
     command: >
       bash -c "npm run dev"
     ports:
@@ -56,16 +46,12 @@ services:
     container_name: db
     build: ./server-app/build/db/
     volumes:
-    #         # 初期データを投入するSQLが格納されているディレクトリ
+    # 初期データを投入するSQLが格納されているディレクトリ
       - ./server-app/build/db/init:/docker-entrypoint-initdb.d
-    #         # 永続化するときにマウントするディレクトリ
+    # 永続化するときにマウントするディレクトリ
       - ./server-app/build/db/data:/var/lib/db
     environment: 
       - MYSQL_ROOT_PASSWORD=password
-      # TZ: 'Asia/Tokyo'
-    #       MYSQL_USER: admin
-    #       MYSQL_PASSWORD: admin
-    #       MYSQL_DATABASE: admin
     ports:
       - "3306:3306"
     networks:
@@ -78,50 +64,6 @@ services:
       - 6379:6379
     networks:
       - golang_network
-
-
-  # db:
-  #   container_name: db
-  #   build:
-  #     context: ./build/db
-  #     dockerfile: Dockerfile
-  #   tty: true
-  #   platform: linux/x86_64
-  #   ports:
-  #     - 3306:3306
-  #   env_file:
-  #     - ./mysql/.env
-  #   volumes:
-  #     - type: volume
-  #       source: mysql_test_volume
-  #       target: /var/lib/mysql
-  #     - type: bind
-  #       source: ./mysql/init
-  #       target: /docker-entrypoint-initdb.d
-  #   networks:
-  #     - golang_test_network
-
-#   db:
-#     container_name: db
-#     build:
-#       context: ./build/db
-#       dockerfile: Dockerfile
-#     tty: true
-#     platform: linux/amd64
-#     ports:
-#       - 3306:3306
-#     env_file:
-#       - ./build/db/.env
-#     volumes:
-#       - type: volume
-#         source: go_volume
-#         target: /var/lib/mysql
-
-#   redis:
-#     container_name: redis
-#     image: redis:latest
-#     ports:
-#       - 6379:6379
 
 volumes:
   go_volume:

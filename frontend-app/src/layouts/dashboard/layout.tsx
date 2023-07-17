@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
+// import { usePathname } from "/next/navigation”;
+import { useRouter } from 'next/router';
 import { styled } from "@mui/material/styles";
 import { withAuthGuard } from "../../hocs/with-auth-guard";
 import { SideNav } from "./side-nav";
@@ -29,7 +30,10 @@ type LayoutProps = {
 };
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
-  const pathname = usePathname();
+  // const pathname = usePathname();
+  const router = useRouter();
+  const pathname = router.pathname;
+  
   const [openNav, setOpenNav] = useState(false);
 
   const handlePathnameChange = useCallback(() => {

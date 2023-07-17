@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import NextLink from 'next/link';
-import { usePathname } from 'next/navigation';
+// import { usePathname } from 'next/navigation';
+import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import ArrowTopRightOnSquareIcon from '@heroicons/react/24/solid/ArrowTopRightOnSquareIcon';
 import ChevronUpDownIcon from '@heroicons/react/24/solid/ChevronUpDownIcon';
@@ -35,7 +36,9 @@ type SideNavProps = {
 // };
 
 export const SideNav: React.FC<SideNavProps> = ({ onClose, open, loginID }) => {
-  const pathname = usePathname();
+  // const pathname = usePathname();
+  const router = useRouter();
+  const pathname = router.pathname;
   const lgUp = useMediaQuery((theme: any) => theme.breakpoints.up('lg'));
   
   const content = (
