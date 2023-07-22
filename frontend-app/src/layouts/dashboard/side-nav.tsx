@@ -26,14 +26,6 @@ type SideNavProps = {
   loginID: string;
 };
 
-// type Blog = {
-//   loginID: string;
-// };
-
-// type BlogProps = {
-//   blog: Blog;
-// };
-
 export const SideNav: React.FC<SideNavProps> = ({ onClose, open, loginID }) => {
   const pathname = usePathname();
   const lgUp = useMediaQuery((theme: any) => theme.breakpoints.up('lg'));
@@ -96,12 +88,6 @@ export const SideNav: React.FC<SideNavProps> = ({ onClose, open, loginID }) => {
                 {loginID}
               </Typography>
             </div>
-            <SvgIcon
-              fontSize="small"
-              sx={{ color: 'neutral.500' }}
-            >
-              <ChevronUpDownIcon />
-            </SvgIcon>
           </Box>
         </Box>
         <Divider sx={{ borderColor: 'neutral.700' }} />

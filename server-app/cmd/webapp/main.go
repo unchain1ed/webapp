@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/unchain1ed/server-app/controller"
 	"log"
+
+	"github.com/unchain1ed/server-app/controller"
 )
 
 func main() {

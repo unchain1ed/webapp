@@ -9,7 +9,9 @@ interface AuthGuardProps {
 
 export const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
   const router = useRouter();
-  const { isAuthenticated } = useAuthContext();
+  // const { isAuthenticated } = useAuthContext();
+  //ここでリダイレクトを決めているtureならしないfalseする
+  const isAuthenticated  =  true;
   const ignore = useRef(false);
   const [checked, setChecked] = useState(false);
 

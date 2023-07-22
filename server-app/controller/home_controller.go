@@ -1,15 +1,14 @@
 package controller
 
 import (
-	"github.com/joho/godotenv"
 	"log"
 	"gorm.io/gorm"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/unchain1ed/server-app/model/redis"
 	"net/http"
 	"os"
 
+	"github.com/gin-gonic/gin"
+	"github.com/unchain1ed/server-app/model/redis"
 	"github.com/unchain1ed/server-app/model/db"
 )
 
@@ -31,25 +30,17 @@ type Blog struct {
 }
 
 func getTop(c *gin.Context) {
-	c.Request.Header.Set("Content-Type", "text/plain")
-	//環境変数設定
-	envErr := godotenv.Load("../../build/app/.env")
-	if envErr != nil {
-		fmt.Println("Error loading .env file", envErr)
-	}
 	//セッションからloginIDを取得
 	cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
-	loginID := redis.GetSession(c, cookieKey)
-fmt.Println(loginID)
-	c.JSON(http.StatusOK, gin.H{"loginID": loginID})
+	id := redis.GetSession(c, cookieKey)
+
+	log.Println("Get LoginId in TopView from Session :id", id); 
+
+	c.JSON(http.StatusOK, gin.H{"id": id})
 }
 
 func getLogin(c *gin.Context) {
 	user := db.User{}
-	// //セッションからuserを取得
-	// cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
-	// user := redis.GetSession(c, cookieKey)
-
 	//セッションからuserを取得
 	cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
 	UserId := redis.GetSession(c, cookieKey)
@@ -57,13 +48,17 @@ func getLogin(c *gin.Context) {
 	if UserId != nil {
 		user = db.GetOneUser(UserId.(string))
 	}
-	// fmt.Println("UserId"+UserId.(string))
-	// fmt.Println("user.UserId"+user.UserId)
-	// c.HTML(http.StatusOK, "login.html", gin.H{})
+
+	log.Printf("Get user in LoginView from DB :user %+v", user)
+
 	c.JSON(http.StatusOK, gin.H{"user": user})
 }
 
 func postLogin(c *gin.Context) {
+	// c.Request.Header.Set("Content-Type", "text/plain")
+	// c.Request.Header.Set("Content-Type", "application/json")
+	//↑なしで機能した
+
 	//フォームの値を取得
 	id := c.PostForm("userId")
 	pw := c.PostForm("password")
@@ -99,8 +94,7 @@ func postSignup(c *gin.Context) {
 		return
 	}
 
-	c.HTML(http.StatusOK, "signup.html", gin.H{"user": user})
-	// c.JSON(http.StatusOK, gin.H{"user": user})
+	c.JSON(http.StatusOK, gin.H{"user": user})
 }
 
 func getUpdate(c *gin.Context) {
@@ -137,15 +131,6 @@ func postUpdate(c *gin.Context) {
 
 // マイページ画面
 func getMypage(c *gin.Context) {
-	// user := db.User{}
-
-	// //セッションからuserを取得
-	// cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
-	// UserId := redis.GetSession(c, cookieKey)
-
-	// if UserId != nil {
-	// 	user = db.GetOneUser(UserId.(string))
-	// }
 	//セッションからuserを取得
 	cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
 	user := redis.GetSession(c, cookieKey)
@@ -154,18 +139,15 @@ func getMypage(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"user": user})
 }
 
-// ログアウト処理
-func getLogout(c *gin.Context) {
-	cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
-	redis.DeleteSession(c, cookieKey)
+// // ログアウト処理
+// func getLogout(c *gin.Context) {
+// 	cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
+// 	redis.DeleteSession(c, cookieKey)
 
-	c.Redirect(http.StatusFound, "/login")
-}
+// 	c.Redirect(http.StatusFound, "/login")
+// }
 
-func postBlog(c *gin.Context) {
-	// c.Request.Header.Set("Content-Type", "application/json")
-	c.Request.Header.Set("Content-Type", "text/plain")
-
+func postBlog(c *gin.Context) {	
 	// JSON形式のリクエストボディを構造体にバインドする
 	var blogPost BlogPost
 	if err := c.ShouldBindJSON(&blogPost); err != nil {
@@ -185,19 +167,16 @@ func postBlog(c *gin.Context) {
 	//DBにブログ記事内容を登録
 	blog, err := db.Create(blogPost.LoginID, blogPost.Title, blogPost.Content)
 	if err != nil {
-		
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		log.Println("error", err.Error());
 		return
 	}
-
 
 	c.JSON(http.StatusOK, gin.H{"blog": blog, "url": "/blog/overview"})
 }
 
 // BlogOverview画面
 func getBlogOverview(c *gin.Context) {
-	// blog := db.Blog{}
 	var blogs []db.Blog
 
 	// //セッションからuserを取得
@@ -208,25 +187,14 @@ func getBlogOverview(c *gin.Context) {
 
 	//セッションからuserを取得
 
-
-	// c.HTML(http.StatusOK, "login.html", gin.H{})
 	c.JSON(http.StatusOK, gin.H{"blogs": blogs})
 }
 
 // BlogView IDによる画面
 func getBlogViewById(c *gin.Context) {
-	c.Request.Header.Set("Content-Type", "application/json")
-	//  var blog = Blog{}
-	//  blog := Blog{}
-
-	//  blog := &Blog{}
-	// var blogs []db.Blog
 
 	id := c.Param("id")
 	fmt.Println("Param"+id)
-	// //セッションからuserを取得
-	// cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
-	// UserId := redis.GetSession(c, cookieKey)
 
 	blog ,err := db.GetBlogViewInfoById(id)
 	if err != nil {
@@ -234,7 +202,5 @@ func getBlogViewById(c *gin.Context) {
 		return
 	}
 
-
-fmt.Println(blog)
 	c.JSON(http.StatusOK, gin.H{"blog": blog})
 }

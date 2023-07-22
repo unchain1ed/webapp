@@ -52,9 +52,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           },
           withCredentials: true,
         });
-
-        const fetchedID = response.data.loginID || null;
-        console.log("通過A" + fetchedID);
+        const fetchedID = response.data.id || null;
         setFetchedLoginID(fetchedID); // 取得した loginID を状態に設定する
       } catch (error) {
         console.error(error);

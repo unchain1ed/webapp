@@ -9,8 +9,6 @@ import (
 )
 
 func postEditBlog(c *gin.Context) {
-	// c.Request.Header.Set("Content-Type", "application/json")
-	c.Request.Header.Set("Content-Type", "text/plain")
 
 	// JSON形式のリクエストボディを構造体にバインドする
 	var blogPost BlogPost

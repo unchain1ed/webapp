@@ -1,4 +1,5 @@
 import ChartBarIcon from '@heroicons/react/24/solid/ChartBarIcon';
+import DocumentIcon from '@heroicons/react/24/solid/DocumentIcon';
 import CogIcon from '@heroicons/react/24/solid/CogIcon';
 import LockClosedIcon from '@heroicons/react/24/solid/LockClosedIcon';
 import ShoppingBagIcon from '@heroicons/react/24/solid/ShoppingBagIcon';
@@ -23,7 +24,7 @@ export const items = [
     path: '/blog/overview',
     icon: (
       <SvgIcon fontSize="small">
-        <ShoppingBagIcon />
+        <DocumentIcon />
       </SvgIcon>
     )
   },
@@ -65,7 +66,7 @@ export const items = [
   },
   {
     title: 'Logout',
-    path: '/',
+    path: '/auth/logout',
     icon: (
       <SvgIcon fontSize="small">
         <LockClosedIcon />

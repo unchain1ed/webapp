@@ -1,7 +1,6 @@
 package controller
 
 import (
-	// "time"
 	"fmt"
 	"net/http"
 	"github.com/unchain1ed/server-app/model/redis"
@@ -10,6 +9,15 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/joho/godotenv"
 )
+
+func init() {
+    // このパッケージがインポートされる際に一度だけ実行される初期化処理
+	//環境変数設定
+	envErr := godotenv.Load("../../build/app/.env")
+	if envErr != nil {
+		fmt.Println("Error loading .env file", envErr)
+	}
+}	
 
 func GetRouter() *gin.Engine {
 	router := gin.Default()
@@ -31,7 +39,7 @@ func GetRouter() *gin.Engine {
 			"Content-Length",
 			"Accept-Encoding",
 			"Authorization",
-			// "Cookie",
+			"Cookie",
 		}
 		config.AllowCredentials = true
 		router.Use(cors.New(config))
@@ -39,41 +47,116 @@ func GetRouter() *gin.Engine {
 	//ホーム画面
 	router.GET("/", func(c *gin.Context) {getTop(c)})
 
-	// router.POST("/blog/post", func(c *gin.Context) {postBlog(c)})
-
-	//loginCheckGroupで/mypageと/logoutのルートパスをグループ化し、ログインチェック実施
+	//loginCheckGroupでルートパスをグループ化し、ログインチェック実施
 	//ログインされていない場合はリダイレクト、ログインしている場合はそれぞれのハンドラ関数を呼び出し
-	loginCheckGroup := router.Group("/", checkLogin())
-	{
-		//ログイン画面
-		loginCheckGroup.GET("/mypage", func(c *gin.Context) {getMypage(c)})
-		loginCheckGroup.GET("/logout", func(c *gin.Context) {getLogout(c)})
-	}
+	//【ログイン中】
+	// loginCheckGroup := router.Group("/", checkLogin())
+	// {
+	// 	// //ログイン画面
+	// 	// loginCheckGroup.GET("/mypage", func(c *gin.Context) {getMypage(c)})
+	// 	// loginCheckGroup.GET("/logout", func(c *gin.Context) {getLogout(c)})
+	// 	// //ブログ記事作成画面
+	// 	// loginCheckGroup.POST("/blog/post", func(c *gin.Context) {postBlog(c)})
+	// 	// //BlogOverview画面
+	// 	// loginCheckGroup.GET("/blog/overview", func(c *gin.Context) {getBlogOverview(c)})
+	// 	// //BlogIDによるView画面
+	// 	// loginCheckGroup.GET("/blog/overview/post/:id", func(c *gin.Context) {getBlogViewById(c)})
+	// 	// //ブログ記事編集API
+	// 	// loginCheckGroup.POST("/blog/edit", func(c *gin.Context) {postEditBlog(c)})
+	// 	// //ブログ記事消去API
+	// 	// loginCheckGroup.GET("/blog/delete/:id", func(c *gin.Context) {getDeleteBlog(c)})
+	// 	// //会員情報編集画面
+	// 	// loginCheckGroup.GET("/update", func(c *gin.Context) {getUpdate(c)})
+	// 	// loginCheckGroup.POST("/update", func(c *gin.Context) {postUpdate(c)})
+	// }
 
-	//ログアウトされている場合はそれぞれのハンドラ関数を呼び出し、ログインしている場合はリダイレクト
-	logoutCheckGroup := router.Group("/", checkLogout())
-	{
-		//ログイン画面
-		logoutCheckGroup.GET("/login", func(c *gin.Context) {getLogin(c)})
-		logoutCheckGroup.POST("/login", func(c *gin.Context) {postLogin(c)})
-		// logoutCheckGroup.POST("/login", func(c *gin.Context) {postLogin(c, c.Writer, c.Request)})
-		//サインアップ画面
-		logoutCheckGroup.GET("/signup", func(c *gin.Context) {getSignup(c)})
-		logoutCheckGroup.POST("/signup", func(c *gin.Context) {postSignup(c)})
-		//会員情報編集画面
-		logoutCheckGroup.GET("/update", func(c *gin.Context) {getUpdate(c)})
-		logoutCheckGroup.POST("/update", func(c *gin.Context) {postUpdate(c)})
-		//ブログ記事作成画面
-		logoutCheckGroup.POST("/blog/post", func(c *gin.Context) {postBlog(c)})
-		//BlogOverview画面
-		logoutCheckGroup.GET("/blog/overview", func(c *gin.Context) {getBlogOverview(c)})
-		//BlogIDによるView画面
-		logoutCheckGroup.GET("/blog/overview/post/:id", func(c *gin.Context) {getBlogViewById(c)})
-		//ブログ記事編集API
-		logoutCheckGroup.POST("/blog/edit", func(c *gin.Context) {postEditBlog(c)})
-		//ブログ記事消去API
-		logoutCheckGroup.GET("/blog/delete/:id", func(c *gin.Context) {getDeleteBlog(c)})
-	}
+
+	//ログイン画面
+	router.GET("/login", func(c *gin.Context) {getLogin(c)})
+	router.POST("/login", func(c *gin.Context) {postLogin(c)})
+	//ログイン画面
+	router.GET("/mypage", func(c *gin.Context) {getMypage(c)})
+	//ブログ記事作成画面
+	router.POST("/blog/post", func(c *gin.Context) {postBlog(c)})
+	//BlogOverview画面
+	router.GET("/blog/overview", func(c *gin.Context) {getBlogOverview(c)})
+	//BlogIDによるView画面
+	router.GET("/blog/overview/post/:id", func(c *gin.Context) {getBlogViewById(c)})
+	//ブログ記事編集API
+	router.POST("/blog/edit", func(c *gin.Context) {postEditBlog(c)})
+	//ブログ記事消去API
+	router.GET("/blog/delete/:id", func(c *gin.Context) {getDeleteBlog(c)})
+	//会員情報編集画面
+	router.GET("/update", func(c *gin.Context) {getUpdate(c)})
+	router.POST("/update", func(c *gin.Context) {postUpdate(c)})
+	//ログアウト実行API
+	router.POST("/logout", func(c *gin.Context) {decideLogout(c)})
+	//ログイン中のIDをセッションから取得
+	router.GET("/logout/view", func(c *gin.Context) {getLoginIdBySession(c)})
+	//サインアップ画面
+	router.GET("/signup", func(c *gin.Context) {getSignup(c)})
+	router.POST("/signup", func(c *gin.Context) {postSignup(c)})
+
+	// //ログアウトされている場合はそれぞれのハンドラ関数を呼び出し、ログインしている場合はリダイレクト
+	// //【ログアウト中】
+	// logoutCheckGroup := router.Group("/", checkLogout())
+	// {
+	// 	//ログイン画面
+	// 	logoutCheckGroup.GET("/mypage", func(c *gin.Context) {getMypage(c)})
+	// 	//ブログ記事作成画面
+	// 	logoutCheckGroup.POST("/blog/post", func(c *gin.Context) {postBlog(c)})
+	// 	//BlogOverview画面
+	// 	logoutCheckGroup.GET("/blog/overview", func(c *gin.Context) {getBlogOverview(c)})
+	// 	//BlogIDによるView画面
+	// 	logoutCheckGroup.GET("/blog/overview/post/:id", func(c *gin.Context) {getBlogViewById(c)})
+	// 	//ブログ記事編集API
+	// 	logoutCheckGroup.POST("/blog/edit", func(c *gin.Context) {postEditBlog(c)})
+	// 	//ブログ記事消去API
+	// 	logoutCheckGroup.GET("/blog/delete/:id", func(c *gin.Context) {getDeleteBlog(c)})
+	// 	//会員情報編集画面
+	// 	logoutCheckGroup.GET("/update", func(c *gin.Context) {getUpdate(c)})
+	// 	logoutCheckGroup.POST("/update", func(c *gin.Context) {postUpdate(c)})
+	// 	//ログアウト実行API
+	// 	logoutCheckGroup.POST("/logout", func(c *gin.Context) {decideLogout(c)})
+	// 	//ログイン中のIDをセッションから取得
+	// 	logoutCheckGroup.GET("/logout/view", func(c *gin.Context) {getLoginIdBySession(c)})
+
+	// 	// //ログイン画面
+	// 	// logoutCheckGroup.GET("/login", func(c *gin.Context) {getLogin(c)})
+	// 	// logoutCheckGroup.POST("/login", func(c *gin.Context) {postLogin(c)})
+	// 	//サインアップ画面
+	// 	logoutCheckGroup.GET("/signup", func(c *gin.Context) {getSignup(c)})
+	// 	logoutCheckGroup.POST("/signup", func(c *gin.Context) {postSignup(c)})
+	// }
+
+	//ーーNG
+	// loginCheckGroup := router.Group("/", checkLogin())
+	// {
+	// 	//ログイン画面
+	// 	loginCheckGroup.GET("/mypage", func(c *gin.Context) {getMypage(c)})
+	// 	loginCheckGroup.GET("/logout", func(c *gin.Context) {getLogout(c)})
+	// 	//ブログ記事作成画面
+	// 	loginCheckGroup.POST("/blog/post", func(c *gin.Context) {postBlog(c)})
+	// 	//BlogOverview画面
+	// 	loginCheckGroup.GET("/blog/overview", func(c *gin.Context) {getBlogOverview(c)})
+	// 	//BlogIDによるView画面
+	// 	loginCheckGroup.GET("/blog/overview/post/:id", func(c *gin.Context) {getBlogViewById(c)})
+	// 	//ブログ記事編集API
+	// 	loginCheckGroup.POST("/blog/edit", func(c *gin.Context) {postEditBlog(c)})
+	// 	//ブログ記事消去API
+	// 	loginCheckGroup.GET("/blog/delete/:id", func(c *gin.Context) {getDeleteBlog(c)})
+	// 	//会員情報編集画面
+	// 	loginCheckGroup.GET("/update", func(c *gin.Context) {getUpdate(c)})
+	// 	loginCheckGroup.POST("/update", func(c *gin.Context) {postUpdate(c)})
+
+	// 	//ログイン画面
+	// 	loginCheckGroup.GET("/login", func(c *gin.Context) {getLogin(c)})
+	// 	loginCheckGroup.POST("/login", func(c *gin.Context) {postLogin(c)})
+	// 	//サインアップ画面
+	// 	loginCheckGroup.GET("/signup", func(c *gin.Context) {getSignup(c)})
+	// 	loginCheckGroup.POST("/signup", func(c *gin.Context) {postSignup(c)})
+	// }
+
 
 	//HTTPSサーバーを起動LSプロトコル使用※ハンドラの登録後に実行登録後に実行**TODO**
 	//第1引数にはポート番号 ":8080" 、第2引数にはTLS証明書のパス、第3引数には秘密鍵のパス
@@ -90,12 +173,6 @@ func GetRouter() *gin.Engine {
 //ログアウト状態であればリダイレクトし、ログイン状態であれば処理を継続
 func checkLogin() gin.HandlerFunc {
 	return func(c *gin.Context) {
-
-		//環境変数設定
-		envErr := godotenv.Load("../../build/app/.env")
-    	if envErr != nil {
-        fmt.Println("Error loading .env file", envErr)
-    	}
 		cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
 		//セッションから取得
 		id := redis.GetSession(c, cookieKey)
@@ -116,11 +193,6 @@ func checkLogin() gin.HandlerFunc {
 func checkLogout() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
-		//環境変数設定
-		envErr := godotenv.Load("../../build/app/.env")
-    	if envErr != nil {
-        fmt.Println("Error loading .env file", envErr)
-    	}
 		cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
 		//セッションから取得
 		id := redis.GetSession(c, cookieKey)
@@ -138,14 +210,3 @@ func checkLogout() gin.HandlerFunc {
 		}
 	}	
 } 
-
-//セッションからログインIDを取得
-func getLoginIdBySession(c *gin.Context) {
-
-	//セッションからuserを取得
-	cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
-	//セッションから取得
-	id := redis.GetSession(c, cookieKey)
-
-	c.JSON(http.StatusOK, gin.H{"id": id})
-}

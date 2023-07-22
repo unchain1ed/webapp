@@ -48,15 +48,21 @@ func NewSession(c *gin.Context, cookieKey, redisValue string) {
 	}
 	fmt.Println("HTTPレスポンスヘッダcookieKey"+cookieKey)
 	fmt.Println("HTTPレスポンスヘッダnewRedisKey"+newRedisKey)
+
+	// SameSite属性をNoneにするために、Secure属性（HTTPS）を設定
+	var secure bool = false;
+	if c.Request.URL.Scheme == "https" {
+		secure = true
+	}
 	//HTTPレスポンスヘッダーにCookieを設定
 	cookie := &http.Cookie{
 		Name:     cookieKey,
 		Value:    newRedisKey,
 		Path:     "/",
-		Domain:   "localhost",
+		Domain:   "localhost", // 本番環境では正しいドメインを設定
 		MaxAge:   0,
 		HttpOnly: false,
-		Secure:   true,
+		Secure:   secure, // 本番環境ではHTTPSでない場合はfalseにする
 		SameSite: http.SameSiteNoneMode,
 	}
 	// クッキーをレスポンスに設定
@@ -90,18 +96,22 @@ func GetSession(c *gin.Context, cookieKey string) interface{} {
 	return redisValue
 }
 
-func DeleteSession(c *gin.Context, cookieKey string) {
+func DeleteSession(c *gin.Context, cookieKey string, id string) {
 	redisId, err := c.Cookie(cookieKey)
 	if err != nil {
 		fmt.Println("セッションのクッキーが見つかりませんでした。")
 		return
 	}
 	//Redisからセッションを削除
-	cmd := conn.Del(c, redisId)
-	if cmd.Val() == 0 {
-		fmt.Println("Redisからセッションを削除できませんでした。")
+	if cookieKey == id {
+		cmd := conn.Del(c, redisId)
+		if cmd.Val() == 0 {
+			fmt.Println("Redisからセッションを削除できませんでした。")
+		} else {
+			fmt.Println("Redisからセッションを削除しました。：", cmd.String())
+		}
 	} else {
-		fmt.Println("Redisからセッションを削除しました。：", cmd.String())
+		fmt.Println("セッションidが一致しませんでした。")
 	}
 	
 	//クライアントのブラウザに保存されているセッションのクッキーを削除

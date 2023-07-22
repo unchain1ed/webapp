@@ -7,6 +7,8 @@ import { Box, Button, Grid, Stack, TextField, Typography } from "@mui/material";
 import { useFormik } from "formik";
 import axios from "axios";
 import { GetServerSideProps } from "next";
+import NextLink from "next/link";
+import { Logo } from "../../../components/logo";
 
 type Blog = {
   ID: string;
@@ -47,11 +49,6 @@ const Edit: React.FC = (props: any, context: any) => {
     }
   }, [blog]);
 
-  useEffect(() => {
-    console.log("通過E" + formik.values.title);
-    console.log("通過R" + formik.values);
-  }, []);
-
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     // ブログ投稿後にブログ一覧ページにリダイレクト
@@ -59,9 +56,9 @@ const Edit: React.FC = (props: any, context: any) => {
   };
 
   const handlePost = async (event: React.MouseEvent<HTMLElement>) => {
-    const hostname = process.env.NODE_ENV === 'production' ? 'server-app' : 'localhost';
+    const hostname = process.env.NODE_ENV === "production" ? "server-app" : "localhost";
     try {
-      const response = await axios.post(`http://${hostname}:8080/blog/edit`, formik.values, {
+      await axios.post(`http://${hostname}:8080/blog/edit`, formik.values, {
         headers: {
           "Content-Type": "application/json", // JSON形式で送信するためのヘッダー設定
         },
@@ -82,6 +79,19 @@ const Edit: React.FC = (props: any, context: any) => {
       <Head>
         <title>Blog</title>
       </Head>
+      <Box sx={{ p: 3 }}>
+        <Box
+          component={NextLink}
+          href="/blog/overview"
+          sx={{
+            display: "inline-flex",
+            height: 32,
+            width: 32,
+          }}
+        >
+          <Logo />
+        </Box>
+      </Box>
       <Box
         component="main"
         sx={{
@@ -175,7 +185,7 @@ const Edit: React.FC = (props: any, context: any) => {
 
 export const getServerSideProps: GetServerSideProps<BlogProps> = async (context) => {
   const { edit } = context.params; // idを取得
-  const hostname = process.env.NODE_ENV === 'production' ? 'server-app' : 'localhost';
+  const hostname = process.env.NODE_ENV === "production" ? "server-app" : "localhost";
   const response = await axios.get(`http://${hostname}:8080/blog/overview/post/${edit}`, {
     headers: {
       "Content-Type": "aapplication/json",
@@ -184,7 +194,7 @@ export const getServerSideProps: GetServerSideProps<BlogProps> = async (context)
   });
 
   const blog: Blog = response.data.blog;
-  console.log(blog);
+
   return {
     props: {
       blog,

@@ -31,8 +31,9 @@ type HomeProps = {
   user: User;
 };
 
-const Page: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => React.ReactNode } = ({ user }) => {
+const mode: string = "login"
 
+const Page: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => React.ReactNode } = () => {
   const router = useRouter();
   const auth = useAuth();
   const [method, setMethod] = useState("userId");
@@ -40,18 +41,8 @@ const Page: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => React.
   const [password, setPassword] = useState("root");
 
   useEffect(() => {
-    console.log("通過useEffect" + user);
-    // userの変更を監視する
-    if (user.UserId) {
-      // ログイン済みの場合の処理
-      console.log("ユーザーはログイン済みです");
-    } else {
-      // ログインしていない場合の処理
-      console.log("ユーザーはログインしていません");
-    }
-
     const fetchData = async () => {
-      const hostname = process.env.NODE_ENV === 'production' ? 'server-app' : 'localhost';
+      const hostname = process.env.NODE_ENV === "production" ? "server-app" : "localhost";
 
       try {
         const response = await axios.get(`http://${hostname}:8080/login`, {
@@ -68,36 +59,10 @@ const Page: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => React.
     };
     // コンポーネントのマウント時にリクエストを実行
     fetchData();
-  }, [user]);
-
-  // const handleLogin = async (event: React.MouseEvent<HTMLElement>) => {
-  //   try {
-  //     const response = await axios.post(
-  //       "http://localhost:8080/login",
-  //       { userId, password },
-  //       {
-  //         headers: {
-  //           "Content-Type": "application/x-www-form-urlencoded",
-  //         },
-  //         withCredentials: true,
-  //       }
-  //     );
-  //     // ログイン成功時の処理
-  //     await auth.signIn(userId, password);
-  //     router.push("/");
-  //     // helpers.setStatus({ success: false });
-  //     // helpers.setErrors({ submit: err.message });
-  //     // helpers.setSubmitting(false);
-  //     // ログイン成功時の追加の処理を追記する場合はここに記述する
-  //   } catch (error) {
-  //     // ログイン失敗時の処理
-  //     console.error(error);
-  //     // ログイン失敗時の追加の処理を追記する場合はここに記述する
-  //   }
-  // };
+  }, []);
 
   const handleLogin = async (event: React.MouseEvent<HTMLElement>) => {
-    const hostname = process.env.NODE_ENV === 'production' ? 'server-app' : 'localhost';
+    const hostname = process.env.NODE_ENV === "production" ? "server-app" : "localhost";
     try {
       const response = await axios.post(
         `http://${hostname}:8080/login`,
@@ -109,22 +74,9 @@ const Page: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => React.
           withCredentials: true,
         }
       );
-      
-      user.UserId = response.data.user.UserId; // レスポンスデータを取得
-  
-      // フロントエンドのビューで表示するための状態を作成
-      // const [displayData, setDisplayData] = useState("");
-  
-      // // 取得したデータを状態に設定
-      // useEffect(() => {
-      //   setDisplayData(responseData);
-      // }, []);
 
-      console.log("通過displayData", response.data.user.UserId);
+      const UserId = response.data.user.UserId; // レスポンスデータを取得
 
-      console.log("通過displayData2", user.UserId);
-
-      
       // ログイン成功時の処理
       await auth.signIn(userId, password);
       router.push("/");
@@ -135,7 +87,7 @@ const Page: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => React.
       // ログイン失敗時の追加の処理を追記する場合はここに記述する
     }
   };
-  
+
   const formik = useFormik({
     initialValues: {
       userId: "root",
@@ -258,25 +210,20 @@ const Page: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => React.
   );
 };
 
+// export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
+//   const hostname = process.env.NODE_ENV === "production" ? "server-app" : "localhost";
+//   const response = await axios.get(`http://${hostname}:8080/login`,
+//   {
+//     withCredentials: true,
+//   });
+//   const user = response.data;
+//   return {
+//     props: {
+//       user,
+//     },
+//   };
+// };
 
-export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
-  const hostname = process.env.NODE_ENV === 'production' ? 'server-app' : 'localhost';
-  const response = await axios.get(`http://${hostname}:8080/login`, {
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    withCredentials: true,
-  });
-  const user = response.data;
-  // console.log(response.data)
-  console.log("通過getServerSideProps" + user.UserId);
-  return {
-    props: {
-      user,
-    },
-  };
-};
-
-Page.getLayout = (page: React.ReactNode) => <AuthLayout>{page}</AuthLayout>;
+Page.getLayout = (page: React.ReactNode) => <AuthLayout mode={mode}>{page}</AuthLayout>;
 
 export default Page;

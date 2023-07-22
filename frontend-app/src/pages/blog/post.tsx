@@ -1,11 +1,13 @@
-import React, { useState, ChangeEvent, FormEvent } from "react";
+import React, { useState, ChangeEvent, FormEvent, useEffect } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import * as Yup from "yup";
-
 import { Box, Button, Grid, Stack, TextField, Typography } from "@mui/material";
 import { useFormik } from "formik";
 import axios from "axios";
+import NextLink from "next/link";
+
+import { Logo } from "../../components/logo";
 
 interface BlogForm {
   LoginID: string;
@@ -22,12 +24,30 @@ const Post: React.FC = () => {
     content: "",
   });
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const hostname = process.env.NODE_ENV === 'production' ? 'server-app' : 'localhost';
+      try {
+        const response = await axios.get(`http://${hostname}:8080/`, {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          withCredentials: true,
+        });
+        const fetchedID = response.data.id || null;
+        setBlogForm((prevBlogForm) => ({
+          ...prevBlogForm,
+          LoginID: fetchedID,
+        }));
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    // コンポーネントのマウント時にリクエストを実行
+    fetchData();
+  }, []);
+
   const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-
-    // ブログ投稿の処理
-    // APIリクエストなどが含まれます
-
     // ブログ投稿後にブログ一覧ページにリダイレクト
     router.push("/blog/overview");
   };
@@ -76,13 +96,20 @@ const Post: React.FC = () => {
       <Head>
         <title>Blog</title>
       </Head>
+      <Box sx={{ p: 3 }}>
+        <Box
+          component={NextLink}
+          href="/blog/overview"
+          sx={{
+            display: "inline-flex",
+            height: 32,
+            width: 32,
+          }}
+        >
+          <Logo />
+        </Box>
+      </Box>
       <Box
-        component="main"
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          py: 8,
-        }}
       >
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
