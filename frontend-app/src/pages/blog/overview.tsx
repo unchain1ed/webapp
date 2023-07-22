@@ -58,43 +58,25 @@ const handleAdd = (event: React.MouseEvent<HTMLElement>) => {
 const Overview = ({ blogs }: BlogProps, { value }: ClickValue) => {
   const handleBlogClick = (id: string) => {};
 
-  useEffect(() => {
-  const fetchData = async () => {
-    const hostname = process.env.NODE_ENV === "production" ? "server-app" : "localhost";
-    try {
-      const response = await axios.get(`http://${hostname}:8080/blog/overview`, {
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        withCredentials: true,
-      });
-      const blogsInfo = response.data.blogs;
-      let blogs: Blog[];
-      if (blogsInfo == null) {
-        return {
-          redirect: {
-            destination: "/404",
-            permanent: false,
-          },
-        };
-      } else {
-        blogs = blogsInfo.map((item: any) => ({
-          ID: item.ID,
-          LoginID: item.LoginID,
-          title: item.Title,
-          content: item.Content,
-          createdAt: item.CreatedAt,
-          updatedAt: item.UpdatedAt,
-        }));
-      }
-      // レスポンスデータの処理
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  // コンポーネントのマウント時にリクエストを実行
-  fetchData();
-  }, []);
+  // useEffect(() => {
+  // const fetchData = async () => {
+  //   const hostname = process.env.NODE_ENV === "production" ? "server-app" : "localhost";
+  //   try {
+  //     const response = await axios.get(`http://${hostname}:8080/blog/overview`, {
+  //       headers: {
+  //         "Content-Type": "application/x-www-form-urlencoded",
+  //       },
+  //       withCredentials: true,
+  //     });
+  //     const data = response.data;
+  //     // レスポンスデータの処理
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+  // // コンポーネントのマウント時にリクエストを実行
+  // fetchData();
+  // }, []);
 
   return (
     <>
@@ -145,39 +127,39 @@ const Overview = ({ blogs }: BlogProps, { value }: ClickValue) => {
 
 Overview.getLayout = (page: any) => <Layout>{page}</Layout>;
 
-// export const getServerSideProps: GetServerSideProps<BlogProps> = async (context) => {
-//   const hostname = process.env.NODE_ENV === "production" ? "server-app" : "localhost";
-//   const response = await axios.get(`http://${hostname}:8080/blog/overview`, {
-//     headers: {
-//       "Content-Type": "application/x-www-form-urlencoded",
-//     },
-//     withCredentials: true,
-//   });
+export const getServerSideProps: GetServerSideProps<BlogProps> = async (context) => {
+  const hostname = process.env.NODE_ENV === "production" ? "server-app" : "localhost";
+  const response = await axios.get(`http://${hostname}:8080/blog/overview`, {
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    withCredentials: true,
+  });
 
-//   const blogsInfo = response.data.blogs;
-//   let blogs: Blog[];
-//   if (blogsInfo == null) {
-//     return {
-//       redirect: {
-//         destination: "/404",
-//         permanent: false,
-//       },
-//     };
-//   } else {
-//     blogs = blogsInfo.map((item: any) => ({
-//       ID: item.ID,
-//       LoginID: item.LoginID,
-//       title: item.Title,
-//       content: item.Content,
-//       createdAt: item.CreatedAt,
-//       updatedAt: item.UpdatedAt,
-//     }));
-//   }
-//   return {
-//     props: {
-//       blogs,
-//     },
-//   };
-// };
+  const blogsInfo = response.data.blogs;
+  let blogs: Blog[];
+  if (blogsInfo == null) {
+    return {
+      redirect: {
+        destination: "/404",
+        permanent: false,
+      },
+    };
+  } else {
+    blogs = blogsInfo.map((item: any) => ({
+      ID: item.ID,
+      LoginID: item.LoginID,
+      title: item.Title,
+      content: item.Content,
+      createdAt: item.CreatedAt,
+      updatedAt: item.UpdatedAt,
+    }));
+  }
+  return {
+    props: {
+      blogs,
+    },
+  };
+};
 
 export default Overview;

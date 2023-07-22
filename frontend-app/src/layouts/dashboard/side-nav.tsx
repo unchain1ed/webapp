@@ -16,7 +16,8 @@ import {
 } from '@mui/material';
 import { Logo } from '../../components/logo';
 import { Scrollbar } from '../../components/scrollbar';
-import { items } from './config';
+import { itemsLogin } from './config';
+import { itemsLogout } from './config';
 import { SideNavItem } from './side-nav-item';
 import { AnyMxRecord } from 'dns';
 
@@ -29,6 +30,7 @@ type SideNavProps = {
 export const SideNav: React.FC<SideNavProps> = ({ onClose, open, loginID }) => {
   const pathname = usePathname();
   const lgUp = useMediaQuery((theme: any) => theme.breakpoints.up('lg'));
+  const sideNavItems = loginID != null ? itemsLogin : itemsLogout;
   
   const content = (
     <Scrollbar
@@ -108,8 +110,8 @@ export const SideNav: React.FC<SideNavProps> = ({ onClose, open, loginID }) => {
               m: 0
             }}
           >
-            {items.map((item) => {
-              const active = item.path ? (pathname === item.path) : false;
+            {sideNavItems.map((item) => {
+              const active = item.path ? pathname === item.path : false;
 
               return (
                 <SideNavItem
