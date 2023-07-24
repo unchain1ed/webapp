@@ -16,7 +16,7 @@ import Layout from "../../layouts/dashboard/layout";
 import { BlogCard } from "../../sections/blog/blog-card";
 import axios from "axios";
 import router from "next/router";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { GetServerSideProps } from "next";
 
 type Blog = {
@@ -55,28 +55,50 @@ const handleAdd = (event: React.MouseEvent<HTMLElement>) => {
     });
 };
 
-const Overview = ({ blogs }: BlogProps, { value }: ClickValue) => {
+const Overview = ({ blogs}: BlogProps,{ value }: ClickValue) => {
   const handleBlogClick = (id: string) => {};
 
-  // useEffect(() => {
-  // const fetchData = async () => {
-  //   const hostname = process.env.NODE_ENV === "production" ? "server-app" : "localhost";
-  //   try {
-  //     const response = await axios.get(`http://${hostname}:8080/blog/overview`, {
-  //       headers: {
-  //         "Content-Type": "application/x-www-form-urlencoded",
-  //       },
-  //       withCredentials: true,
-  //     });
-  //     const data = response.data;
-  //     // レスポンスデータの処理
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
-  // // コンポーネントのマウント時にリクエストを実行
-  // fetchData();
-  // }, []);
+  // blogsが未定義またはnullの場合、空の配列を初期値として設定
+  // let blogsList: Blog[] = blogs || [];
+  // let blogs: Blog[] = [];
+
+  const [blogsList, setBlogsList] = useState<Blog[]>([]);
+
+  useEffect(() => {
+    const checkLogin = async () => {
+      const hostname = process.env.NODE_ENV === "production" ? "server-app" : "localhost";
+
+      try {
+        const response = await axios.get(`http://${hostname}:8080/blog/overview`, {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          withCredentials: true,
+        });
+        
+        const blogsInfo = response.data.blogs;
+        if (blogsInfo == null) {
+          setBlogsList([]); // レスポンスのデータが null の場合、空の配列を設定
+        } else {
+          const blogs = blogsInfo.map((item: any) => ({
+            ID: item.ID,
+            LoginID: item.LoginID,
+            title: item.Title,
+            content: item.Content,
+            createdAt: item.CreatedAt,
+            updatedAt: item.UpdatedAt,
+          }));
+          setBlogsList(blogs); // レスポンスのデータがある場合、データを設定
+        }
+      } catch (error) {
+        console.error("エラーが発生しました", error);
+        if (error.response.status === 302) {
+          router.push("/auth/login");
+        }
+      }
+    };
+    checkLogin();
+  }, []);
 
   return (
     <>
@@ -111,10 +133,10 @@ const Overview = ({ blogs }: BlogProps, { value }: ClickValue) => {
                 </Button>
               </div>
             </Stack>
-            <Grid container spacing={3}>
-              {blogs.map((blog) => (
+            <Grid container spacing={3}>     
+              {blogsList.map((blog) => (
                 <Grid xs={12} md={6} lg={4} key={blog.ID}>
-                  <BlogCard blog={blog} clickValue={value} onClick={handleBlogClick} />
+                  <BlogCard blog={blog} clickValue={value} />
                 </Grid>
               ))}
             </Grid>
@@ -127,39 +149,39 @@ const Overview = ({ blogs }: BlogProps, { value }: ClickValue) => {
 
 Overview.getLayout = (page: any) => <Layout>{page}</Layout>;
 
-export const getServerSideProps: GetServerSideProps<BlogProps> = async (context) => {
-  const hostname = process.env.NODE_ENV === "production" ? "server-app" : "localhost";
-  const response = await axios.get(`http://${hostname}:8080/blog/overview`, {
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    withCredentials: true,
-  });
+// export const getServerSideProps: GetServerSideProps<BlogProps> = async (context) => {
+//   const hostname = process.env.NODE_ENV === "production" ? "server-app" : "localhost";
+//   const response = await axios.get(`http://${hostname}:8080/blog/overview`, {
+//     headers: {
+//       "Content-Type": "application/x-www-form-urlencoded",
+//     },
+//     withCredentials: true,
+//   });
 
-  const blogsInfo = response.data.blogs;
-  let blogs: Blog[];
-  if (blogsInfo == null) {
-    return {
-      redirect: {
-        destination: "/404",
-        permanent: false,
-      },
-    };
-  } else {
-    blogs = blogsInfo.map((item: any) => ({
-      ID: item.ID,
-      LoginID: item.LoginID,
-      title: item.Title,
-      content: item.Content,
-      createdAt: item.CreatedAt,
-      updatedAt: item.UpdatedAt,
-    }));
-  }
-  return {
-    props: {
-      blogs,
-    },
-  };
-};
+//   const blogsInfo = response.data.blogs;
+//   let blogs: Blog[];
+//   if (blogsInfo == null) {
+//     return {
+//       redirect: {
+//         destination: "/404",
+//         permanent: false,
+//       },
+//     };
+//   } else {
+//     blogs = blogsInfo.map((item: any) => ({
+//       ID: item.ID,
+//       LoginID: item.LoginID,
+//       title: item.Title,
+//       content: item.Content,
+//       createdAt: item.CreatedAt,
+//       updatedAt: item.UpdatedAt,
+//     }));
+//   }
+//   return {
+//     props: {
+//       blogs,
+//     },
+//   };
+// };
 
 export default Overview;

@@ -79,24 +79,6 @@ func postLogin(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"user": user})
 }
 
-func getSignup(c *gin.Context) {
-	c.HTML(http.StatusOK, "signup.html", gin.H{})
-}
-
-// 新規会員登録(id,password)
-func postSignup(c *gin.Context) {
-	id := c.PostForm("userId")
-	pw := c.PostForm("password")
-
-	user, err := db.Signup(id, pw)
-	if err != nil {
-		c.Redirect(http.StatusMovedPermanently, "/signup")
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{"user": user})
-}
-
 func getUpdate(c *gin.Context) {
 	// //dbパッケージからUser型のポインタを作成
 	// db := &db.User{}

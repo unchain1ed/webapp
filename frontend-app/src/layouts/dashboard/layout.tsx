@@ -42,11 +42,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   useEffect(() => {
     handlePathnameChange();
-
     const fetchData = async () => {
       const hostname = process.env.NODE_ENV === 'production' ? 'server-app' : 'localhost';
       try {
-        const response = await axios.get(`http://${hostname}:8080/`, {
+        const response = await axios.get(`http://${hostname}:8080/api/login-id`, {
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
           },
@@ -58,10 +57,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         console.error(error);
       }
     };
-
     // コンポーネントのマウント時にリクエストを実行
     fetchData();
   }, [pathname]);
+
   return (
     <>
       <TopNav onNavOpen={() => setOpenNav(true)} />

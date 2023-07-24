@@ -45,7 +45,7 @@ func GetRouter() *gin.Engine {
 		router.Use(cors.New(config))
 
 	//ホーム画面
-	router.GET("/", func(c *gin.Context) {getTop(c)})
+	router.GET("/", isAuthenticated(), func(c *gin.Context) {getTop(c)})
 
 	//loginCheckGroupでルートパスをグループ化し、ログインチェック実施
 	//ログインされていない場合はリダイレクト、ログインしている場合はそれぞれのハンドラ関数を呼び出し
@@ -70,32 +70,45 @@ func GetRouter() *gin.Engine {
 	// 	// loginCheckGroup.POST("/update", func(c *gin.Context) {postUpdate(c)})
 	// }
 
-
+	//***ログイン画面***
 	//ログイン画面
 	router.GET("/login", func(c *gin.Context) {getLogin(c)})
 	router.POST("/login", func(c *gin.Context) {postLogin(c)})
-	//ログイン画面
-	router.GET("/mypage", func(c *gin.Context) {getMypage(c)})
+	// //ログイン画面
+	// router.GET("/mypage", func(c *gin.Context) {getMypage(c)})
+
+	//***ブログ画面***
 	//ブログ記事作成画面
-	router.POST("/blog/post", func(c *gin.Context) {postBlog(c)})
+	router.POST("/blog/post", isAuthenticated(), func(c *gin.Context) {postBlog(c)})
 	//BlogOverview画面
-	router.GET("/blog/overview", func(c *gin.Context) {getBlogOverview(c)})
+	router.GET("/blog/overview", isAuthenticated(),func(c *gin.Context) {getBlogOverview(c)})
 	//BlogIDによるView画面
-	router.GET("/blog/overview/post/:id", func(c *gin.Context) {getBlogViewById(c)})
+	router.GET("/blog/overview/post/:id", isAuthenticated(), func(c *gin.Context) {getBlogViewById(c)})
 	//ブログ記事編集API
-	router.POST("/blog/edit", func(c *gin.Context) {postEditBlog(c)})
+	router.POST("/blog/edit", isAuthenticated(), func(c *gin.Context) {postEditBlog(c)})
 	//ブログ記事消去API
-	router.GET("/blog/delete/:id", func(c *gin.Context) {getDeleteBlog(c)})
+	router.GET("/blog/delete/:id", isAuthenticated(), func(c *gin.Context) {getDeleteBlog(c)})
+
 	//会員情報編集画面
-	router.GET("/update", func(c *gin.Context) {getUpdate(c)})
-	router.POST("/update", func(c *gin.Context) {postUpdate(c)})
+	router.GET("/update", isAuthenticated(), func(c *gin.Context) {getUpdate(c)})
+	router.POST("/update", isAuthenticated(), func(c *gin.Context) {postUpdate(c)})
+
+	//***ログアウト画面***
 	//ログアウト実行API
-	router.POST("/logout", func(c *gin.Context) {decideLogout(c)})
-	//ログイン中のIDをセッションから取得
-	router.GET("/logout/view", func(c *gin.Context) {getLoginIdBySession(c)})
-	//サインアップ画面
-	router.GET("/signup", func(c *gin.Context) {getSignup(c)})
-	router.POST("/signup", func(c *gin.Context) {postSignup(c)})
+	router.POST("/logout", isAuthenticated(), func(c *gin.Context) {decideLogout(c)})
+
+	//***会員情報登録画面***
+	//登録画面遷移
+	router.GET("/regist", isAuthenticated(), func(c *gin.Context) {getRegist(c)})
+	router.POST("/regist", isAuthenticated(), func(c *gin.Context) {postRegist(c)})
+
+	//***共通API***
+	//セッションからログインIDを取得するAPI
+	router.GET("/api/login-id", func(c *gin.Context) {getLoginIdBySession(c)})
+
+
+
+
 
 	// //ログアウトされている場合はそれぞれのハンドラ関数を呼び出し、ログインしている場合はリダイレクト
 	// //【ログアウト中】
@@ -119,7 +132,7 @@ func GetRouter() *gin.Engine {
 	// 	//ログアウト実行API
 	// 	logoutCheckGroup.POST("/logout", func(c *gin.Context) {decideLogout(c)})
 	// 	//ログイン中のIDをセッションから取得
-	// 	logoutCheckGroup.GET("/logout/view", func(c *gin.Context) {getLoginIdBySession(c)})
+	// 	logoutCheckGroup.GET("/api/login-id", func(c *gin.Context) {getLoginIdBySession(c)})
 
 	// 	// //ログイン画面
 	// 	// logoutCheckGroup.GET("/login", func(c *gin.Context) {getLogin(c)})
@@ -210,3 +223,25 @@ func checkLogout() gin.HandlerFunc {
 		}
 	}	
 } 
+
+// ログイン中かどうかを判定するミドルウェア
+func isAuthenticated() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		fmt.Println("通過isAuthenticated")
+		cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
+		//セッションから取得
+		id := redis.GetSession(c, cookieKey)
+
+		// セッションにログイン情報が保存されているかどうかをチェックする
+		if id == nil {
+			fmt.Println("セッションにユーザーIDが存在していません")
+			// ログインしていない場合はログイン画面にリダイレクトする
+			// c.Redirect(http.StatusFound, "/auth/login")
+			c.JSON(http.StatusFound, gin.H{"message": "status 302 fail to get session id"})
+			c.Abort()
+		}
+		// ログインしている場合のJSONレスポンスのステータスコード
+		// c.JSON(http.StatusOK, gin.H{"message": "success"})
+		c.Next()
+	}
+}

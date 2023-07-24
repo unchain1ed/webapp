@@ -24,8 +24,6 @@ type HomeProps = {
   user: User;
 };
 
-const logout: string = "logout"
-
 const Logout: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => React.ReactNode } = ({
   user,
 }) => {
@@ -36,7 +34,7 @@ const Logout: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => Reac
     const fetchData = async () => {
       const hostname = process.env.NODE_ENV === "production" ? "server-app" : "localhost";
       try {
-        const response = await axios.get(`http://${hostname}:8080/logout/view`, {
+        const response = await axios.get(`http://${hostname}:8080/api/login-id`, {
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
           },
@@ -124,7 +122,7 @@ const Logout: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => Reac
 
 // export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
 //   const hostname = process.env.NODE_ENV === "production" ? "server-app" : "localhost";
-//   const response = await axios.get(`http://${hostname}:8080/logout/view`, {
+//   const response = await axios.get(`http://${hostname}:8080/api/login-id`, {
 //     headers: {
 //       "Content-Type": "application/x-www-form-urlencoded",
 //     },
@@ -138,6 +136,6 @@ const Logout: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => Reac
 //   };
 // };
 
-Logout.getLayout = (page: React.ReactNode) => <AuthLayout mode={logout}>{page}</AuthLayout>;
+Logout.getLayout = (page: React.ReactNode) => <AuthLayout>{page}</AuthLayout>;
 
 export default Logout;

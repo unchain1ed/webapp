@@ -21,6 +21,7 @@ import DeleteDialog from './delete-dialog';
 
 type Blog = {
   ID: string;
+  LoginID: string;
   title: string;
   content: string;
   createdAt: Date;

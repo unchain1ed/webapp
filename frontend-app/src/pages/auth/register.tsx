@@ -31,41 +31,38 @@ type HomeProps = {
   user: User;
 };
 
-const mode: string = "login"
-
-const Page: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => React.ReactNode } = () => {
+const Register: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => React.ReactNode } = () => {
   const router = useRouter();
   const auth = useAuth();
   const [method, setMethod] = useState("userId");
   const [userId, setUserId] = useState("root");
   const [password, setPassword] = useState("root");
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const hostname = process.env.NODE_ENV === "production" ? "server-app" : "localhost";
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const hostname = process.env.NODE_ENV === "production" ? "server-app" : "localhost";
+  //     try {
+  //       const response = await axios.get(`http://${hostname}:8080/login`, {
+  //         headers: {
+  //           "Content-Type": "application/x-www-form-urlencoded",
+  //         },
+  //         withCredentials: true,
+  //       });
+  //       const data = response.data;
+  //       // レスポンスデータの処理
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   };
+  //   // コンポーネントのマウント時にリクエストを実行
+  //   fetchData();
+  // }, []);
 
-      try {
-        const response = await axios.get(`http://${hostname}:8080/login`, {
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-          withCredentials: true,
-        });
-        const data = response.data;
-        // レスポンスデータの処理
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    // コンポーネントのマウント時にリクエストを実行
-    fetchData();
-  }, []);
-
-  const handleLogin = async (event: React.MouseEvent<HTMLElement>) => {
+  const handleRegist = async (event: React.MouseEvent<HTMLElement>) => {
     const hostname = process.env.NODE_ENV === "production" ? "server-app" : "localhost";
     try {
       const response = await axios.post(
-        `http://${hostname}:8080/login`,
+        `http://${hostname}:8080/regist`,
         { userId, password },
         {
           headers: {
@@ -90,8 +87,8 @@ const Page: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => React.
 
   const formik = useFormik({
     initialValues: {
-      userId: "root",
-      password: "root",
+      userId: "",
+      password: "",
       submit: null,
     },
     validationSchema: Yup.object({
@@ -113,7 +110,7 @@ const Page: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => React.
   return (
     <>
       <Head>
-        <title>Login</title>
+        <title>Register</title>
       </Head>
       <Box
         sx={{
@@ -134,23 +131,25 @@ const Page: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => React.
         >
           <div>
             <Stack spacing={1} sx={{ mb: 3 }}>
-              <Typography variant="h4">Login</Typography>
-              <Typography color="text.secondary" variant="body2">
-                Don&apos;t have an account? &nbsp;
+            <Typography variant="h4">
+                Register
+              </Typography>
+              <Typography
+                color="text.secondary"
+                variant="body2"
+              >
+                Already have an account?
+                &nbsp;
                 <Link
                   component={NextLink}
-                  href="/auth/register"
+                  href="/auth/login"
                   underline="hover"
                   variant="subtitle2"
                 >
-                  Register
+                  Log in
                 </Link>
               </Typography>
             </Stack>
-            <Tabs onChange={handleMethodChange} sx={{ mb: 3 }} value={method}>
-              <Tab label="Acoount" value="userId" />
-            </Tabs>
-            {method === "userId" && (
               <form noValidate onSubmit={formik.handleSubmit}>
                 <Stack spacing={3}>
                   <TextField
@@ -182,27 +181,17 @@ const Page: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => React.
                     value={password && formik.values.password}
                   />
                 </Stack>
-                <FormHelperText sx={{ mt: 1 }}>Optionally you can skip.</FormHelperText>
                 <Button
                   fullWidth
                   size="large"
                   sx={{ mt: 3 }}
                   variant="contained"
-                  onClick={handleLogin}
+                  onClick={handleRegist}
                   disabled={!formik.isValid}
                 >
                   Continue
                 </Button>
-                <Button fullWidth size="large" sx={{ mt: 3 }} onClick={handleSkip}>
-                  Skip authentication
-                </Button>
-                <Alert color="info" severity="info" sx={{ mt: 3 }}>
-                  <div>
-                    You can use <b>root</b> and password <b>root</b>
-                  </div>
-                </Alert>
               </form>
-            )}
           </div>
         </Box>
       </Box>
@@ -224,6 +213,6 @@ const Page: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => React.
 //   };
 // };
 
-Page.getLayout = (page: React.ReactNode) => <AuthLayout>{page}</AuthLayout>;
+Register.getLayout = (page: React.ReactNode) => <AuthLayout>{page}</AuthLayout>;
 
-export default Page;
+export default Register;

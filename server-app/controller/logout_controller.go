@@ -20,15 +20,3 @@ func decideLogout(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"Success Logout": "auth/login"})
 }
-
-//セッションからログインIDを取得
-func getLoginIdBySession(c *gin.Context) {
-	//セッションからuserを取得
-	cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
-	//セッションから取得
-	id := redis.GetSession(c, cookieKey)
-
-	log.Println("Get LoginId bySession :id", id); 
-
-	c.JSON(http.StatusOK, gin.H{"id": id})
-}
