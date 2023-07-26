@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import { Box, Typography } from "@mui/material";
@@ -14,10 +14,10 @@ import { Logo } from "../../components/logo";
 type Blog = {
   ID: string;
   LoginID: string;
-  title: string;
-  content: string;
-  createdAt: Date;
-  updatedAt: Date;
+  Title: string;
+  Content: string;
+  CreatedAt: Date;
+  UpdatedAt: Date;
   DeletedAt: Date;
 };
 
@@ -44,18 +44,56 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Blog(props) {
+export default function Blog({ id }) {
   const classes = useStyles();
   const router = useRouter();
-  const { id } = router.query;
+  // const { id } = router.query; // idを取得
+  const [propsBlog, setBlogProps] = useState<Blog>({
+    ID: "",
+    LoginID: "",
+    Title: "",
+    Content: "",
+    CreatedAt: new Date(),
+    UpdatedAt: new Date(),
+    DeletedAt: new Date(),
+  });
 
   const content = {
-    date: `${format(new Date(props.blog.CreatedAt), "yyyy/MM/dd")}`,
-    "header-p1": `${props.blog.Title}`,
-    // 'avatar': 'jpg',
-    name: `${props.blog.LoginID}`,
-    paragraph1: `${props.blog.Content}`,
+    date: `${format(new Date(propsBlog.CreatedAt), "yyyy/MM/dd")}`,
+    "header-p1": `${propsBlog.Title}`,
+    // 'avatar': 'jpg',　//TODO
+    name: `${propsBlog.LoginID}`,
+    paragraph1: `${propsBlog.Content}`,
   };
+
+  useEffect(() => {
+    console.log(id)
+    const getBlogContent = async () => {
+      const hostname = process.env.NODE_ENV === "production" ? "server-app" : "localhost";
+
+      try {
+        const response = await axios.get(`http://${hostname}:8080/blog/overview/post/${id}`, {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          withCredentials: true,
+        });
+        
+        const blog: Blog = response.data.blog;
+        console.log(response.data.blog)
+        console.log(blog)
+        setBlogProps(blog)
+        console.log(propsBlog)
+
+      } catch (error) {
+        console.error("エラーが発生しました", error);
+        if (error.response.status === 302) {
+          router.push("/auth/login");
+        }
+      }
+    };
+    getBlogContent();
+  }, []);
 
   return (
     <section>
@@ -119,23 +157,36 @@ export default function Blog(props) {
     </section>
   );
 }
+  export async function getServerSideProps(context) {
+    // ここで context.params を使用して id を取得
+    const { id } = context.params;
 
-export const getServerSideProps: GetServerSideProps<BlogProps> = async (context) => {
-  const { id } = context.params; // idを取得
-  const hostname = process.env.NODE_ENV === "production" ? "server-app" : "localhost";
+    // 例えば、この id を使ってデータを取得する処理などを行う
 
-  const response = await axios.get(`http://${hostname}:8080/blog/overview/post/${id}`, {
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    withCredentials: true,
-  });
+    // ページコンポーネントに props として id を渡す
+    return {
+      props: {
+        id,
+      },
+    };
+  }
 
-  const blog: Blog = response.data.blog;
+// export const getServerSideProps: GetServerSideProps<BlogProps> = async (context) => {
+//   const { id } = context.params; // idを取得
+//   const hostname = process.env.NODE_ENV === "production" ? "server-app" : "localhost";
 
-  return {
-    props: {
-      blog,
-    },
-  };
-};
+//   const response = await axios.get(`http://${hostname}:8080/blog/overview/post/${id}`, {
+//     headers: {
+//       "Content-Type": "application/x-www-form-urlencoded",
+//     },
+//     withCredentials: true,
+//   });
+
+//   const blog: Blog = response.data.blog;
+
+//   return {
+//     props: {
+//       blog,
+//     },
+//   };
+// };

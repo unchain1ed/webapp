@@ -1,8 +1,8 @@
-import React, { useState, ChangeEvent, FormEvent, useEffect } from "react";
+import React, { useState, ChangeEvent, FormEvent, useEffect, useLayoutEffect } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import * as Yup from "yup";
-
+import { makeStyles } from "@material-ui/core/styles";
 import { Box, Button, Grid, Stack, TextField, Typography } from "@mui/material";
 import { useFormik } from "formik";
 import axios from "axios";
@@ -13,20 +13,52 @@ import { Logo } from "../../../components/logo";
 type Blog = {
   ID: string;
   LoginID: string;
-  title: string;
-  content: string;
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt: Date;
+  Title: string;
+  Content: string;
+  CreatedAt: Date;
+  UpdatedAt: Date;
+  DeletedAt: Date;
 };
 
 type BlogProps = {
   blog: Blog;
 };
 
-const Edit: React.FC = (props: any, context: any) => {
-  const { blog } = props;
+const useStyles = makeStyles((theme) => ({
+  name: {
+    lineHeight: 1,
+  },
+  content: {
+    [theme.breakpoints.up("md")]: {
+      paddingLeft: theme.spacing(8),
+      paddingRight: theme.spacing(8),
+    },
+  },
+  paragraph: {
+    marginBottom: theme.spacing(3),
+  },
+  image: {
+    maxWidth: "100%",
+    borderRadius: theme.shape.borderRadius,
+  },
+}));
+
+// const Edit: React.FC = (props) => {
+  export default function Edit({ edit }) {
+  // const { id } = props;
+  const classes = useStyles();
   const router = useRouter();
+
+  // const { id } = router.query; // idを取得
+  const [propsBlog, setBlogProps] = useState<Blog>({
+    ID: "",
+    LoginID: "",
+    Title: "",
+    Content: "",
+    CreatedAt: new Date(),
+    UpdatedAt: new Date(),
+    DeletedAt: new Date(),
+  });
 
   const formik = useFormik({
     initialValues: {
@@ -42,12 +74,47 @@ const Edit: React.FC = (props: any, context: any) => {
   });
 
   useEffect(() => {
-    if (blog) {
-      formik.setFieldValue("id", String(blog.ID)); //数値型からstringに変換
-      formik.setFieldValue("title", blog.Title);
-      formik.setFieldValue("content", blog.Content);
+    const getBlogContent = async () => {
+      const hostname = process.env.NODE_ENV === "production" ? "server-app" : "localhost";
+
+      try {
+        const response = await axios.get(`http://${hostname}:8080/blog/overview/post/${edit}`, {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          withCredentials: true,
+        });
+        
+        const blog: Blog = response.data.blog;
+        // console.log(response.data.blog)
+        // console.log(blog)
+        setBlogProps(blog)
+        // console.log(propsBlog)
+
+      } catch (error) {
+        console.error("エラーが発生しました", error);
+        if (error.response.status === 302) {
+          console.error("ログインしていません。StatusCode:", error.response.status);
+          router.push("/auth/login");
+        }
+      }
+    };
+    getBlogContent();
+
+    // if (propsBlog) {
+    //   formik.setFieldValue("id", String(propsBlog.ID)); //数値型からstringに変換
+    //   formik.setFieldValue("title", propsBlog.Title);
+    //   formik.setFieldValue("content", propsBlog.Content);
+    // }
+  }, []);
+
+    useLayoutEffect(() => {
+    if (propsBlog) {
+      formik.setFieldValue("id", String(propsBlog.ID)); //数値型からstringに変換
+      formik.setFieldValue("title", propsBlog.Title);
+      formik.setFieldValue("content", propsBlog.Content);
     }
-  }, [blog]);
+  }, [propsBlog]);
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -183,23 +250,37 @@ const Edit: React.FC = (props: any, context: any) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps<BlogProps> = async (context) => {
-  const { edit } = context.params; // idを取得
-  const hostname = process.env.NODE_ENV === "production" ? "server-app" : "localhost";
-  const response = await axios.get(`http://${hostname}:8080/blog/overview/post/${edit}`, {
-    headers: {
-      "Content-Type": "aapplication/json",
-    },
-    withCredentials: true,
-  });
+export async function getServerSideProps(context) {
+  // ここで context.params を使用して id を取得
+  const { edit } = context.params;
 
-  const blog: Blog = response.data.blog;
+  // 例えば、この id を使ってデータを取得する処理などを行う
 
+  // ページコンポーネントに props として id を渡す
   return {
     props: {
-      blog,
+      edit,
     },
   };
 };
 
-export default Edit;
+// export const getServerSideProps: GetServerSideProps<BlogProps> = async (context) => {
+//   const { edit } = context.params; // idを取得
+//   const hostname = process.env.NODE_ENV === "production" ? "server-app" : "localhost";
+//   const response = await axios.get(`http://${hostname}:8080/blog/overview/post/${edit}`, {
+//     headers: {
+//       "Content-Type": "aapplication/json",
+//     },
+//     withCredentials: true,
+//   });
+
+//   const blog: Blog = response.data.blog;
+
+//   return {
+//     props: {
+//       blog,
+//     },
+//   };
+// };
+
+

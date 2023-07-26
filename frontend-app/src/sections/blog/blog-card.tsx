@@ -22,10 +22,11 @@ import DeleteDialog from './delete-dialog';
 type Blog = {
   ID: string;
   LoginID: string;
-  title: string;
-  content: string;
-  createdAt: Date;
-  updatedAt: Date;
+  Title: string;
+  Content: string;
+  CreatedAt: Date;
+  UpdatedAt: Date;
+  DeletedAt: Date;
 };
 
 type ClickValue = {
@@ -85,10 +86,10 @@ export const BlogCard: React.FC<BlogCardProps> = ({ blog }) => {
         <CardContent onClick={handleContainerClick} onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}>
           <Typography align="center" gutterBottom variant="h5">
-            {blog.title}
+            {blog.Title}
           </Typography>
           <Typography align="center" variant="body1">
-            {blog.content.split('\n')[0]}
+            {blog.Content.split('\n')[0]}
           </Typography>
         </CardContent>
         <Box sx={{ flexGrow: 1 }} />
@@ -99,7 +100,7 @@ export const BlogCard: React.FC<BlogCardProps> = ({ blog }) => {
               <ClockIcon />
             </SvgIcon>
             <Typography color="text.secondary" display="inline" variant="body2">
-              {format(new Date(blog.createdAt), 'yyyy/MM/dd HH:mm')}
+              {format(new Date(blog.CreatedAt), 'yyyy/MM/dd HH:mm')}
             </Typography>
           </Stack>
           <Stack alignItems="center" direction="row" spacing={1}>

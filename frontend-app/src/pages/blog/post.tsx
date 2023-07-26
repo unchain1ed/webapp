@@ -11,8 +11,8 @@ import { Logo } from "../../components/logo";
 
 interface BlogForm {
   LoginID: string;
-  title: string;
-  content: string;
+  Title: string;
+  Content: string;
 }
 
 const Post: React.FC = () => {
@@ -20,8 +20,8 @@ const Post: React.FC = () => {
 
   const [blogForm, setBlogForm] = useState<BlogForm>({
     LoginID: "",
-    title: "",
-    content: "",
+    Title: "",
+    Content: "",
   });
 
   useEffect(() => {
@@ -125,10 +125,10 @@ const Post: React.FC = () => {
                     id="title"
                     label="Title"
                     onBlur={formik.handleBlur}
-                    value={blogForm.title && formik.values.title}
+                    value={blogForm.Title && formik.values.title}
                     onChange={(event) => {
                       formik.handleChange(event);
-                      setBlogForm({ ...blogForm, title: event.target.value });
+                      setBlogForm({ ...blogForm, Title: event.target.value });
                     }}
                     fullWidth
                   />
@@ -138,10 +138,10 @@ const Post: React.FC = () => {
                     id="content"
                     label="Content"
                     onBlur={formik.handleBlur}
-                    value={blogForm.content && formik.values.content}
+                    value={blogForm.Content && formik.values.content}
                     onChange={(event) => {
                       formik.handleChange(event);
-                      setBlogForm({ ...blogForm, content: event.target.value });
+                      setBlogForm({ ...blogForm, Content: event.target.value });
                     }}
                     multiline
                     rows={15}

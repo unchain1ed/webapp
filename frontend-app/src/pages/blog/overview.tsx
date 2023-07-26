@@ -22,10 +22,11 @@ import { GetServerSideProps } from "next";
 type Blog = {
   ID: string;
   LoginID: string;
-  title: string;
-  content: string;
-  createdAt: Date;
-  updatedAt: Date;
+  Title: string;
+  Content: string;
+  CreatedAt: Date;
+  UpdatedAt: Date;
+  DeletedAt: Date;
 };
 
 type BlogProps = {
@@ -59,9 +60,6 @@ const Overview = ({ blogs}: BlogProps,{ value }: ClickValue) => {
   const handleBlogClick = (id: string) => {};
 
   // blogsが未定義またはnullの場合、空の配列を初期値として設定
-  // let blogsList: Blog[] = blogs || [];
-  // let blogs: Blog[] = [];
-
   const [blogsList, setBlogsList] = useState<Blog[]>([]);
 
   useEffect(() => {
@@ -79,14 +77,20 @@ const Overview = ({ blogs}: BlogProps,{ value }: ClickValue) => {
         const blogsInfo = response.data.blogs;
         if (blogsInfo == null) {
           setBlogsList([]); // レスポンスのデータが null の場合、空の配列を設定
+          return {
+                  redirect: {
+                    destination: "/404",
+                    permanent: false,
+                  },
+                };
         } else {
           const blogs = blogsInfo.map((item: any) => ({
             ID: item.ID,
             LoginID: item.LoginID,
-            title: item.Title,
-            content: item.Content,
-            createdAt: item.CreatedAt,
-            updatedAt: item.UpdatedAt,
+            Title: item.Title,
+            Content: item.Content,
+            CreatedAt: item.CreatedAt,
+            UpdatedAt: item.UpdatedAt,
           }));
           setBlogsList(blogs); // レスポンスのデータがある場合、データを設定
         }
@@ -136,7 +140,7 @@ const Overview = ({ blogs}: BlogProps,{ value }: ClickValue) => {
             <Grid container spacing={3}>     
               {blogsList.map((blog) => (
                 <Grid xs={12} md={6} lg={4} key={blog.ID}>
-                  <BlogCard blog={blog} clickValue={value} />
+                  <BlogCard blog={blog} clickValue={value} onClick={handleBlogClick} />
                 </Grid>
               ))}
             </Grid>

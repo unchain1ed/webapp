@@ -2,15 +2,14 @@ import axios from "axios";
 import { GetServerSideProps } from "next";
 
 type Blog = {
-    ID: string;
-    loginID: string;
-    title: string;
-    content: string;
-    createdAt: Date;
-    updatedAt: Date;
-    deletedAt: Date;
-  };
-  
+  ID: string;
+  LoginID: string;
+  Title: string;
+  Content: string;
+  CreatedAt: Date;
+  UpdatedAt: Date;
+  DeletedAt: Date;
+};
   type BlogProps = {
     blog: Blog;
   };
