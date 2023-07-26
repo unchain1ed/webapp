@@ -24,32 +24,8 @@ type BlogProps = {
   blog: Blog;
 };
 
-const useStyles = makeStyles((theme) => ({
-  name: {
-    lineHeight: 1,
-  },
-  content: {
-    [theme.breakpoints.up("md")]: {
-      paddingLeft: theme.spacing(8),
-      paddingRight: theme.spacing(8),
-    },
-  },
-  paragraph: {
-    marginBottom: theme.spacing(3),
-  },
-  image: {
-    maxWidth: "100%",
-    borderRadius: theme.shape.borderRadius,
-  },
-}));
-
-// const Edit: React.FC = (props) => {
   export default function Edit({ edit }) {
-  // const { id } = props;
-  const classes = useStyles();
   const router = useRouter();
-
-  // const { id } = router.query; // idを取得
   const [propsBlog, setBlogProps] = useState<Blog>({
     ID: "",
     LoginID: "",
@@ -86,11 +62,8 @@ const useStyles = makeStyles((theme) => ({
         });
         
         const blog: Blog = response.data.blog;
-        // console.log(response.data.blog)
-        // console.log(blog)
+        //レスポンス情報を設定
         setBlogProps(blog)
-        // console.log(propsBlog)
-
       } catch (error) {
         console.error("エラーが発生しました", error);
         if (error.response.status === 302) {
@@ -100,12 +73,6 @@ const useStyles = makeStyles((theme) => ({
       }
     };
     getBlogContent();
-
-    // if (propsBlog) {
-    //   formik.setFieldValue("id", String(propsBlog.ID)); //数値型からstringに変換
-    //   formik.setFieldValue("title", propsBlog.Title);
-    //   formik.setFieldValue("content", propsBlog.Content);
-    // }
   }, []);
 
     useLayoutEffect(() => {
@@ -254,9 +221,6 @@ export async function getServerSideProps(context) {
   // ここで context.params を使用して id を取得
   const { edit } = context.params;
 
-  // 例えば、この id を使ってデータを取得する処理などを行う
-
-  // ページコンポーネントに props として id を渡す
   return {
     props: {
       edit,

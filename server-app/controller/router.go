@@ -104,7 +104,7 @@ func GetRouter() *gin.Engine {
 
 	//***共通API***
 	//セッションからログインIDを取得するAPI
-	router.GET("/api/login-id", func(c *gin.Context) {getLoginIdBySession(c)})
+	router.GET("/api/login-id", isAuthenticated(), func(c *gin.Context) {getLoginIdBySession(c)})
 
 
 
@@ -173,9 +173,9 @@ func GetRouter() *gin.Engine {
 
 	//HTTPSサーバーを起動LSプロトコル使用※ハンドラの登録後に実行登録後に実行**TODO**
 	//第1引数にはポート番号 ":8080" 、第2引数にはTLS証明書のパス、第3引数には秘密鍵のパス
-	// router.RunTLS(":8080", "../../certificate/server.pem", "../../certificate/server.key")
+	// router.RunTLS(":8080", "../../certificate/localhost.crt", "../../certificate/localhost.key")
 
-	//サーバーを起動
+	//HTTPサーバーを起動
 	router.Run(":8080")
 
 	return router
@@ -240,8 +240,7 @@ func isAuthenticated() gin.HandlerFunc {
 			c.JSON(http.StatusFound, gin.H{"message": "status 302 fail to get session id"})
 			c.Abort()
 		}
-		// ログインしている場合のJSONレスポンスのステータスコード
-		// c.JSON(http.StatusOK, gin.H{"message": "success"})
+		fmt.Println("success get session id")
 		c.Next()
 	}
 }

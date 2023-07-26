@@ -5,6 +5,7 @@ import { withAuthGuard } from "../../hocs/with-auth-guard";
 import { SideNav } from "./side-nav";
 import { TopNav } from "./top-nav";
 import axios from "axios";
+import { useRouter } from "next/router";
 
 const SIDE_NAV_WIDTH = 280;
 
@@ -31,6 +32,7 @@ type LayoutProps = {
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const pathname = usePathname();
   const [openNav, setOpenNav] = useState(false);
+  const router = useRouter();
 
   const handlePathnameChange = useCallback(() => {
     if (openNav) {
@@ -40,10 +42,32 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   const [fetchedID, setFetchedLoginID] = useState<string>("");
 
+  // useEffect(() => {
+  //   handlePathnameChange();
+  //   const fetchData = async () => {
+  //     const hostname = process.env.NODE_ENV === 'production' ? 'server-app' : 'localhost';
+  //     try {
+  //       const response = await axios.get(`http://${hostname}:8080/api/login-id`, {
+  //         headers: {
+  //           "Content-Type": "application/x-www-form-urlencoded",
+  //         },
+  //         withCredentials: true,
+  //       });
+  //       const fetchedID = response.data.id || null;
+  //       setFetchedLoginID(fetchedID); // 取得した loginID を状態に設定する
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   };
+  //   // コンポーネントのマウント時にリクエストを実行
+  //   fetchData();
+  // }, [pathname]);
+
   useEffect(() => {
     handlePathnameChange();
-    const fetchData = async () => {
-      const hostname = process.env.NODE_ENV === 'production' ? 'server-app' : 'localhost';
+    const getTopIdInfo = async () => {
+      const hostname = process.env.NODE_ENV === "production" ? "server-app" : "localhost";
+
       try {
         const response = await axios.get(`http://${hostname}:8080/api/login-id`, {
           headers: {
@@ -51,14 +75,19 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           },
           withCredentials: true,
         });
-        const fetchedID = response.data.id || null;
+        
+        const fetchedID = response.data.id;
         setFetchedLoginID(fetchedID); // 取得した loginID を状態に設定する
+        
       } catch (error) {
-        console.error(error);
+        console.error("エラーが発生しました", error);
+        if (error.response.status === 302) {
+          console.error("ログインしていません。StatusCode:", error.response.status);
+          router.push("/auth/login");
+        }
       }
     };
-    // コンポーネントのマウント時にリクエストを実行
-    fetchData();
+    getTopIdInfo();
   }, [pathname]);
 
   return (
