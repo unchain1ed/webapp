@@ -3,7 +3,6 @@ package controller
 import (
 	"log"
 	"github.com/unchain1ed/server-app/model/redis"
-	"os"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -13,9 +12,12 @@ func decideLogout(c *gin.Context) {
 
 	id := c.PostForm("userId")
 
-	cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
-	redis.DeleteSession(c, cookieKey, id)
-
+	err := redis.DeleteSession(c, id)
+	if err != nil {
+		log.Println("セッションを消去できませんでした。,err："+err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"error in decideLogout": err.Error()})
+		return
+	}
 	log.Println("Success Logout :id", id); 
 
 	c.JSON(http.StatusOK, gin.H{"Success Logout": "auth/login"})

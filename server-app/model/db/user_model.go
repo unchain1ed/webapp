@@ -1,8 +1,8 @@
 package db
 
 import (
+	"log"
 	"errors"
-	"fmt"
 	"github.com/unchain1ed/server-app/crypto"
 
 	"gorm.io/gorm"
@@ -38,7 +38,7 @@ func Login(userId, password string) (*User, error) {
 
 		if user.ID == 0 {
 			err := errors.New("UserIdが一致するユーザーが存在しません。")
-			fmt.Println(err)
+			log.Println(err)
 			return nil, err
 		}
 
@@ -46,7 +46,7 @@ func Login(userId, password string) (*User, error) {
 		compareErr := crypto.CompareHashAndPassword(user.Password, password)
 	
 		if compareErr != nil {
-			fmt.Println("パスワードが一致しません。:", compareErr)
+			log.Println("パスワードが一致しません。:", compareErr)
 			return nil, compareErr
 		}
 		
@@ -63,7 +63,7 @@ func Signup(userId, password string) (*User, error){
 
 	if user.ID != 0 {
 		err := errors.New("同一名のUserIdが既に登録されています。")
-		fmt.Println(err)
+		log.Println(err)
 		return nil, err
 	}
 
@@ -71,7 +71,7 @@ func Signup(userId, password string) (*User, error){
 	encryptPw, err := crypto.PasswordEncrypt(password)
 
 	if err != nil {
-		fmt.Println("パスワード暗号化中にエラーが発生しました。：", err)
+		log.Println("パスワード暗号化中にエラーが発生しました。：", err)
 		return nil, err
 	}
 
@@ -80,8 +80,43 @@ func Signup(userId, password string) (*User, error){
 	return &user, nil
 }
 
-//gormのUpdate関数で会員情報編集
-func Update(userId, password string) (*User, error){
+//gormのUpdate関数でID情報編集
+func UpdateId(changeId string, nowId string) (*User, error){
+	user := User{}
+
+	if err := Db.Table("USERS").Where("user_id = ?", changeId).First(&user).Error; err == nil {
+			// err := errors.New("UserIdが一致するユーザーが存在しません。")
+			log.Println("UserIdが重複するユーザーが存在しています。")
+			log.Println("Error duplicate id from DB",user.ID)
+			return nil, errors.New("UserIdが重複するユーザーが存在しています。")
+	} else {
+		log.Println("重複するユーザーはDBに存在しません。",err)
+		log.Println("Request id from client",changeId)
+	}
+
+	// 既存のIDが存在しない場合、新しいユーザーを登録
+	newUser := User{
+		UserId: changeId,
+		// 他のフィールドも必要に応じて設定
+	}
+
+	//指定されたフィールドのみを更新
+	if err := Db.Table("USERS").Where("user_id = ?", nowId).Updates(&newUser).Error; err != nil {
+		err := errors.New("IDの更新に失敗しました。")
+		log.Println(err)
+		return nil, err
+}
+
+	//成功消去の場合、消去されたBLOG情報をログ出力
+	log.Println("Success change ID in DB",newUser.UserId)	
+
+
+
+	return &newUser, nil
+}
+
+//gormのUpdate関数でPassword編集
+func UpdatePassword(userId, password string) (*User, error){
 	user := User{}
 
 	// Db.Table("USERS").Where("user_id = ?", userId).First(&user)

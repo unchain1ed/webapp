@@ -92,25 +92,6 @@ func getUpdate(c *gin.Context) {
 	c.HTML(http.StatusOK, "update.html", gin.H{"user": user})
 }
 
-// 会員情報編集(id,password)
-func postUpdate(c *gin.Context) {
-	id := c.PostForm("userId")
-	pw := c.PostForm("password")
-
-	user, err := db.Update(id, pw)
-	if err != nil {
-		c.Redirect(http.StatusMovedPermanently, "/update")
-		return
-	}
-
-	//セッションとCookieにIDを登録
-	cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
-	redis.NewSession(c, cookieKey, user.UserId)
-
-	c.Redirect(http.StatusFound, "/")
-	// c.HTML(http.StatusOK, "login.html", gin.H{"user": user})
-}
-
 // マイページ画面
 func getMypage(c *gin.Context) {
 	//セッションからuserを取得
@@ -154,7 +135,7 @@ func postBlog(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"blog": blog, "url": "/blog/overview"})
+	c.JSON(http.StatusOK, gin.H{"blog": blog, "url": "/"})
 }
 
 // BlogOverview画面

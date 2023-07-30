@@ -26,6 +26,7 @@ type BlogProps = {
 
   export default function Edit({ edit }) {
   const router = useRouter();
+  const [isEditing, setEditing] = useState(false);
   const [propsBlog, setBlogProps] = useState<Blog>({
     ID: "",
     LoginID: "",
@@ -86,25 +87,32 @@ type BlogProps = {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     // ブログ投稿後にブログ一覧ページにリダイレクト
-    router.push("/blog/overview");
+    router.push("/");
   };
 
   const handlePost = async (event: React.MouseEvent<HTMLElement>) => {
+    if (isEditing) {
+      // 追加: 投稿処理が実行中の場合は何もしない
+      return;
+    }
+    setEditing(true); // 追加: 投稿処理を実行中にセット
+
     const hostname = process.env.NODE_ENV === "production" ? "server-app" : "localhost";
     try {
-      await axios.post(`http://${hostname}:8080/blog/edit`, formik.values, {
+      const response = await axios.post(`http://${hostname}:8080/blog/edit`, formik.values, {
         headers: {
           "Content-Type": "application/json", // JSON形式で送信するためのヘッダー設定
         },
         withCredentials: true,
       });
-
-      router.push("/blog/overview");
-      // ログイン成功時の追加の処理を追記する場合はここに記述する
+      console.log("ブログ記事を編集しました");
     } catch (error) {
-      // ログイン失敗時の処理
-      console.error(error);
-      // ログイン失敗時の追加の処理を追記する場合はここに記述する
+      // エラー処理を行う場合はここに記述
+      console.error("Error editing blog:", error);
+    } finally {
+      // 投稿処理が終了したので false にセット
+      setEditing(false);
+      router.push("/");
     }
   };
 
@@ -116,7 +124,7 @@ type BlogProps = {
       <Box sx={{ p: 3 }}>
         <Box
           component={NextLink}
-          href="/blog/overview"
+          href="/"
           sx={{
             display: "inline-flex",
             height: 32,

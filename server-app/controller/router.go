@@ -90,8 +90,8 @@ func GetRouter() *gin.Engine {
 	router.GET("/blog/delete/:id", isAuthenticated(), func(c *gin.Context) {getDeleteBlog(c)})
 
 	//会員情報編集画面
-	router.GET("/update", isAuthenticated(), func(c *gin.Context) {getUpdate(c)})
-	router.POST("/update", isAuthenticated(), func(c *gin.Context) {postUpdate(c)})
+	// router.GET("/update", isAuthenticated(), func(c *gin.Context) {getUpdate(c)})
+	router.POST("/update/id", isAuthenticated(), func(c *gin.Context) {postSettingId(c)})
 
 	//***ログアウト画面***
 	//ログアウト実行API

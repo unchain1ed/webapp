@@ -78,7 +78,7 @@ const Page: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => React.
       const UserId = response.data.user.UserId; // レスポンスデータを取得
 
       // ログイン成功時の処理
-      await auth.signIn(userId, password);
+      // await auth.signIn(userId, password);
       router.push("/");
       // ログイン成功時の追加の処理を追記する場合はここに記述する
     } catch (error) {
@@ -104,11 +104,6 @@ const Page: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => React.
   const handleMethodChange = useCallback((event: React.SyntheticEvent, value: string) => {
     setMethod(value);
   }, []);
-
-  const handleSkip = useCallback(() => {
-    auth.skip();
-    router.push("/");
-  }, [auth, router]);
 
   return (
     <>
@@ -182,7 +177,6 @@ const Page: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => React.
                     value={password && formik.values.password}
                   />
                 </Stack>
-                <FormHelperText sx={{ mt: 1 }}>Optionally you can skip.</FormHelperText>
                 <Button
                   fullWidth
                   size="large"
@@ -193,12 +187,9 @@ const Page: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => React.
                 >
                   Continue
                 </Button>
-                <Button fullWidth size="large" sx={{ mt: 3 }} onClick={handleSkip}>
-                  Skip authentication
-                </Button>
                 <Alert color="info" severity="info" sx={{ mt: 3 }}>
                   <div>
-                    You can use <b>root</b> and password <b>root</b>
+                    You can use <b>root</b> and password <b>root</b> (rootでログイン出来ます。)
                   </div>
                 </Alert>
               </form>

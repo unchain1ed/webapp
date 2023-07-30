@@ -10,18 +10,18 @@ import XCircleIcon from '@heroicons/react/24/solid/XCircleIcon';
 import { SvgIcon } from '@mui/material';
 
 export const itemsLogin = [
-  {
-    title: 'Overview',
-    path: '/',
-    icon: (
-      <SvgIcon fontSize="small">
-        <ChartBarIcon />
-      </SvgIcon>
-    )
-  },
+  // {
+  //   title: 'Overview',
+  //   path: '/',
+  //   icon: (
+  //     <SvgIcon fontSize="small">
+  //       <ChartBarIcon />
+  //     </SvgIcon>
+  //   )
+  // },
   {
     title: 'Blog',
-    path: '/blog/overview',
+    path: '/',
     icon: (
       <SvgIcon fontSize="small">
         <DocumentIcon />
@@ -67,18 +67,18 @@ export const itemsLogin = [
 ];
 
 export const itemsLogout = [
-  {
-    title: 'Overview',
-    path: '/',
-    icon: (
-      <SvgIcon fontSize="small">
-        <ChartBarIcon />
-      </SvgIcon>
-    )
-  },
+  // {
+  //   title: 'Overview',
+  //   path: '/',
+  //   icon: (
+  //     <SvgIcon fontSize="small">
+  //       <ChartBarIcon />
+  //     </SvgIcon>
+  //   )
+  // },
   {
     title: 'Blog',
-    path: '/blog/overview',
+    path: '/',
     icon: (
       <SvgIcon fontSize="small">
         <DocumentIcon />

@@ -11,8 +11,8 @@ import {
 import axios from "axios";
 
 const DeleteDialog = ({ id }) => {
-  const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [isDeleting, setDeleting] = useState(false);
 
   const handleOpen = () => {
     setOpen(true);
@@ -23,19 +23,31 @@ const DeleteDialog = ({ id }) => {
   };
 
   const handleDelete = async () => {
-    const hostname = process.env.NODE_ENV === 'production' ? 'server-app' : 'localhost';
+    if (isDeleting) {
+      //削除処理が実行中の場合は何もしない
+      return;
+    }
+    setDeleting(true); //削除処理を実行中にセット
+
+    const hostname = process.env.NODE_ENV === "production" ? "server-app" : "localhost";
     try {
-      const resoponse =await axios.get(`http://${hostname}:8080/blog/delete/${id}`, {
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      withCredentials: true,
-    });
-      // 削除が成功した場合はブログ一覧ページにリダイレクト
-      router.push("/blog/overview");
+      const response = await axios.get(`http://${hostname}:8080/blog/delete/${id}`, {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        withCredentials: true,
+      });
+      console.log("ブログ記事を削除しました");
+      // 成功したことを示すステートを更新し、ダイアログを閉じる
+      setOpen(false);
     } catch (error) {
       console.error("Error deleting blog:", error);
-      // エラーハンドリングを行う場合はここに追加の処理を記述する
+    } finally {
+      // レンダリング後にリダイレクトするために非同期処理で setTimeout を使う
+      setTimeout(() => {
+        setDeleting(false);
+        window.location.reload();
+      }, 0);
     }
   };
 
@@ -54,8 +66,8 @@ const DeleteDialog = ({ id }) => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleDelete} variant="contained" color="error">
-            Delete
+          <Button onClick={handleDelete} variant="contained" color="error" disabled={isDeleting}>
+            {isDeleting ? "Deleting..." : "Delete"} {/* 削除中はボタンを無効化 */}
           </Button>
         </DialogActions>
       </Dialog>

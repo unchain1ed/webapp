@@ -17,6 +17,7 @@ interface BlogForm {
 
 const Post: React.FC = () => {
   const router = useRouter();
+  const [isPosting, setPosting] = useState(false);
 
   const [blogForm, setBlogForm] = useState<BlogForm>({
     LoginID: "",
@@ -26,7 +27,7 @@ const Post: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const hostname = process.env.NODE_ENV === 'production' ? 'server-app' : 'localhost';
+      const hostname = process.env.NODE_ENV === "production" ? "server-app" : "localhost";
       try {
         const response = await axios.get(`http://${hostname}:8080/api/login-id`, {
           headers: {
@@ -49,11 +50,17 @@ const Post: React.FC = () => {
 
   const handleSubmit = (e: FormEvent) => {
     // ブログ投稿後にブログ一覧ページにリダイレクト
-    router.push("/blog/overview");
+    router.push("/");
   };
 
   const handlePost = async (event: React.MouseEvent<HTMLElement>) => {
-    const hostname = process.env.NODE_ENV === 'production' ? 'server-app' : 'localhost';
+    if (isPosting) {
+      // 追加: 投稿処理が実行中の場合は何もしない
+      return;
+    }
+    setPosting(true); // 追加: 投稿処理を実行中にセット
+
+    const hostname = process.env.NODE_ENV === "production" ? "server-app" : "localhost";
     try {
       const response = await axios.post(
         `http://${hostname}:8080/blog/post`,
@@ -65,13 +72,13 @@ const Post: React.FC = () => {
           withCredentials: true,
         }
       );
-
-      router.push("/blog/overview");
-      // ログイン成功時の追加の処理を追記する場合はここに記述する
+      console.log("ブログ記事を投稿しました");
     } catch (error) {
-      // ログイン失敗時の処理
-      console.error(error);
-      // ログイン失敗時の追加の処理を追記する場合はここに記述する
+      // エラー処理を行う場合はここに記述
+      console.error("Error posting blog:", error);
+    } finally {
+      // 投稿処理が終了したので false にセット
+      setPosting(false);
     }
   };
 
@@ -85,9 +92,6 @@ const Post: React.FC = () => {
       content: Yup.string().max(10000).required("記事内容を入力してください"),
     }),
     onSubmit: async (values, helpers) => {
-      // フォームの送信時の処理
-      // 例: APIリクエストなど
-      // helpers.setSubmitting(false);  // 必要に応じてフォームを再度利用可能にする
     },
   });
 
@@ -99,7 +103,7 @@ const Post: React.FC = () => {
       <Box sx={{ p: 3 }}>
         <Box
           component={NextLink}
-          href="/blog/overview"
+          href="/"
           sx={{
             display: "inline-flex",
             height: 32,
@@ -109,8 +113,7 @@ const Post: React.FC = () => {
           <Logo />
         </Box>
       </Box>
-      <Box
-      >
+      <Box>
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
             <Box sx={{ width: "100%" }}>
@@ -199,7 +202,5 @@ const Post: React.FC = () => {
     </>
   );
 };
-
-// Post.getLayout = (page) => <BlogLayout>{page}</BlogLayout>;
 
 export default Post;
