@@ -22,6 +22,7 @@ import axios from "axios";
 import { useAuth } from "../../hooks/use-auth";
 import { Layout as AuthLayout } from "../../layouts/auth/layout";
 import React from "react";
+import Layout from "../../layouts/dashboard/layout";
 
 type User = {
   UserId: string;
@@ -72,8 +73,6 @@ const Register: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => Re
         }
       );
 
-      const UserId = response.data.user.UserId; // レスポンスデータを取得
-
       // ログイン成功時の処理
       await auth.signIn(userId, password);
       router.push("/");
@@ -92,8 +91,8 @@ const Register: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => Re
       submit: null,
     },
     validationSchema: Yup.object({
-      userId: Yup.string().max(20).required("IDを入力してください"),
-      password: Yup.string().max(20).required("Passwordを入力してください"),
+      userId: Yup.string().min(2).max(10).required("IDを入力してください"),
+      password: Yup.string().min(2).max(10).required("Passwordを入力してください"),
     }),
     onSubmit: async (values, helpers) => {},
   });
@@ -113,13 +112,7 @@ const Register: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => Re
         <title>Register</title>
       </Head>
       <Box
-        sx={{
-          backgroundColor: "background.paper",
-          flex: "1 1 auto",
-          alignItems: "center",
-          display: "flex",
-          justifyContent: "center",
-        }}
+      sx={{ m: -1.5 }}
       >
         <Box
           sx={{
@@ -160,8 +153,9 @@ const Register: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => Re
                     name="userId"
                     onBlur={formik.handleBlur}
                     onChange={(event) => {
+                      const input = event.target.value.trim();
                       formik.handleChange(event);
-                      setUserId(event.target.value);
+                      setUserId(input);
                     }}
                     type="text"
                     value={userId && formik.values.userId}
@@ -174,16 +168,16 @@ const Register: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => Re
                     name="password"
                     onBlur={formik.handleBlur}
                     onChange={(event) => {
+                      const input = event.target.value.trim();
                       formik.handleChange(event);
-                      setPassword(event.target.value);
+                      setPassword(input);
                     }}
                     type="password"
                     value={password && formik.values.password}
                   />
                 </Stack>
                 <Button
-                  fullWidth
-                  size="large"
+                  size="medium"
                   sx={{ mt: 3 }}
                   variant="contained"
                   onClick={handleRegist}
@@ -213,6 +207,12 @@ const Register: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => Re
 //   };
 // };
 
-Register.getLayout = (page: React.ReactNode) => <AuthLayout>{page}</AuthLayout>;
+
+Register.getLayout = (page) => (
+  <Layout>
+    {page}
+  </Layout>
+);
+
 
 export default Register;

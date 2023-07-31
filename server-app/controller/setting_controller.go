@@ -12,8 +12,8 @@ import (
 )
 
 type User struct {
-	NowId     string `json:"nowId" binding:"required,min=2,max=50"`
-	ChangeId     string `json:"changeId" binding:"required,min=2,max=50"`
+	NowId     string `json:"nowId" binding:"required,min=2,max=10"`
+	ChangeId     string `json:"changeId" binding:"required,min=2,max=10"`
 	// Password string `json:"password" binding:"required,min=4"`
 }
 

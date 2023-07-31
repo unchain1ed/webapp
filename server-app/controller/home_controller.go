@@ -14,9 +14,9 @@ import (
 
 type BlogPost struct {
 	ID string `json:"id"`
-	LoginID string `json:"loginID"`
-	Title   string `json:"title"`
-	Content string `json:"content"`
+	LoginID string `json:"loginID" binding:"required,min=2,max=10"`
+	Title   string `json:"title" binding:"required,min=1,max=50"`
+	Content string `json:"content" binding:"required,min=1,max=8000"`
 }
 
 type Blog struct {

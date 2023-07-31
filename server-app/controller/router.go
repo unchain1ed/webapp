@@ -23,7 +23,7 @@ func GetRouter() *gin.Engine {
 	router := gin.Default()
 
 	//静的ファイル
-	router.LoadHTMLGlob("../../view/*.html")
+	// router.LoadHTMLGlob("../../view/*.html")
 	
 	//クロスオリジンリソース共有を有効化
 	// router.Use(cors.Default()) 

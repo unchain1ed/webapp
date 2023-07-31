@@ -156,8 +156,9 @@ const Page: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => React.
                     name="userId"
                     onBlur={formik.handleBlur}
                     onChange={(event) => {
+                      const input = event.target.value.trim();
                       formik.handleChange(event);
-                      setUserId(event.target.value);
+                      setUserId(input);
                     }}
                     type="text"
                     value={userId && formik.values.userId}
@@ -170,8 +171,9 @@ const Page: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => React.
                     name="password"
                     onBlur={formik.handleBlur}
                     onChange={(event) => {
+                      const input = event.target.value.trim();
                       formik.handleChange(event);
-                      setPassword(event.target.value);
+                      setPassword(input);
                     }}
                     type="password"
                     value={password && formik.values.password}

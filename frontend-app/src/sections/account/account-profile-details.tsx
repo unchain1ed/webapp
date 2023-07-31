@@ -20,33 +20,12 @@ type User = {
 
 export const AccountProfileDetails = () => {
   const router = useRouter();
-  const [userId, setUserId] = useState("");
-  const [values, setValues] = useState({
-    id: userId
-  });
   const [propsUser, setUserProps] = useState<User>({
-    ChangeId: "changeId",
-    NowId: "nowId"
+    ChangeId: "",
+    NowId: ""
   });
   const [isPosting, setPosting] = useState(false);
-  //user.ChangeId, user.NowId
-
-  // const handleChange = useCallback(
-  //   (event) => {
-  //     setValues((prevState) => ({
-  //       ...prevState,
-  //       [event.target.name]: event.target.value
-  //     }));
-  //   },
-  //   []
-  // );
-
-  const handleSubmit = useCallback(
-    (event) => {
-      event.preventDefault();
-    },
-    []
-  );
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -59,7 +38,6 @@ export const AccountProfileDetails = () => {
           withCredentials: true,
         });
         const reqNowId = response.data.id;
-        // setUserProps(nowId);
         setUserProps({
           ...propsUser, // 既存のuserIdオブジェクトを展開して新しいオブジェクトを作成
           NowId: reqNowId,
@@ -74,6 +52,12 @@ export const AccountProfileDetails = () => {
   }, []);
 
   const handlePost = async () => {
+    //IDが既存のと同じ場合エラー
+    if (propsUser.ChangeId === propsUser.NowId) {
+      setErrorMessage("Error: ID is the same as the current ID");
+      return;
+    }
+
     if (isPosting) {
       // 追加: 処理が実行中の場合は何もしない
       return;
@@ -120,24 +104,29 @@ export const AccountProfileDetails = () => {
               container
               spacing={3}
             >
-              <Grid
-                xs={12}
-                md={6}
-              >
-                <TextField
-                  fullWidth
-                  label="ID"
-                  name="id"
-                  onChange={(event) => {
-                    setUserProps({
-                      ...propsUser, // 既存のuserIdオブジェクトを展開して新しいオブジェクトを作成
-                      ChangeId: event.target.value, // 新しい値をidフィールドに代入
-                    });
-                  }}
-                  required
-                  value={propsUser.ChangeId}
-                />
-              </Grid>
+            <Grid xs={12} md={6}>
+              <TextField
+                fullWidth
+                label="ID"
+                name="id"
+                onChange={(event) => {
+                  const inputId = event.target.value.trim();
+                  setUserProps({
+                    ...propsUser,
+                    ChangeId: inputId,
+                  });
+                  if (inputId === "") {
+                    setErrorMessage("ID cannot be empty");
+                  } else {
+                    setErrorMessage("");
+                  }
+                }}
+                required
+                value={propsUser.ChangeId}
+                error={!!errorMessage}
+                helperText={errorMessage}
+              />
+            </Grid>
               <Grid
                 xs={12}
                 md={6}
@@ -148,10 +137,10 @@ export const AccountProfileDetails = () => {
         </CardContent>
         <Divider />
         <CardActions sx={{ justifyContent: 'flex-end' }}>
-          <Button 
-          variant="contained"
-          onClick={handlePost}
-          disabled={!propsUser}
+        <Button 
+            variant="contained"
+            onClick={handlePost}
+            disabled={propsUser.ChangeId === propsUser.NowId || !!errorMessage}
           >
             Save details
           </Button>

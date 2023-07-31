@@ -44,8 +44,8 @@ type BlogProps = {
       content: "content",
     },
     validationSchema: Yup.object({
-      title: Yup.string().max(50).required("タイトルを入力してください"),
-      content: Yup.string().max(10000).required("記事内容を入力してください"),
+      title: Yup.string().min(1).max(50).required("タイトルを入力してください"),
+      content: Yup.string().min(1).max(8000).required("記事内容を入力してください"),
     }),
     onSubmit: async (values, helpers) => {},
   });
