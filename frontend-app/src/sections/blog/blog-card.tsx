@@ -20,13 +20,13 @@ import router from 'next/router';
 import DeleteDialog from './delete-dialog';
 
 type Blog = {
-  ID: string;
-  LoginID: string;
-  Title: string;
-  Content: string;
-  CreatedAt: Date;
-  UpdatedAt: Date;
-  DeletedAt: Date;
+  id: string;
+  loginID: string;
+  title: string;
+  content: string;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt: Date;
 };
 
 type ClickValue = {
@@ -56,7 +56,7 @@ export const BlogCard: React.FC<BlogCardProps> = ({ blog }) => {
     setSelectedAction(selectedValue);
 
     if (selectedValue === "edit") {
-      router.push(`/blog/edit/${blog.ID}`); 
+      router.push(`/blog/edit/${blog.id}`); 
     } else if (selectedValue === "delete") {
       setShowDeleteDialog(true);
     }
@@ -64,7 +64,7 @@ export const BlogCard: React.FC<BlogCardProps> = ({ blog }) => {
 
   const handleContainerClick = (event: React.MouseEvent<HTMLDivElement>) => {
     // プルダウン以外の部分がクリックされた場合の処理
-      router.push(`/blog/${blog.ID}`); // ブログ記事の詳細ページに遷移
+      router.push(`/blog/${blog.id}`); // ブログ記事の詳細ページに遷移
   };
 
   const handleMouseEnter = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -86,10 +86,10 @@ export const BlogCard: React.FC<BlogCardProps> = ({ blog }) => {
         <CardContent onClick={handleContainerClick} onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}>
           <Typography align="center" gutterBottom variant="h5">
-            {blog.Title}
+            {blog.title}
           </Typography>
           <Typography align="center" variant="body1">
-            {blog.Content.split('\n')[0]}
+            {blog.content.split('\n')[0]}
           </Typography>
         </CardContent>
         <Box sx={{ flexGrow: 1 }} />
@@ -100,7 +100,7 @@ export const BlogCard: React.FC<BlogCardProps> = ({ blog }) => {
               <ClockIcon />
             </SvgIcon>
             <Typography color="text.secondary" display="inline" variant="body2">
-              {format(new Date(blog.CreatedAt), 'yyyy/MM/dd HH:mm')}
+              {format(new Date(blog.createdAt), 'yyyy/MM/dd HH:mm')}
             </Typography>
           </Stack>
           <Stack alignItems="center" direction="row" spacing={1}>
@@ -118,7 +118,7 @@ export const BlogCard: React.FC<BlogCardProps> = ({ blog }) => {
         </Stack>
         {showDeleteDialog && (
       <DeleteDialog
-        id={blog.ID} // ブログ記事のIDを渡す
+        id={blog.id} // ブログ記事のIDを渡す
         // handleClose={() => setShowDeleteDialog(false)} // ダイアログを閉じるためのハンドラー
       />
     )}

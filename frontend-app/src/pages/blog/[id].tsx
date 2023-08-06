@@ -12,13 +12,13 @@ import NextLink from "next/link";
 import { Logo } from "../../components/logo";
 
 type Blog = {
-  ID: string;
-  LoginID: string;
-  Title: string;
-  Content: string;
-  CreatedAt: Date;
-  UpdatedAt: Date;
-  DeletedAt: Date;
+  id: string;
+  loginID: string;
+  title: string;
+  content: string;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt: Date;
 };
 
 type BlogProps = {
@@ -49,21 +49,21 @@ export default function Blog({ id }) {
   const router = useRouter();
   // const { id } = router.query; // idを取得
   const [propsBlog, setBlogProps] = useState<Blog>({
-    ID: "",
-    LoginID: "",
-    Title: "",
-    Content: "",
-    CreatedAt: new Date(),
-    UpdatedAt: new Date(),
-    DeletedAt: new Date(),
+    id: "",
+    loginID: "",
+    title: "",
+    content: "",
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    deletedAt: new Date(),
   });
 
   const content = {
-    date: `${format(new Date(propsBlog.CreatedAt), "yyyy/MM/dd")}`,
-    "header-p1": `${propsBlog.Title}`,
+    date: `${format(new Date(propsBlog.createdAt), "yyyy/MM/dd")}`,
+    "header-p1": `${propsBlog.title}`,
     // 'avatar': 'jpg',　//TODO
-    name: `${propsBlog.LoginID}`,
-    paragraph1: `${propsBlog.Content}`,
+    name: `${propsBlog.loginID}`,
+    paragraph1: `${propsBlog.content}`,
   };
 
   useEffect(() => {
@@ -73,9 +73,6 @@ export default function Blog({ id }) {
 
       try {
         const response = await axios.get(`http://${hostname}:8080/blog/overview/post/${id}`, {
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
           withCredentials: true,
         });
         

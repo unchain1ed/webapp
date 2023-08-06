@@ -1,22 +1,23 @@
 package db
 
 import (
-	"time"
+	"github.com/unchain1ed/server-app/model/entity"
 	"strconv"
 	"log"
 	"fmt"
 )
 
-type Blog struct {
-	ID        uint `gorm:"primarykey"`
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	DeletedAt *time.Time `gorm:"index"`
-	// gorm.Model //共通カラム
-	LoginID string
-	Title string
-	Content string
-}
+// type Blog struct {
+// 	ID        uint `gorm:"primarykey"`
+// 	CreatedAt time.Time
+// 	UpdatedAt time.Time
+// 	DeletedAt *time.Time `gorm:"index"`
+// 	// gorm.Model //共通カラム
+// 	LoginID string
+// 	Title string
+// 	Content string
+// }
+
 // type BlogInfo struct {
 // 	Title string
 // 	Content string
@@ -26,9 +27,9 @@ type Blog struct {
 // }
 
 //送られてきたタイトルと内容をDBに登録
-func Create(loginID, title, content string) (*Blog, error){
-	blog := Blog{}
-	blog = Blog{LoginID: loginID, Title: title, Content: content}
+func Create(loginID, title, content string) (*entity.Blog, error){
+	blog := entity.Blog{}
+	blog = entity.Blog{LoginID: loginID, Title: title, Content: content}
 
 	result := Db.Create(&blog)
 	if result.Error != nil {
@@ -41,9 +42,9 @@ func Create(loginID, title, content string) (*Blog, error){
 }
 
 //送られてきたタイトルと内容をDBに更新
-func Edit(id, loginID, title, content string) (*Blog, error){
-	blog := Blog{}
-	blog = Blog{LoginID: loginID, Title: title, Content: content}
+func Edit(id, loginID, title, content string) (*entity.Blog, error){
+	blog := entity.Blog{}
+	blog = entity.Blog{LoginID: loginID, Title: title, Content: content}
 
 	result := Db.Table("BLOGS").Where("id = ?", id).Updates(&blog)
 	if result.Error != nil {
@@ -56,8 +57,8 @@ func Edit(id, loginID, title, content string) (*Blog, error){
 }
 
 //DBからBLOG情報を全件取得
-func GetBlogOverview() ([]Blog) {
-	var blogs []Blog
+func GetBlogOverview() ([]entity.Blog) {
+	var blogs []entity.Blog
 	
 	//MySQLからuserIdに一致する構造体userを取得
 	Db.Table("BLOGS").Find(&blogs)
@@ -81,8 +82,8 @@ func GetBlogOverview() ([]Blog) {
 // }
 
 // DBからIDによる特定のBLOG情報を取得
-func GetBlogViewInfoById(id string) (*Blog, error) {
-	blog := &Blog{}
+func GetBlogViewInfoById(id string) (*entity.Blog, error) {
+	blog := &entity.Blog{}
 fmt.Println(id)
 	// MySQLからIDに一致する構造体blogを取得
 	result := Db.Table("BLOGS").Where("id = ?", id).First(blog)
@@ -96,7 +97,7 @@ fmt.Println(id)
 }
 
 // DBからIDによる特定のBLOG情報を消去
-func DeleteBlogInfoById(id string) (*Blog, error) {
+func DeleteBlogInfoById(id string) (*entity.Blog, error) {
 
 	// 文字列をuintに変換
 	uintId, err := strconv.ParseUint(id, 10, 64)
@@ -105,7 +106,7 @@ func DeleteBlogInfoById(id string) (*Blog, error) {
 		log.Println("error", err);
 		return nil, err
 	}
-	blog := &Blog{ID: uint(uintId)} //リクセストIDをプロパティに格納
+	blog := &entity.Blog{ID: uint(uintId)} //リクセストIDをプロパティに格納
 
 	//消去予定のBLOG情報を取得
 	result := Db.Table("BLOGS").Where("id = ?", id).First(blog)

@@ -8,6 +8,7 @@ import {
   Button,
   Stack,
   Tab,
+  TextField,
   Typography,
 } from "@mui/material";
 import { GetServerSideProps, NextPage } from "next";
@@ -15,32 +16,45 @@ import axios from "axios";
 
 import { Layout as AuthLayout } from "../../layouts/auth/layout";
 import React from "react";
+import Layout from "../../layouts/dashboard/layout";
 
 type User = {
-  UserId: string;
+  userId: string;
+  password: string;
 };
 
 type HomeProps = {
   user: User;
 };
 
+interface BlogForm {
+  loginID: string;
+  title: string;
+  content: string;
+}
+
 const Logout: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => React.ReactNode } = ({
   user,
 }) => {
   const router = useRouter();
-  const [userId, setUserId] = useState("id");
+  // const [userId, setUserId] = useState("id");
+  const [userForm, setUserForm] = useState<User>({
+    userId: "",
+    password: "",
+  });
 
   useEffect(() => {
     const fetchData = async () => {
       const hostname = process.env.NODE_ENV === "production" ? "server-app" : "localhost";
       try {
         const response = await axios.get(`http://${hostname}:8080/api/login-id`, {
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
           withCredentials: true,
         });
-        setUserId(response.data.id);
+        // setUserId(response.data.id);
+        setUserForm((prevBlogForm) => ({
+          ...prevBlogForm,
+          userId: response.data.id,
+        }));
       } catch (error) {
         console.error(error);
       }
@@ -54,10 +68,10 @@ const Logout: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => Reac
     try {
       const response = await axios.post(
         `http://${hostname}:8080/logout`,
-        { userId },
+        userForm,
         {
           headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
+            "Content-Type": "application/json",
           },
           withCredentials: true,
         }
@@ -75,13 +89,6 @@ const Logout: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => Reac
         <title>Logout</title>
       </Head>
       <Box
-        sx={{
-          backgroundColor: "background.paper",
-          flex: "1 1 auto",
-          alignItems: "center",
-          display: "flex",
-          justifyContent: "center",
-        }}
       >
         <Box
           sx={{
@@ -100,15 +107,26 @@ const Logout: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => Reac
               <Stack spacing={3}>
                 <Box sx={{ p: 2, backgroundColor: "#f5f5f5", borderRadius: 4 }}>
                   <Typography variant="caption">ID</Typography>
-                  <Typography variant="h5">{userId}</Typography>
+                  <Typography variant="h5">{userForm.userId}</Typography>
                 </Box>
               </Stack>
+              <Stack spacing={3} sx={{ mt: 4 }}>
+            <TextField
+              required
+              type="password"
+              label="Password"
+              value={userForm.password}
+              onChange={(event) => {
+                setUserForm({ ...userForm, password: event.target.value });
+              }}
+              fullWidth
+            />
+          </Stack>
               <Button
-                fullWidth
-                size="large"
+                size="medium"
                 sx={{ mt: 3 }}
                 variant="contained"
-                value={userId}
+                value={userForm.userId}
                 onClick={handleLogout}
               >
                 Logout
@@ -136,6 +154,10 @@ const Logout: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => Reac
 //   };
 // };
 
-Logout.getLayout = (page: React.ReactNode) => <AuthLayout>{page}</AuthLayout>;
-
+// Logout.getLayout = (page: React.ReactNode) => <AuthLayout>{page}</AuthLayout>;
+Logout.getLayout = (page: React.ReactNode) => (
+  <Layout>
+    {page}
+  </Layout>
+);
 export default Logout;

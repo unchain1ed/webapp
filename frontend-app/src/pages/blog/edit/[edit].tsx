@@ -11,13 +11,13 @@ import NextLink from "next/link";
 import { Logo } from "../../../components/logo";
 
 type Blog = {
-  ID: string;
-  LoginID: string;
-  Title: string;
-  Content: string;
-  CreatedAt: Date;
-  UpdatedAt: Date;
-  DeletedAt: Date;
+  id: string;
+  loginID: string;
+  title: string;
+  content: string;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt: Date;
 };
 
 type BlogProps = {
@@ -28,13 +28,13 @@ type BlogProps = {
   const router = useRouter();
   const [isEditing, setEditing] = useState(false);
   const [propsBlog, setBlogProps] = useState<Blog>({
-    ID: "",
-    LoginID: "",
-    Title: "",
-    Content: "",
-    CreatedAt: new Date(),
-    UpdatedAt: new Date(),
-    DeletedAt: new Date(),
+    id: "",
+    loginID: "",
+    title: "",
+    content: "",
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    deletedAt: new Date(),
   });
 
   const formik = useFormik({
@@ -56,9 +56,6 @@ type BlogProps = {
 
       try {
         const response = await axios.get(`http://${hostname}:8080/blog/overview/post/${edit}`, {
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
           withCredentials: true,
         });
         
@@ -78,9 +75,10 @@ type BlogProps = {
 
     useLayoutEffect(() => {
     if (propsBlog) {
-      formik.setFieldValue("id", String(propsBlog.ID)); //数値型からstringに変換
-      formik.setFieldValue("title", propsBlog.Title);
-      formik.setFieldValue("content", propsBlog.Content);
+      formik.setFieldValue("id", String(propsBlog.id)); //数値型からstringに変換
+      formik.setFieldValue("loginID", propsBlog.loginID);
+      formik.setFieldValue("title", propsBlog.title);
+      formik.setFieldValue("content", propsBlog.content);
     }
   }, [propsBlog]);
 
@@ -96,7 +94,7 @@ type BlogProps = {
       return;
     }
     setEditing(true); // 追加: 投稿処理を実行中にセット
-
+    console.log("通過B", JSON.stringify(formik.values));
     const hostname = process.env.NODE_ENV === "production" ? "server-app" : "localhost";
     try {
       const response = await axios.post(`http://${hostname}:8080/blog/edit`, formik.values, {

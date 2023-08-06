@@ -9,7 +9,6 @@ import (
 	"github.com/unchain1ed/server-app/model/redis"
 )
 
-
 //セッションからログインIDを取得するAPI
 func getLoginIdBySession(c *gin.Context) {
 	//セッションからuserを取得

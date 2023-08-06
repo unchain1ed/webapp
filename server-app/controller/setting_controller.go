@@ -1,48 +1,31 @@
 package controller
 
 import (
-	"github.com/unchain1ed/server-app/model/redis"
 	"errors"
+	"github.com/unchain1ed/server-app/service"
+	"github.com/unchain1ed/server-app/model/entity"
+	"github.com/unchain1ed/server-app/model/redis"
 	"log"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"github.com/unchain1ed/server-app/model/db"
-	"github.com/go-playground/validator/v10"
 )
-
-type User struct {
-	NowId     string `json:"nowId" binding:"required,min=2,max=10"`
-	ChangeId     string `json:"changeId" binding:"required,min=2,max=10"`
-	// Password string `json:"password" binding:"required,min=4"`
-}
-
-// type BlogPost struct {
-// 	ID string `json:"id"`
-// 	LoginID string `json:"loginID"`
-// 	Title   string `json:"title"`
-// 	Content string `json:"content"`
-// }
 
 // 会員情報編集(id)
 func postSettingId(c *gin.Context) {
-	var user User
+	user := entity.UserChange{}
 
-	// JSONデータをUser構造体にバインドしてバリデーションを実行
-	if err := c.ShouldBindJSON(&user); err != nil {
-		// バリデーションエラーが発生した場合はエラーレスポンスを返す
-		var verr validator.ValidationErrors
-		if ok := errors.As(err, &verr); ok {
-			var errors []string
-			for _, e := range verr {
-				errors = append(errors, fmt.Sprintf("%s validation failed on the %s field", e.Tag(), e.Field()))
-			}
-			c.JSON(http.StatusBadRequest, gin.H{"errors": errors})
+	//JSONデータをUser構造体にバインドしてバリデーションを実行
+	err := c.ShouldBindJSON(&user);
+	if err != nil {
+		//バリデーションチェックを実行
+		validationCheck := service.ValidationCheck(c, err);
+		if validationCheck == false {
+			err := errors.New("Error in ValidationCheck")
+			log.Printf("セッションidが一致しませんでした。user.ChangeId: %s, user.NowId: %s, err: %v", user.ChangeId, user.NowId, err);
 			return
 		}
-
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
 	}
 
 	fmt.Println("リクエストID"+user.NowId+user.ChangeId)

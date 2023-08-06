@@ -32,9 +32,6 @@ const DeleteDialog = ({ id }) => {
     const hostname = process.env.NODE_ENV === "production" ? "server-app" : "localhost";
     try {
       const response = await axios.get(`http://${hostname}:8080/blog/delete/${id}`, {
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
         withCredentials: true,
       });
       console.log("ブログ記事を削除しました");

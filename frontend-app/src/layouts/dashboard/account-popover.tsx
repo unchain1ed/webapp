@@ -32,9 +32,9 @@ export const AccountPopover: React.FC<AccountPopoverProps> = (props) => {
       .get(
         `http://${hostname}:8080/logout`,
         {
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
+          // headers: {
+          //   "Content-Type": "application/x-www-form-urlencoded",
+          // },
           withCredentials: true,
         }
       )

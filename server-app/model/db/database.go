@@ -7,7 +7,6 @@ import (
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	// "github.com/joho/godotenv"
 )
 
 var Db *gorm.DB

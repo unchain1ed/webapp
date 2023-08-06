@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"github.com/unchain1ed/server-app/model/entity"
 	"log"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -9,15 +10,15 @@ import (
 )
 
 func postEditBlog(c *gin.Context) {
-
 	// JSON形式のリクエストボディを構造体にバインドする
-	var blogPost BlogPost
+	blogPost := entity.BlogPost{}
 	if err := c.ShouldBindJSON(&blogPost); err != nil {
+		log.Printf("ブログ編集画面リクエストJSON形式で構造体にバインドを失敗しました。" + err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error in c.ShouldBindJSON": err.Error()})
 		return
 	}
 		
-	// user, err := db.Login(id, pw)
+	// user, err := db.CheckUser(id, pw)
 	// if err != nil {
 	// 	c.Redirect(http.StatusMovedPermanently, "/login")
 	// 	return

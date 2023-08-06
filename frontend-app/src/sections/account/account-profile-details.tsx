@@ -12,17 +12,18 @@ import {
 } from '@mui/material';
 import axios from 'axios';
 import { useRouter } from "next/router";
+// import api from "../../api/ToastApi"
 
 type User = {
-  ChangeId: string;
-  NowId: string;
+  changeId: string;
+  nowId: string;
 };
 
 export const AccountProfileDetails = () => {
   const router = useRouter();
   const [propsUser, setUserProps] = useState<User>({
-    ChangeId: "",
-    NowId: ""
+    changeId: "",
+    nowId: ""
   });
   const [isPosting, setPosting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
@@ -32,16 +33,13 @@ export const AccountProfileDetails = () => {
       const hostname = process.env.NODE_ENV === "production" ? "server-app" : "localhost";
       try {
         const response = await axios.get(`http://${hostname}:8080/api/login-id`, {
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
           withCredentials: true,
         });
         const reqNowId = response.data.id;
         setUserProps({
           ...propsUser, // 既存のuserIdオブジェクトを展開して新しいオブジェクトを作成
-          NowId: reqNowId,
-          ChangeId: reqNowId // 新しい値をidフィールドに代入
+          nowId: reqNowId,
+          changeId: reqNowId // 新しい値をidフィールドに代入
         });
       } catch (error) {
         console.error(error);
@@ -53,7 +51,7 @@ export const AccountProfileDetails = () => {
 
   const handlePost = async () => {
     //IDが既存のと同じ場合エラー
-    if (propsUser.ChangeId === propsUser.NowId) {
+    if (propsUser.changeId === propsUser.nowId) {
       setErrorMessage("Error: ID is the same as the current ID");
       return;
     }
@@ -113,7 +111,7 @@ export const AccountProfileDetails = () => {
                   const inputId = event.target.value.trim();
                   setUserProps({
                     ...propsUser,
-                    ChangeId: inputId,
+                    changeId: inputId,
                   });
                   if (inputId === "") {
                     setErrorMessage("ID cannot be empty");
@@ -122,7 +120,7 @@ export const AccountProfileDetails = () => {
                   }
                 }}
                 required
-                value={propsUser.ChangeId}
+                value={propsUser.changeId}
                 error={!!errorMessage}
                 helperText={errorMessage}
               />
@@ -140,7 +138,7 @@ export const AccountProfileDetails = () => {
         <Button 
             variant="contained"
             onClick={handlePost}
-            disabled={propsUser.ChangeId === propsUser.NowId || !!errorMessage}
+            disabled={propsUser.changeId === propsUser.nowId || !!errorMessage}
           >
             Save details
           </Button>

@@ -10,9 +10,9 @@ import NextLink from "next/link";
 import { Logo } from "../../components/logo";
 
 interface BlogForm {
-  LoginID: string;
-  Title: string;
-  Content: string;
+  loginID: string;
+  title: string;
+  content: string;
 }
 
 const Post: React.FC = () => {
@@ -20,9 +20,9 @@ const Post: React.FC = () => {
   const [isPosting, setPosting] = useState(false);
 
   const [blogForm, setBlogForm] = useState<BlogForm>({
-    LoginID: "",
-    Title: "",
-    Content: "",
+    loginID: "",
+    title: "",
+    content: "",
   });
 
   useEffect(() => {
@@ -30,15 +30,12 @@ const Post: React.FC = () => {
       const hostname = process.env.NODE_ENV === "production" ? "server-app" : "localhost";
       try {
         const response = await axios.get(`http://${hostname}:8080/api/login-id`, {
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
           withCredentials: true,
         });
         const fetchedID = response.data.id || null;
         setBlogForm((prevBlogForm) => ({
           ...prevBlogForm,
-          LoginID: fetchedID,
+          loginID: fetchedID,
         }));
       } catch (error) {
         console.error(error);
@@ -54,6 +51,9 @@ const Post: React.FC = () => {
   };
 
   const handlePost = async (event: React.MouseEvent<HTMLElement>) => {
+    console.log("通過B", JSON.stringify(blogForm));
+
+
     if (isPosting) {
       // 追加: 投稿処理が実行中の場合は何もしない
       return;
@@ -128,10 +128,10 @@ const Post: React.FC = () => {
                     id="title"
                     label="Title"
                     onBlur={formik.handleBlur}
-                    value={blogForm.Title && formik.values.title}
+                    value={blogForm.title && formik.values.title}
                     onChange={(event) => {
                       formik.handleChange(event);
-                      setBlogForm({ ...blogForm, Title: event.target.value });
+                      setBlogForm({ ...blogForm, title: event.target.value });
                     }}
                     fullWidth
                   />
@@ -141,10 +141,10 @@ const Post: React.FC = () => {
                     id="content"
                     label="Content"
                     onBlur={formik.handleBlur}
-                    value={blogForm.Content && formik.values.content}
+                    value={blogForm.content && formik.values.content}
                     onChange={(event) => {
                       formik.handleChange(event);
-                      setBlogForm({ ...blogForm, Content: event.target.value });
+                      setBlogForm({ ...blogForm, content: event.target.value });
                     }}
                     multiline
                     rows={15}

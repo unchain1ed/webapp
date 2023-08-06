@@ -67,7 +67,7 @@ const Register: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => Re
         { userId, password },
         {
           headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
+            "Content-Type": "application/json",
           },
           withCredentials: true,
         }
@@ -181,7 +181,7 @@ const Register: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => Re
                   sx={{ mt: 3 }}
                   variant="contained"
                   onClick={handleRegist}
-                  disabled={!formik.isValid}
+                  disabled={!formik.isValid }
                 >
                   Continue
                 </Button>

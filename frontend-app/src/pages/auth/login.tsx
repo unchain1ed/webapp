@@ -24,7 +24,7 @@ import { Layout as AuthLayout } from "../../layouts/auth/layout";
 import React from "react";
 
 type User = {
-  UserId: string;
+  userId: string;
 };
 
 type HomeProps = {
@@ -46,9 +46,6 @@ const Page: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => React.
 
       try {
         const response = await axios.get(`http://${hostname}:8080/login`, {
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
           withCredentials: true,
         });
         const data = response.data;
@@ -69,13 +66,13 @@ const Page: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => React.
         { userId, password },
         {
           headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
+            "Content-Type": "application/json",
           },
           withCredentials: true,
         }
       );
 
-      const UserId = response.data.user.UserId; // レスポンスデータを取得
+      const UserId = response.data.user.userId; // レスポンスデータを取得
 
       // ログイン成功時の処理
       // await auth.signIn(userId, password);

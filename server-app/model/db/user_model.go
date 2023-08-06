@@ -1,43 +1,36 @@
 package db
 
 import (
+	"github.com/unchain1ed/server-app/model/entity"
+	"fmt"
 	"log"
 	"errors"
 	"github.com/unchain1ed/server-app/crypto"
 
-	"gorm.io/gorm"
+	// "gorm.io/gorm"
 )
 
-type User struct {
-	gorm.Model //共通カラム
-	UserId string
-	Password string
-}
+// type User struct {
+// 	gorm.Model //共通カラム
+// 	UserId string
+// 	Password string
+// }
 
 func init() {
 	//MySQLのストレージエンジンInnoDB,テーブル自動生成
-	Db.Table("BLOGS").Set("gorm:table_options", "ENGINE = InnoDB").AutoMigrate(Blog{})
-	Db.Table("USERS").Set("gorm:table_options", "ENGINE = InnoDB").AutoMigrate(User{})
-}
-
-func (u *User) LoggedIn() *User {
-	if u.ID != 0 {
-	//ログアウト中ユーザーには設定されない
-	return u
-	}
-	return nil
+	Db.Table("BLOGS").Set("gorm:table_options", "ENGINE = InnoDB").AutoMigrate(entity.Blog{})
+	Db.Table("USERS").Set("gorm:table_options", "ENGINE = InnoDB").AutoMigrate(entity.User{})
 }
 
 //送られてきたUserIdと一致するUserを取得
 //取得したUserの暗号化済みPasswordと送られてきたPasswordをCompareHashAndPassword関数でチェック
-//UserのLoggedInメソッドはtop.htmlで現在ログイン中かの確認に使います
-func Login(userId, password string) (*User, error) {
-	user :=User{}
+func CheckUser(userId, password string) (*entity.User, error) {
+	user := entity.User{}
 	//MySQLからuserIdに一致する構造体userを取得
 	Db.Table("USERS").Where("user_id = ?",userId).First(&user)
 
 		if user.ID == 0 {
-			err := errors.New("UserIdが一致するユーザーが存在しません。")
+			err := errors.New("ユーザー名が一致しません。")
 			log.Println(err)
 			return nil, err
 		}
@@ -46,8 +39,9 @@ func Login(userId, password string) (*User, error) {
 		compareErr := crypto.CompareHashAndPassword(user.Password, password)
 	
 		if compareErr != nil {
-			log.Println("パスワードが一致しません。:", compareErr)
-			return nil, compareErr
+			err := errors.New("パスワードが一致しません。:"+ compareErr.Error())
+			log.Println(err)
+			return nil, err
 		}
 		
 		return &user, nil
@@ -56,8 +50,8 @@ func Login(userId, password string) (*User, error) {
 //送られてきたUserId,Passwordと一致するUserが既に登録されているか確認
 //PasswordEncrypt関数で送られてきたPasswordを暗号化
 //gormのCreate関数で新規会員登録
-func Signup(userId, password string) (*User, error){
-	user := User{}
+func Signup(userId, password string) (*entity.User, error){
+	user := entity.User{}
 
 	Db.Table("USERS").Where("user_id = ?", userId).First(&user)
 
@@ -75,19 +69,19 @@ func Signup(userId, password string) (*User, error){
 		return nil, err
 	}
 
-	user = User{UserId: userId, Password: encryptPw}
+	user = entity.User{UserId: userId, Password: encryptPw}
 	Db.Create(&user)
 	return &user, nil
 }
 
 //gormのUpdate関数でID情報編集
-func UpdateId(changeId string, nowId string) (*User, error){
-	user := User{}
-
+func UpdateId(changeId string, nowId string) (*entity.User, error){
+	user := entity.User{}
+fmt.Println(changeId)
 	if err := Db.Table("USERS").Where("user_id = ?", changeId).First(&user).Error; err == nil {
 			// err := errors.New("UserIdが一致するユーザーが存在しません。")
 			log.Println("UserIdが重複するユーザーが存在しています。")
-			log.Println("Error duplicate id from DB",user.ID)
+			log.Println("Error duplicate id from DB",user)
 			return nil, errors.New("UserIdが重複するユーザーが存在しています。")
 	} else {
 		log.Println("重複するユーザーはDBに存在しません。",err)
@@ -95,7 +89,7 @@ func UpdateId(changeId string, nowId string) (*User, error){
 	}
 
 	// 既存のIDが存在しない場合、新しいユーザーを登録
-	newUser := User{
+	newUser := entity.User{
 		UserId: changeId,
 		// 他のフィールドも必要に応じて設定
 	}
@@ -108,7 +102,7 @@ func UpdateId(changeId string, nowId string) (*User, error){
 }
 
 	//成功消去の場合、消去されたBLOG情報をログ出力
-	log.Println("Success change ID in DB",newUser.UserId)	
+	log.Println("IDの変更に成功しました。",newUser.UserId)	
 
 
 
@@ -116,8 +110,8 @@ func UpdateId(changeId string, nowId string) (*User, error){
 }
 
 //gormのUpdate関数でPassword編集
-func UpdatePassword(userId, password string) (*User, error){
-	user := User{}
+func UpdatePassword(userId, password string) (*entity.User, error){
+	user := entity.User{}
 
 	// Db.Table("USERS").Where("user_id = ?", userId).First(&user)
 
@@ -140,7 +134,7 @@ func UpdatePassword(userId, password string) (*User, error){
 
 
 	//指定されたフィールドのみを更新
-	Db.Table("USERS").Where("user_id = ?", userId).Updates(&User{UserId: userId})
+	Db.Table("USERS").Where("user_id = ?", userId).Updates(&entity.User{UserId: userId})
 
 
 	//モデルごと更新
@@ -150,8 +144,8 @@ func UpdatePassword(userId, password string) (*User, error){
 	return &user, nil
 }
 
-func GetOneUser(UserId string) (User) {
-	user := User{}
+func GetOneUser(UserId string) (entity.User) {
+	user := entity.User{}
 	//MySQLからuserIdに一致する構造体userを取得
 	Db.Table("USERS").Where("user_id = ?", UserId).First(&user)
 

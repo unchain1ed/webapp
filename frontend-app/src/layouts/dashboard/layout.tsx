@@ -70,9 +70,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
       try {
         const response = await axios.get(`http://${hostname}:8080/api/login-id`, {
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
           withCredentials: true,
         });
         
