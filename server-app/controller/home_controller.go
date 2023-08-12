@@ -1,115 +1,89 @@
 package controller
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/unchain1ed/server-app/model/redis"
+	"log"
 	"net/http"
 	"os"
 
+	"github.com/unchain1ed/server-app/model/entity"
+	"github.com/gin-gonic/gin"
+	"github.com/unchain1ed/server-app/model/redis"
 	"github.com/unchain1ed/server-app/model/db"
 )
 
-
 func getTop(c *gin.Context) {
-	// c.HTML(http.StatusOK, "home.html", gin.H{})
-	// c.JSON(http.StatusOK, gin.H{})
-}
-
-func getLogin(c *gin.Context) {
-	// c.HTML(http.StatusOK, "login.html", gin.H{})
-	// c.JSON(http.StatusOK, gin.H{})
-}
-
-func postLogin(c *gin.Context) {
-	//フォームの値を取得
-	id := c.PostForm("userId")
-	pw := c.PostForm("password")
-		
-	user, err := db.Login(id, pw)
+	//セッションからloginIDを取得
+	cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
+	id, err := redis.GetSession(c, cookieKey)
 	if err != nil {
-		c.Redirect(http.StatusMovedPermanently, "/login")
+		log.Printf("セッションからIDの取得に失敗しました。" , err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	//セッションとCookieにUserIdを登録
-	cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
-	redis.NewSession(c, cookieKey, user.UserId)
+	log.Println("Get LoginId in TopView from Session :id", id); 
 
-	c.HTML(http.StatusOK, "mypage.html", gin.H{"user": user})
-	// c.JSON(http.StatusOK, gin.H{"user": user})
-}
-
-func getSignup(c *gin.Context) {
-	c.HTML(http.StatusOK, "signup.html", gin.H{})
-}
-
-// 新規会員登録(id,password)
-func postSignup(c *gin.Context) {
-	id := c.PostForm("userId")
-	pw := c.PostForm("password")
-
-	user, err := db.Signup(id, pw)
-	if err != nil {
-		c.Redirect(http.StatusMovedPermanently, "/signup")
-		return
-	}
-
-	c.HTML(http.StatusOK, "signup.html", gin.H{"user": user})
-	// c.JSON(http.StatusOK, gin.H{"user": user})
-}
-
-func getUpdate(c *gin.Context) {
-	// //dbパッケージからUser型のポインタを作成
-	// db := &db.User{}
-	// //ポインタを使ってLoggedInを呼び出し
-	// user := db.LoggedIn()
-
-	//セッションからuserを取得
-	cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
-	user := redis.GetSession(c, cookieKey)
-
-	c.HTML(http.StatusOK, "update.html", gin.H{"user": user})
-}
-
-// 会員情報編集(id,password)
-func postUpdate(c *gin.Context) {
-	id := c.PostForm("userId")
-	pw := c.PostForm("password")
-
-	user, err := db.Update(id, pw)
-	if err != nil {
-		c.Redirect(http.StatusMovedPermanently, "/update")
-		return
-	}
-
-	//セッションとCookieにIDを登録
-	cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
-	redis.NewSession(c, cookieKey, user.UserId)
-
-	c.Redirect(http.StatusFound, "/")
-	// c.HTML(http.StatusOK, "login.html", gin.H{"user": user})
+	c.JSON(http.StatusOK, gin.H{"id": id})
 }
 
 // マイページ画面
 func getMypage(c *gin.Context) {
-	user := db.User{}
-
 	//セッションからuserを取得
 	cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
-	UserId := redis.GetSession(c, cookieKey)
-
-	if UserId != nil {
-		user = db.GetOneUser(UserId.(string))
+	user, err := redis.GetSession(c, cookieKey)
+	if err != nil {
+		log.Printf("セッションからIDの取得に失敗しました。" , err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
-	// c.HTML(http.StatusOK, "mypage.html", gin.H{"user": user})
 	c.JSON(http.StatusOK, gin.H{"user": user})
 }
 
-// ログアウト処理
-func getLogout(c *gin.Context) {
-	cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
-	redis.DeleteSession(c, cookieKey)
+func postBlog(c *gin.Context) {	
+	// JSON形式のリクエストボディを構造体にバインドする
+	blogPost := entity.BlogPost{}
+	if err := c.ShouldBindJSON(&blogPost); err != nil {
+		log.Printf("ブログ記事作成画面でJSON形式構造体にバインドを失敗しました。" + err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
-	c.Redirect(http.StatusFound, "/login")
+	//DBにブログ記事内容を登録
+	blog, err := db.Create(blogPost.LoginID, blogPost.Title, blogPost.Content)
+	if err != nil {
+		log.Println("error", err.Error());
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"blog": blog})
+}
+
+// BlogOverview画面
+func getBlogOverview(c *gin.Context) {
+	blogs := []entity.Blog{}
+	//DBからブログ情報を取得
+	var err error
+	blogs, err = db.GetBlogOverview()
+	if err != nil {
+		log.Printf("Error in GetBlogOverview of getBlogOverview ブログ概要画面でDBからブログ情報の取得に失敗しました。err: %v", err.Error());
+		c.JSON(http.StatusBadRequest, gin.H{"error in db.GetBlogOverview of getBlogOverview": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"blogs": blogs})
+}
+
+// BlogView IDによる画面
+func getBlogViewById(c *gin.Context) {
+	id := c.Param("id")
+
+	blog, err := db.GetBlogViewInfoById(id)
+	if err != nil {
+		log.Printf("Error in GetBlogViewInfoById of getBlogViewById ブログ概要画面でDBからIDの取得に失敗しました。err: %v", err.Error());
+		c.JSON(http.StatusBadRequest, gin.H{"error in db.GetBlogViewInfoById of getBlogViewById": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"blog": blog})
 }

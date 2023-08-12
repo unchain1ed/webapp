@@ -1,128 +1,116 @@
 package controller
 
 import (
-	// "time"
+	"log"
 	"fmt"
 	"net/http"
-	"github.com/unchain1ed/server-app/model/redis"
 	"os"
+
+	"github.com/unchain1ed/server-app/model/redis"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-contrib/cors"
 	"github.com/joho/godotenv"
 )
 
+func init() {
+	//環境変数設定
+	//パッケージがインポートされる際に一度だけ実行される初期化処理
+	envErr := godotenv.Load("../../build/app/.env")
+	if envErr != nil {
+		fmt.Println("Error loading .env file", envErr)
+	}
+}	
+
 func GetRouter() *gin.Engine {
+	//ルターを定義
 	router := gin.Default()
 
-	//静的ファイル
-	router.LoadHTMLGlob("../../view/*.html")
-	
+	// クロスオリジンリソース共有_CORS設定
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{"http://localhost:3000", "http://server-app:3000"}
+	config.AllowMethods = []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"}
+	config.AllowHeaders = []string{
+		"Access-Control-Allow-Credentials",
+		"Access-Control-Allow-Headers",
+		"Content-Type",
+		"Content-Length",
+		"Accept-Encoding",
+		"Authorization",
+		"Cookie",
+	}
+	config.AllowCredentials = true
 	//クロスオリジンリソース共有を有効化
-	// router.Use(cors.Default()) 
-
-		// CORS設定
-		config := cors.DefaultConfig()
-		config.AllowOrigins = []string{"http://localhost:3000"}
-		config.AllowMethods = []string{"POST", "GET", "OPTIONS"}
-		config.AllowHeaders = []string{
-			"Access-Control-Allow-Credentials",
-			"Access-Control-Allow-Headers",
-			"Content-Type",
-			"Content-Length",
-			"Accept-Encoding",
-			"Authorization",
-			// "Cookie",
-		}
-		config.AllowCredentials = true
-		router.Use(cors.New(config))
+	router.Use(cors.New(config))
 
 	//ホーム画面
-	router.GET("/", func(c *gin.Context) {getTop(c)})
+	router.GET("/", isAuthenticated(), func(c *gin.Context) {getTop(c)})
 
-	//loginCheckGroupで/mypageと/logoutのルートパスをグループ化し、ログインチェック実施
-	//ログインされていない場合はリダイレクト、ログインしている場合はそれぞれのハンドラ関数を呼び出し
-	loginCheckGroup := router.Group("/", checkLogin())
-	{
-		//ログイン画面
-		loginCheckGroup.GET("/mypage", func(c *gin.Context) {getMypage(c)})
-		loginCheckGroup.GET("/logout", func(c *gin.Context) {getLogout(c)})
-	}
+	//***ログイン画面***
+	//ログイン画面
+	router.GET("/login", func(c *gin.Context) {getLogin(c)})
+	router.POST("/login", func(c *gin.Context) {postLogin(c)})
 
-	//ログアウトされている場合はそれぞれのハンドラ関数を呼び出し、ログインしている場合はリダイレクト
-	logoutCheckGroup := router.Group("/", checkLogout())
-	{
-		//ログイン画面
-		logoutCheckGroup.GET("/login", func(c *gin.Context) {getLogin(c)})
-		logoutCheckGroup.POST("/login", func(c *gin.Context) {postLogin(c)})
-		// logoutCheckGroup.POST("/login", func(c *gin.Context) {postLogin(c, c.Writer, c.Request)})
-		//サインアップ画面
-		logoutCheckGroup.GET("/signup", func(c *gin.Context) {getSignup(c)})
-		logoutCheckGroup.POST("/signup", func(c *gin.Context) {postSignup(c)})
-		//会員情報編集画面
-		logoutCheckGroup.GET("/update", func(c *gin.Context) {getUpdate(c)})
-		logoutCheckGroup.POST("/update", func(c *gin.Context) {postUpdate(c)})
-	}
+	//***ブログ概要画面***
+	//ブログ記事作成画面
+	router.POST("/blog/post", isAuthenticated(), func(c *gin.Context) {postBlog(c)})
+	//BlogOverview画面
+	router.GET("/blog/overview", isAuthenticated(),func(c *gin.Context) {getBlogOverview(c)})
+	//BlogIDによるView画面
+	router.GET("/blog/overview/post/:id", isAuthenticated(), func(c *gin.Context) {getBlogViewById(c)})
+	//ブログ記事編集API
+	router.POST("/blog/edit", isAuthenticated(), func(c *gin.Context) {postEditBlog(c)})
+	//ブログ記事消去API
+	router.GET("/blog/delete/:id", isAuthenticated(), func(c *gin.Context) {getDeleteBlog(c)})
 
-	//HTTPSサーバーを起動LSプロトコル使用※ハンドラの登録後に実行登録後に実行**TODO**
+	//***会員情報編集画面***
+	//ID編集API
+	router.POST("/update/id", isAuthenticated(), func(c *gin.Context) {postSettingId(c)})
+
+	//***ログアウト画面***
+	//ログアウト実行API
+	router.POST("/logout", isAuthenticated(), func(c *gin.Context) {decideLogout(c)})
+
+	//***会員情報登録画面***
+	//登録画面遷移
+	router.POST("/regist", isAuthenticated(), func(c *gin.Context) {postRegist(c)})
+
+	//***共通API***
+	//セッションからログインIDを取得するAPI
+	router.GET("/api/login-id", isAuthenticated(), func(c *gin.Context) {getLoginIdBySession(c)})
+
+	//HTTPSサーバーを起動LSプロトコル使用※ハンドラの登録後に実行登録後に実行
 	//第1引数にはポート番号 ":8080" 、第2引数にはTLS証明書のパス、第3引数には秘密鍵のパス
-	// router.RunTLS(":8080", "../../certificate/server.pem", "../../certificate/server.key")
+	// router.RunTLS(":8080", "../../certificate/localhost.crt", "../../certificate/localhost.key")
 
-	//サーバーを起動
+	//HTTPサーバーを起動
 	router.Run(":8080")
 
 	return router
 }
 
-//セッションにユーザーIDが存在するかチェック
+//ログイン中かどうかを判定するミドルウェア
 //このハンドラ関数はクライアントのリクエストが処理される前に実行
-//ログアウト状態であればリダイレクトし、ログイン状態であれば処理を継続
-func checkLogin() gin.HandlerFunc {
+func isAuthenticated() gin.HandlerFunc {
 	return func(c *gin.Context) {
-
-		//環境変数設定
-		envErr := godotenv.Load("../../build/app/.env")
-    	if envErr != nil {
-        fmt.Println("Error loading .env file", envErr)
-    	}
+		fmt.Println("通過isAuthenticated")
 		cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
 		//セッションから取得
-		id := redis.GetSession(c, cookieKey)
+		id, err := redis.GetSession(c, cookieKey)
+		if err != nil {
+			log.Printf("セッションからIDの取得に失敗しました。" , err.Error())
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
 
+		// セッションにログイン情報が保存されているかどうかをチェックする
 		if id == nil {
-			//リダイレクト処理
-			//セッションにユーザーIDが存在しない場合中断
-			c.Redirect(http.StatusFound, "/login")
+			fmt.Println("セッションにユーザーIDが存在していません")
+			// ログインしていない場合はログイン画面にリダイレクトする
+			// c.Redirect(http.StatusFound, "/auth/login")
+			c.JSON(http.StatusFound, gin.H{"message": "status 302 fail to get session id"})
 			c.Abort()
-			} else {
-			//セッションにユーザーIDが存在する場合ハンドラ関数に処理を渡します
-			c.Next()
-			}
+		}
+		fmt.Println("success get session id")
+		c.Next()
 	}
 }
-
-//ログイン状態であればリダイレクトし、ログアウト状態であれば処理を継続
-func checkLogout() gin.HandlerFunc {
-	return func(c *gin.Context) {
-
-		//環境変数設定
-		envErr := godotenv.Load("../../build/app/.env")
-    	if envErr != nil {
-        fmt.Println("Error loading .env file", envErr)
-    	}
-		cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
-		//セッションから取得
-		id := redis.GetSession(c, cookieKey)
-
-		if id != nil {
-			//リダイレクト処理
-			//セッションにユーザーIDが存在する場合中断
-			fmt.Println("セッションにユーザーIDが存在リダイレクトTo /mypage")
-			c.Redirect(http.StatusFound, "/mypage")
-			c.Abort()
-		} else {
-			//セッションにユーザーIDが存在しない場合ハンドラ関数に処理を渡します
-			c.Next()
-		}
-	}	
-} 
-
