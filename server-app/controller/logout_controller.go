@@ -1,14 +1,14 @@
 package controller
 
 import (
-	"github.com/unchain1ed/server-app/model/db"
-	"errors"
+	"net/http"
+	"log"
+
+	"github.com/gin-gonic/gin"
 	"github.com/unchain1ed/server-app/service"
 	"github.com/unchain1ed/server-app/model/entity"
-	"log"
+	"github.com/unchain1ed/server-app/model/db"
 	"github.com/unchain1ed/server-app/model/redis"
-	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 // ログアウト処理
@@ -17,13 +17,14 @@ func decideLogout(c *gin.Context) {
 	logoutUser := entity.FormUser{}
 	//JSONデータのリクエストボディを構造体にバインドしてバリデーションを実行
 	err := c.ShouldBindJSON(&logoutUser);
+	//JSONデータをUser構造体にバインドしてバリデーションを実行
 	if err != nil {
 		//バリデーションチェックを実行
-		validationCheck := service.ValidationCheck(c, err);
-		if validationCheck == false {
-			err := errors.New("Error in ValidationCheck")
-			log.Printf("ログアウト画面リクエストJSON形式で構造体にバインドを失敗しました。logoutUser.UserId: %s, err: %v", logoutUser.UserId, err.Error());
-			c.JSON(http.StatusBadRequest, gin.H{"error in c.ShouldBindJSON of decideLogout": err.Error()})
+		err := service.ValidationCheck(c, err);
+		if err != nil {
+		
+			log.Printf("リクエストJSON形式で構造体にバインドを失敗しました。logoutUser.UserId: %s, err: %v", logoutUser.UserId, err.Error());
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
 	}
@@ -39,7 +40,7 @@ func decideLogout(c *gin.Context) {
 	//Redisよりログイン情報セッションを消去
 	err = redis.DeleteSession(c, user.UserId)
 	if err != nil {
-		log.Println("セッションを消去できませんでした。,err："+err.Error())
+		log.Println("セッションを消去できませんでした。,err :"+err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error in decideLogout": err.Error()})
 		return
 	}

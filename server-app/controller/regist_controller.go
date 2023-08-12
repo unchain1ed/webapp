@@ -1,13 +1,13 @@
 package controller
 
 import (
-	"errors"
-	"github.com/unchain1ed/server-app/service"
-	"github.com/unchain1ed/server-app/model/entity"
 	"log"
 	"net/http"
+	"errors"
 
 	"github.com/gin-gonic/gin"
+	"github.com/unchain1ed/server-app/service"
+	"github.com/unchain1ed/server-app/model/entity"
 	"github.com/unchain1ed/server-app/model/db"
 )
 
@@ -15,15 +15,16 @@ import (
 func postRegist(c *gin.Context) {
 	//構造体をインスタンス化
 	registUser := entity.FormUser{}
-	//JSONデータのリクエストボディを構造体にバインドしてバリデーションを実行
+	//リクエストをGo構造体にバインド
 	err := c.ShouldBindJSON(&registUser);
+	//JSONデータをUser構造体にバインドしてバリデーションを実行
 	if err != nil {
 		//バリデーションチェックを実行
-		validationCheck := service.ValidationCheck(c, err);
-		if validationCheck == false {
-			err := errors.New("Error in ValidationCheck")
-			log.Printf("会員登録画面リクエストJSON形式で構造体にバインドを失敗しました。registUser.UserId: %s, err: %v", registUser.UserId, err.Error());
-			c.JSON(http.StatusBadRequest, gin.H{"error in c.ShouldBindJSON of postRegist": err.Error()})
+		err := service.ValidationCheck(c, err);
+		if err != nil {
+		
+			log.Printf("リクエストJSON形式で構造体にバインドを失敗しました。registUser.UserId: %s, err: %v", registUser.UserId, err.Error());
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
 	}

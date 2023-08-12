@@ -2,8 +2,9 @@ package controller
 
 import (
 	"log"
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 	"github.com/unchain1ed/server-app/model/db"
 )
 

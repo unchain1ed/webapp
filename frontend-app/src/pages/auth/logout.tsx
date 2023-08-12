@@ -13,8 +13,6 @@ import {
 } from "@mui/material";
 import { GetServerSideProps, NextPage } from "next";
 import axios from "axios";
-
-import { Layout as AuthLayout } from "../../layouts/auth/layout";
 import React from "react";
 import Layout from "../../layouts/dashboard/layout";
 
@@ -37,11 +35,11 @@ const Logout: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => Reac
   user,
 }) => {
   const router = useRouter();
-  // const [userId, setUserId] = useState("id");
   const [userForm, setUserForm] = useState<User>({
     userId: "",
     password: "",
   });
+  const [errorMessage, setErrorMessage] = useState<string>("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -50,7 +48,6 @@ const Logout: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => Reac
         const response = await axios.get(`http://${hostname}:8080/api/login-id`, {
           withCredentials: true,
         });
-        // setUserId(response.data.id);
         setUserForm((prevBlogForm) => ({
           ...prevBlogForm,
           userId: response.data.id,
@@ -112,14 +109,22 @@ const Logout: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => Reac
               </Stack>
               <Stack spacing={3} sx={{ mt: 4 }}>
             <TextField
-              required
               type="password"
               label="Password"
               value={userForm.password}
               onChange={(event) => {
-                setUserForm({ ...userForm, password: event.target.value });
+                const inputId = event.target.value.trim();
+                setUserForm({ ...userForm, password: inputId });
+                if (inputId === "") {
+                  setErrorMessage("Password cannot be empty");
+                } else {
+                  setErrorMessage("");
+                }
               }}
+              required
               fullWidth
+              error={!!errorMessage}
+              helperText={errorMessage}
             />
           </Stack>
               <Button
@@ -128,6 +133,7 @@ const Logout: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => Reac
                 variant="contained"
                 value={userForm.userId}
                 onClick={handleLogout}
+                disabled={!!errorMessage}
               >
                 Logout
               </Button>
@@ -138,26 +144,10 @@ const Logout: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => Reac
   );
 };
 
-// export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
-//   const hostname = process.env.NODE_ENV === "production" ? "server-app" : "localhost";
-//   const response = await axios.get(`http://${hostname}:8080/api/login-id`, {
-//     headers: {
-//       "Content-Type": "application/x-www-form-urlencoded",
-//     },
-//     withCredentials: true,
-//   });
-//   const user = response.data;
-//   return {
-//     props: {
-//       user,
-//     },
-//   };
-// };
-
-// Logout.getLayout = (page: React.ReactNode) => <AuthLayout>{page}</AuthLayout>;
 Logout.getLayout = (page: React.ReactNode) => (
   <Layout>
     {page}
   </Layout>
 );
+
 export default Logout;

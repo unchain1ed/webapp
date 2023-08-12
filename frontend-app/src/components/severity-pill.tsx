@@ -1,7 +1,13 @@
 import PropTypes from 'prop-types';
 import { styled } from '@mui/material/styles';
 
-const SeverityPillRoot = styled('span')(({ theme, ownerState }) => {
+interface SeverityPillProps {
+  ownerState: {
+    color: any
+  };
+}
+
+const SeverityPillRoot = styled("span")<SeverityPillProps>(({ theme, ownerState }) => {
   const backgroundColor = theme.palette[ownerState.color].alpha12;
   const color = theme.palette.mode === 'dark'
     ? theme.palette[ownerState.color].main

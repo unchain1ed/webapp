@@ -1,34 +1,33 @@
 package controller
 
 import (
-	"errors"
+	"log"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"github.com/unchain1ed/server-app/model/db"
 	"github.com/unchain1ed/server-app/service"
 	"github.com/unchain1ed/server-app/model/entity"
 	"github.com/unchain1ed/server-app/model/redis"
-	"log"
-	"fmt"
-	"github.com/gin-gonic/gin"
-	"net/http"
-	"github.com/unchain1ed/server-app/model/db"
 )
 
 // 会員情報編集(id)
 func postSettingId(c *gin.Context) {
 	user := entity.UserChange{}
 
-	//JSONデータをUser構造体にバインドしてバリデーションを実行
+	//リクエストをGo構造体にバインド
 	err := c.ShouldBindJSON(&user);
+	//JSONデータをUser構造体にバインドしてバリデーションを実行
 	if err != nil {
 		//バリデーションチェックを実行
-		validationCheck := service.ValidationCheck(c, err);
-		if validationCheck == false {
-			err := errors.New("Error in ValidationCheck")
-			log.Printf("セッションidが一致しませんでした。user.ChangeId: %s, user.NowId: %s, err: %v", user.ChangeId, user.NowId, err);
+		err := service.ValidationCheck(c, err);
+		if err != nil {
+		
+			log.Printf("セッションidが一致しませんでした。user.ChangeId: %s, user.NowId: %s, err: %v", user.ChangeId, user.NowId, err.Error());
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
 	}
-
-	fmt.Println("リクエストID"+user.NowId+user.ChangeId)
 
 	//DBにIDを変更
 	blog, err := db.UpdateId(user.ChangeId, user.NowId)
@@ -61,6 +60,12 @@ func postSettingId(c *gin.Context) {
 // 	//セッションとCookieにIDを登録
 // 	cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
 // 	redis.NewSession(c, cookieKey, user.UserId)
+// err = redis.NewSession(c, cookieKey, user.UserId)
+// if err != nil {
+// 	log.Printf("Error in NewSession ログイン画面DB上のセッションにIDの登録に失敗しました。loginUser.UserId: %s, err: %v", loginUser.UserId, err.Error());
+// 	c.JSON(http.StatusBadRequest, gin.H{"error in redis.NewSession of postLogin": err.Error()})
+// 	return
+// }
 
 // 	c.Redirect(http.StatusFound, "/")
 // }

@@ -1,6 +1,7 @@
 package redis
 
 import (
+	"github.com/joho/godotenv"
 	"errors"
 	"os"
 	"net/http"
@@ -8,7 +9,6 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"io"
-	"fmt"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v8"
@@ -17,13 +17,18 @@ import (
 var conn *redis.Client
 
 func init() {
+	//環境変数設定
+	envErr := godotenv.Load("../../build/db/data/.env")
+	if envErr != nil {
+		log.Println("Error loading .env file", envErr)
+	}
 	var dbHost string
-	// Dockerコンテナ内での接続先を指定
 	if os.Getenv("DOCKER_ENV") == "true" {
-		dbHost = "redis:6379"
+		// Dockerコンテナ内での接続先を指定
+		dbHost = os.Getenv("REDIS_DOCKER_HOST")
 	} else {
 		// ローカル環境での接続先を指定
-		dbHost = "localhost:6379"
+		dbHost = os.Getenv("REDIS_LOCAL_HOST")
 	}
 	//Redisデータベース接続のためRedisクライアント作成
 	conn = redis.NewClient(&redis.Options{
@@ -33,12 +38,12 @@ func init() {
 	})
 }
 
-func NewSession(c *gin.Context, cookieKey, redisValue string) {
+func NewSession(c *gin.Context, cookieKey, redisValue string) error {
 	slice := make([]byte, 64)
 	//ランダムなバイト列を生成
 	if _, err := io.ReadFull(rand.Reader, slice); err != nil {
-		panic("ランダムな文字作成時にエラーが発生しました。")
-		
+		log.Println("ランダムな文字作成時にエラーが発生しました。", err.Error())
+		return err
 	}
 
 	//バイト配列を base64 エンコードして文字列に変換
@@ -46,10 +51,9 @@ func NewSession(c *gin.Context, cookieKey, redisValue string) {
 
 	//Redisにセッションを登録
 	if err := conn.Set(c, newRedisKey, redisValue, 0).Err(); err != nil {
-		panic("Session登録時にエラーが発生：" + err.Error())
+		log.Println("Session登録時にエラーが発生:", err.Error())
+		return err
 	}
-	fmt.Println("HTTPレスポンスヘッダcookieKey"+cookieKey)
-	fmt.Println("HTTPレスポンスヘッダnewRedisKey"+newRedisKey)
 
 	// SameSite属性をNoneにするために、Secure属性（HTTPS）を設定
 	var secure bool = false;
@@ -69,43 +73,42 @@ func NewSession(c *gin.Context, cookieKey, redisValue string) {
 	}
 	// クッキーをレスポンスに設定
 	http.SetCookie(c.Writer, cookie)
+	log.Printf("クッキーをレスポンスに設定に成功。")
+	return nil
 }
 
-func GetSession(c *gin.Context, cookieKey string) interface{} {
-	fmt.Println("通過cookieKey"+cookieKey)
-
+func GetSession(c *gin.Context, cookieKey string) (interface{}, error) {
 	//クライアントのリクエストに含まれるセッションのクッキー値を取得
 	redisKey, err := c.Cookie(cookieKey)
 	if err != nil {
-		log.Println("セッションのクッキーが見つかりませんでした。,err："+err.Error())
+		log.Println("セッションのクッキーが見つかりませんでした。,err:", err.Error())
+		return nil, err
 	}
-
-	fmt.Println("通過redisKey"+redisKey)
 
 	//取得したセッションのクッキー値を使用して、Redisから対応するセッションデータを取得
 	redisValue, err := conn.Get(c, redisKey).Result()
 	if err != nil {
-	log.Println("Redisから対応するセッションデータを取得に失敗しました。redisKey,redisValue,err："+redisKey,redisValue,err)
+		log.Printf("Redisから対応するセッションデータを取得に失敗しました。redisKey: %s, redisValue: %s, err: %v", redisKey, redisValue, err)
+		return nil, err
 	}
-	fmt.Println("通過redisValue"+redisValue)
-
 	switch {
 	case err == redis.Nil:
-		log.Println("SessionKeyが登録されていません。")
-		return nil
+		log.Println("SessionKeyが登録されていません。", err.Error())
+		return nil, err
 	case err != nil:
-		log.Println("Session取得時にエラー発生：" + err.Error())
-		return nil
+		log.Println("Session取得時にエラー発生:", err.Error())
+		return nil, err
 	}
-	return redisValue
+
+	log.Printf("redisからセッション情報のIDを取得に成功。 ID: %s", redisValue)
+	return redisValue, nil
 }
 
 func DeleteSession(c *gin.Context, id string) error {
 	cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
-	
 	redisKey, err := c.Cookie(cookieKey)
 	if err != nil {
-		log.Println("セッションのクッキーが見つかりませんでした。,err："+err.Error())
+		log.Println("セッションのクッキーが見つかりませんでした。,err:"+err.Error())
 		return err
 	}
 
@@ -116,7 +119,6 @@ func DeleteSession(c *gin.Context, id string) error {
 		return err
 	}
 
-	fmt.Println("redisId,id"+redisValue+id)
 	//Redisからセッションを削除
 	if redisValue == id {
 		cmd := conn.Del(c, redisKey)
@@ -125,7 +127,7 @@ func DeleteSession(c *gin.Context, id string) error {
 			log.Printf("Redisからセッションを削除できませんでした。cmd.Val(): %v", cmd.Val())
 			return err
 		} else {
-			log.Println("Redisからセッションを削除しました。：", cmd.String())
+			log.Println("Redisからセッションを削除しました。:", cmd.String())
 		}
 	} else {
 		err := errors.New("error in redis of updateSession")
@@ -146,7 +148,7 @@ func DeleteSession(c *gin.Context, id string) error {
 	}
 	// クッキーをレスポンスに設定
 	http.SetCookie(c.Writer, cookie)
-
+	log.Printf("クッキーを消去に成功。")
 	return err
 }
 
@@ -155,7 +157,7 @@ func UpdateSession(c *gin.Context, ChangeId string, oldId string) error {
 	//リクエストからCookie取得
 	redisKey, err := c.Cookie(cookieKey)
 	if err != nil {
-		log.Println("セッションからIDが取得できませんでした。,err："+err.Error())
+		log.Println("セッションからIDが取得できませんでした。,err:"+err.Error())
 		return err
 	}
 
@@ -166,7 +168,6 @@ func UpdateSession(c *gin.Context, ChangeId string, oldId string) error {
 		return err
 	}
 
-	fmt.Println("redisId,id"+redisValue+oldId)
 	//Redisからセッションを消去
 	if redisValue == oldId {
 		cmd := conn.Del(c, redisKey)
@@ -175,7 +176,7 @@ func UpdateSession(c *gin.Context, ChangeId string, oldId string) error {
 			log.Printf("Redisからセッションを削除できませんでした。cmd.Val(): %v", cmd.Val())
 			return err
 		} else {
-			log.Println("Redisからセッションを削除しました。：", cmd.String())
+			log.Println("Redisからセッションを削除しました。:", cmd.String())
 		}
 	} else {
 		err := errors.New("error in redis of updateSession")
@@ -195,7 +196,7 @@ func UpdateSession(c *gin.Context, ChangeId string, oldId string) error {
 
 	//Redisにセッションを登録
 	if err := conn.Set(c, newRedisKey, ChangeId, 0).Err(); err != nil {
-		log.Println("Session登録時にエラーが発生：" + err.Error())
+		log.Println("Session登録時にエラーが発生:" + err.Error())
 		return err
 	}
 	log.Printf("Redisでセッション登録に成功しました。cookieKey: %s, newRedisKey: %s", cookieKey, newRedisKey)
@@ -219,6 +220,6 @@ func UpdateSession(c *gin.Context, ChangeId string, oldId string) error {
 	}
 	// クッキーをレスポンスに設定
 	http.SetCookie(c.Writer, cookie)
-
+	log.Printf("クッキーをレスポンスに設定に成功。")
 	return err
 }

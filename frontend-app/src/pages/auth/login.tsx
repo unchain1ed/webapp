@@ -71,9 +71,6 @@ const Page: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => React.
           withCredentials: true,
         }
       );
-
-      const UserId = response.data.user.userId; // レスポンスデータを取得
-
       // ログイン成功時の処理
       // await auth.signIn(userId, password);
       router.push("/");
@@ -199,20 +196,6 @@ const Page: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => React.
     </>
   );
 };
-
-// export const getServerSideProps: GetServerSideProps<HomeProps> = async () => {
-//   const hostname = process.env.NODE_ENV === "production" ? "server-app" : "localhost";
-//   const response = await axios.get(`http://${hostname}:8080/login`,
-//   {
-//     withCredentials: true,
-//   });
-//   const user = response.data;
-//   return {
-//     props: {
-//       user,
-//     },
-//   };
-// };
 
 Page.getLayout = (page: React.ReactNode) => <AuthLayout>{page}</AuthLayout>;
 

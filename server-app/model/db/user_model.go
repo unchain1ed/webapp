@@ -1,20 +1,12 @@
 package db
 
 import (
-	"github.com/unchain1ed/server-app/model/entity"
-	"fmt"
 	"log"
 	"errors"
+
 	"github.com/unchain1ed/server-app/crypto"
-
-	// "gorm.io/gorm"
+	"github.com/unchain1ed/server-app/model/entity"
 )
-
-// type User struct {
-// 	gorm.Model //共通カラム
-// 	UserId string
-// 	Password string
-// }
 
 func init() {
 	//MySQLのストレージエンジンInnoDB,テーブル自動生成
@@ -43,7 +35,6 @@ func CheckUser(userId, password string) (*entity.User, error) {
 			log.Println(err)
 			return nil, err
 		}
-		
 		return &user, nil
 }
 
@@ -77,7 +68,7 @@ func Signup(userId, password string) (*entity.User, error){
 //gormのUpdate関数でID情報編集
 func UpdateId(changeId string, nowId string) (*entity.User, error){
 	user := entity.User{}
-fmt.Println(changeId)
+
 	if err := Db.Table("USERS").Where("user_id = ?", changeId).First(&user).Error; err == nil {
 			// err := errors.New("UserIdが一致するユーザーが存在しません。")
 			log.Println("UserIdが重複するユーザーが存在しています。")
@@ -103,8 +94,6 @@ fmt.Println(changeId)
 
 	//成功消去の場合、消去されたBLOG情報をログ出力
 	log.Println("IDの変更に成功しました。",newUser.UserId)	
-
-
 
 	return &newUser, nil
 }
@@ -144,10 +133,14 @@ func UpdatePassword(userId, password string) (*entity.User, error){
 	return &user, nil
 }
 
-func GetOneUser(UserId string) (entity.User) {
+func GetOneUser(UserId string) (entity.User, error) {
 	user := entity.User{}
 	//MySQLからuserIdに一致する構造体userを取得
-	Db.Table("USERS").Where("user_id = ?", UserId).First(&user)
-
-	return user
+	result := Db.Table("USERS").Where("user_id = ?", UserId).First(&user)
+	if result.Error != nil {
+		log.Println("error", result.Error);
+		// エラーが発生した場合はエラーを返す
+		return user, result.Error
+	}
+	return user, nil
 }

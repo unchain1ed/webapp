@@ -1,30 +1,11 @@
 package db
 
 import (
-	"github.com/unchain1ed/server-app/model/entity"
 	"strconv"
 	"log"
-	"fmt"
+
+	"github.com/unchain1ed/server-app/model/entity"
 )
-
-// type Blog struct {
-// 	ID        uint `gorm:"primarykey"`
-// 	CreatedAt time.Time
-// 	UpdatedAt time.Time
-// 	DeletedAt *time.Time `gorm:"index"`
-// 	// gorm.Model //共通カラム
-// 	LoginID string
-// 	Title string
-// 	Content string
-// }
-
-// type BlogInfo struct {
-// 	Title string
-// 	Content string
-// 	CreatedAt string
-// 	UpdatedAt string
-// 	DeletedAt string
-// }
 
 //送られてきたタイトルと内容をDBに登録
 func Create(loginID, title, content string) (*entity.Blog, error){
@@ -57,34 +38,24 @@ func Edit(id, loginID, title, content string) (*entity.Blog, error){
 }
 
 //DBからBLOG情報を全件取得
-func GetBlogOverview() ([]entity.Blog) {
+func GetBlogOverview() ([]entity.Blog, error) {
 	var blogs []entity.Blog
 	
 	//MySQLからuserIdに一致する構造体userを取得
-	Db.Table("BLOGS").Find(&blogs)
+	result := Db.Table("BLOGS").Find(&blogs)
+		if result.Error != nil {
+			log.Println("error", result.Error);
+		// エラーが発生した場合はエラーを返す
+		return nil, result.Error
+	}
 	
-	return blogs
+	return blogs, nil
 }
-
-// //DBからIDによる特定のBLOG情報を全件取得
-// func GetBlogViewInfoById(id string) (*Blog, error) {
-// 	// blog := Blog{}
-// 	var blog = Blog{}
-	
-// 	// MySQLからIDに一致する構造体blogを取得
-// 	result := Db.Table("BLOGS").Where("ID = ?", id).Find(&blog)
-// 	if result.Error != nil {
-// 		// エラーが発生した場合はエラーを返す
-// 		return nil, result.Error
-// 	}
-	
-// 	return &blog, nil
-// }
 
 // DBからIDによる特定のBLOG情報を取得
 func GetBlogViewInfoById(id string) (*entity.Blog, error) {
 	blog := &entity.Blog{}
-fmt.Println(id)
+
 	// MySQLからIDに一致する構造体blogを取得
 	result := Db.Table("BLOGS").Where("id = ?", id).First(blog)
 	if result.Error != nil {
@@ -92,13 +63,11 @@ fmt.Println(id)
 		// エラーが発生した場合はエラーを返す
 		return nil, result.Error
 	}
-
 	return blog, nil
 }
 
 // DBからIDによる特定のBLOG情報を消去
 func DeleteBlogInfoById(id string) (*entity.Blog, error) {
-
 	// 文字列をuintに変換
 	uintId, err := strconv.ParseUint(id, 10, 64)
 	if err != nil {
@@ -126,7 +95,7 @@ func DeleteBlogInfoById(id string) (*entity.Blog, error) {
 		return nil, deleteResult.Error
 	}
 	//成功消去の場合、消去されたBLOG情報をログ出力
-	log.Println("Deleted blog：ID, Title", deletedBlog.ID, deletedBlog.Title)
+	log.Println("Deleted blog:ID, Title", deletedBlog.ID, deletedBlog.Title)
 
 	return blog, nil
 }
