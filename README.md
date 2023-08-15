@@ -1,4 +1,10 @@
 # ブログ記事管理システム
+
+ Go v1.2.0 (Gin v1.9.0)
+ React v18.2.0 (Next.js v13.1.6 TypeScript v5.1.3)
+ Redis v8.11.5
+ MySQL v1.5.0
+ Docker v20.10.22
  
  【機能】
  ブログ記事閲覧、新規作成、編集、消去
