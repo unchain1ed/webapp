@@ -16,12 +16,11 @@ func getLoginIdBySession(c *gin.Context) {
 	//セッションから取得
 	id, err := redis.GetSession(c, cookieKey)
 	if err != nil {
-		log.Printf("セッションからIDの取得に失敗しました。" , err.Error())
+		log.Println("セッションからIDの取得に失敗しました。" , err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	log.Println("Get LoginId bySession :id", id); 
-
+	log.Printf("Success Get LoginId bySession :id %+v", id)
 	c.JSON(http.StatusOK, gin.H{"id": id})
 }

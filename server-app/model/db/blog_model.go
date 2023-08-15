@@ -94,8 +94,8 @@ func DeleteBlogInfoById(id string) (*entity.Blog, error) {
 		// エラーが発生した場合はエラーを返す
 		return nil, deleteResult.Error
 	}
+	
 	//成功消去の場合、消去されたBLOG情報をログ出力
 	log.Println("Deleted blog:ID, Title", deletedBlog.ID, deletedBlog.Title)
-
 	return blog, nil
 }

@@ -71,5 +71,7 @@ func postLogin(c *gin.Context) {
 		return
 	}
 
+	//取得成功結果をレスポンス
+	log.Printf("Get user in LoginView from DB :user %+v", user)
 	c.JSON(http.StatusOK, gin.H{"user": user})
 }
