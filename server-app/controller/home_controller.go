@@ -16,13 +16,12 @@ func getTop(c *gin.Context) {
 	cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
 	id, err := redis.GetSession(c, cookieKey)
 	if err != nil {
-		log.Printf("セッションからIDの取得に失敗しました。" , err.Error())
+		log.Println("セッションからIDの取得に失敗しました。" , err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	log.Println("Get LoginId in TopView from Session :id", id); 
-
 	c.JSON(http.StatusOK, gin.H{"id": id})
 }
 
@@ -32,11 +31,12 @@ func getMypage(c *gin.Context) {
 	cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
 	user, err := redis.GetSession(c, cookieKey)
 	if err != nil {
-		log.Printf("セッションからIDの取得に失敗しました。" , err.Error())
+		log.Println("セッションからIDの取得に失敗しました。" , err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
+	log.Printf("Success Get User from session :user %+v", user)
 	c.JSON(http.StatusOK, gin.H{"user": user})
 }
 
@@ -57,6 +57,7 @@ func postBlog(c *gin.Context) {
 		return
 	}
 
+	log.Printf("Success Post Blog :blog %+v", blog)
 	c.JSON(http.StatusOK, gin.H{"blog": blog})
 }
 
@@ -71,6 +72,8 @@ func getBlogOverview(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error in db.GetBlogOverview of getBlogOverview": err.Error()})
 		return
 	}
+
+	log.Printf("Success Get BlogsInfo :blogs %+v", blogs)
 	c.JSON(http.StatusOK, gin.H{"blogs": blogs})
 }
 
@@ -85,5 +88,6 @@ func getBlogViewById(c *gin.Context) {
 		return
 	}
 
+	log.Printf("Success Get BlogViewID :blog %+v", blog)
 	c.JSON(http.StatusOK, gin.H{"blog": blog})
 }

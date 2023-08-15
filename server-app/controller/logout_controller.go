@@ -44,7 +44,7 @@ func decideLogout(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error in decideLogout": err.Error()})
 		return
 	}
+	
 	log.Println("ログアウトに成功しました。Success Logout :id", logoutUser.UserId); 
-
 	c.JSON(http.StatusOK, gin.H{"Success Logout": "auth/login"})
 }

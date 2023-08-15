@@ -21,6 +21,7 @@ func init() {
 	}
 }	
 
+//APIエンドポイントとクロスオリジンリソース共有（CORS）の設定
 func GetRouter() *gin.Engine {
 	//ルターを定義
 	router := gin.Default()
@@ -42,16 +43,14 @@ func GetRouter() *gin.Engine {
 	//クロスオリジンリソース共有を有効化
 	router.Use(cors.New(config))
 
-	//ホーム画面
+	//***ホーム概要画面***
 	router.GET("/", isAuthenticated(), func(c *gin.Context) {getTop(c)})
 
 	//***ログイン画面***
-	//ログイン画面
 	router.GET("/login", func(c *gin.Context) {getLogin(c)})
 	router.POST("/login", func(c *gin.Context) {postLogin(c)})
 
 	//***ブログ概要画面***
-	//ブログ記事作成画面
 	router.POST("/blog/post", isAuthenticated(), func(c *gin.Context) {postBlog(c)})
 	//BlogOverview画面
 	router.GET("/blog/overview", isAuthenticated(),func(c *gin.Context) {getBlogOverview(c)})
@@ -62,9 +61,13 @@ func GetRouter() *gin.Engine {
 	//ブログ記事消去API
 	router.GET("/blog/delete/:id", isAuthenticated(), func(c *gin.Context) {getDeleteBlog(c)})
 
-	//***会員情報編集画面***
-	//ID編集API
-	router.POST("/update/id", isAuthenticated(), func(c *gin.Context) {postSettingId(c)})
+	//***ID情報編集画面***
+	//ID変更API
+	router.POST("/update/id", isAuthenticated(), func(c *gin.Context) {postUpdateId(c)})
+
+	//***PW情報編集画面***
+	//PW変更API
+	router.POST("/update/pw", isAuthenticated(), func(c *gin.Context) {postUpdatePw(c)})
 
 	//***ログアウト画面***
 	//ログアウト実行API
@@ -97,7 +100,7 @@ func isAuthenticated() gin.HandlerFunc {
 		//セッションから取得
 		id, err := redis.GetSession(c, cookieKey)
 		if err != nil {
-			log.Printf("セッションからIDの取得に失敗しました。" , err.Error())
+			log.Println("セッションからIDの取得に失敗しました。" , err.Error())
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}

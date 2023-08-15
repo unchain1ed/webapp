@@ -26,5 +26,6 @@ func postEditBlog(c *gin.Context) {
 		return
 	}
 
+	log.Printf("Success Edit Blog :blog %+v", blog)
 	c.JSON(http.StatusOK, gin.H{"blog": blog})
 }

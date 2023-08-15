@@ -13,9 +13,15 @@ type User struct {
 	Password string `json:"password" binding:"required,min=4,max=20"`
 }
 
-type UserChange struct {
+type UserIdChange struct {
 	NowId string `json:"nowId" binding:"required,min=2,max=10"`
 	ChangeId string `json:"changeId" binding:"required,min=2,max=10"`
+}
+
+type UserPwChange struct {
+	UserId string `json:"userId" binding:"required,min=2,max=10"`
+	NowPassword string `json:"nowPassword" binding:"required,min=4,max=20"`
+	ChangePassword string `json:"changePassword" binding:"required,min=4,max=20"`
 }
 
 type FormUser struct {

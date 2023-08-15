@@ -22,13 +22,12 @@ func postRegist(c *gin.Context) {
 		//バリデーションチェックを実行
 		err := service.ValidationCheck(c, err);
 		if err != nil {
-		
 			log.Printf("リクエストJSON形式で構造体にバインドを失敗しました。registUser.UserId: %s, err: %v", registUser.UserId, err.Error());
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
 	}
-
+	//DBに会員情報登録処理
 	user, err := db.Signup(registUser.UserId, registUser.Password)
 	if err != nil {
 		err := errors.New("Error in db.Signup")
@@ -36,8 +35,7 @@ func postRegist(c *gin.Context) {
 			c.JSON(http.StatusBadRequest, gin.H{"error in db.Signup of postRegist": err.Error()})
 		return
 	}
-
+	//DBに会員情報登録に成功
 	log.Printf("Success user in RegisterView from DB :user %+v", user)
-
 	c.JSON(http.StatusOK, gin.H{"user": user})
 }
