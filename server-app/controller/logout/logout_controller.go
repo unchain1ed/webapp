@@ -1,4 +1,4 @@
-package controller
+package logout
 
 import (
 	"net/http"
@@ -12,7 +12,7 @@ import (
 )
 
 // ログアウト処理
-func decideLogout(c *gin.Context) {
+func DecideLogout(c *gin.Context) {
 	//構造体をインスタンス化
 	logoutUser := entity.FormUser{}
 	//JSONデータのリクエストボディを構造体にバインドしてバリデーションを実行
@@ -33,7 +33,7 @@ func decideLogout(c *gin.Context) {
 	user, err := db.CheckUser(logoutUser.UserId, logoutUser.Password)
 	if err != nil {
 		log.Printf("ログアウト画面DB上の会員情報と照合に失敗しました。logoutUser.UserId: %s", logoutUser.UserId);
-		c.JSON(http.StatusBadRequest, gin.H{"error in db.CheckUser of decideLogout": err.Error()})
+		c.JSON(http.StatusUnauthorized, gin.H{"error in db.CheckUser of decideLogout": err.Error()})
 		return
 	}
 

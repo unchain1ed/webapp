@@ -1,4 +1,4 @@
-package controller
+package blog
 
 import (
 	"log"
@@ -8,7 +8,7 @@ import (
 	"github.com/unchain1ed/server-app/model/db"
 )
 
-func getDeleteBlog(c *gin.Context) {
+func GetDeleteBlog(c *gin.Context) {
 	//IDをリクエストから取得
 	id := c.Param("id")
 

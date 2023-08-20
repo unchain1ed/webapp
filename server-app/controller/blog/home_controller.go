@@ -1,4 +1,4 @@
-package controller
+package blog
 
 import (
 	"log"
@@ -11,7 +11,7 @@ import (
 	"github.com/unchain1ed/server-app/model/db"
 )
 
-func getTop(c *gin.Context) {
+func GetTop(c *gin.Context) {
 	//セッションからloginIDを取得
 	cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
 	id, err := redis.GetSession(c, cookieKey)
@@ -26,7 +26,7 @@ func getTop(c *gin.Context) {
 }
 
 // マイページ画面
-func getMypage(c *gin.Context) {
+func GetMypage(c *gin.Context) {
 	//セッションからuserを取得
 	cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
 	user, err := redis.GetSession(c, cookieKey)
@@ -40,7 +40,7 @@ func getMypage(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"user": user})
 }
 
-func postBlog(c *gin.Context) {	
+func PostBlog(c *gin.Context) {	
 	// JSON形式のリクエストボディを構造体にバインドする
 	blogPost := entity.BlogPost{}
 	if err := c.ShouldBindJSON(&blogPost); err != nil {
@@ -62,7 +62,7 @@ func postBlog(c *gin.Context) {
 }
 
 // BlogOverview画面
-func getBlogOverview(c *gin.Context) {
+func GetBlogOverview(c *gin.Context) {
 	blogs := []entity.Blog{}
 	//DBからブログ情報を取得
 	var err error
@@ -78,7 +78,7 @@ func getBlogOverview(c *gin.Context) {
 }
 
 // BlogView IDによる画面
-func getBlogViewById(c *gin.Context) {
+func GetBlogViewById(c *gin.Context) {
 	id := c.Param("id")
 
 	blog, err := db.GetBlogViewInfoById(id)

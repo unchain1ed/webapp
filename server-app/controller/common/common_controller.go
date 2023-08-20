@@ -1,4 +1,4 @@
-package controller
+package common
 
 import (
 	"log"
@@ -10,14 +10,14 @@ import (
 )
 
 //セッションからログインIDを取得するAPI
-func getLoginIdBySession(c *gin.Context) {
+func GetLoginIdBySession(c *gin.Context) {
 	//セッションからuserを取得
 	cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
 	//セッションから取得
 	id, err := redis.GetSession(c, cookieKey)
 	if err != nil {
 		log.Println("セッションからIDの取得に失敗しました。" , err.Error())
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
 

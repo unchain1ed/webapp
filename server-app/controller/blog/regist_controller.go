@@ -1,4 +1,4 @@
-package controller
+package blog
 
 import (
 	"log"
@@ -12,7 +12,7 @@ import (
 )
 
 // 新規会員登録(id,password)
-func postRegist(c *gin.Context) {
+func PostRegist(c *gin.Context) {
 	//構造体をインスタンス化
 	registUser := entity.FormUser{}
 	//リクエストをGo構造体にバインド

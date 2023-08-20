@@ -1,4 +1,4 @@
-package controller
+package blog
 
 import (
 	"net/http"
@@ -9,7 +9,7 @@ import (
 	"github.com/unchain1ed/server-app/model/db"
 )
 
-func postEditBlog(c *gin.Context) {
+func PostEditBlog(c *gin.Context) {
 	// JSON形式のリクエストボディを構造体にバインドする
 	blogPost := entity.BlogPost{}
 	if err := c.ShouldBindJSON(&blogPost); err != nil {

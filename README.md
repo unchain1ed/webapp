@@ -45,8 +45,6 @@ server-app
 │   ├── login_controller.go
 │   ├── router.go
 │   └── home_controller.go
-│   └── dto
-│       └── blog_dto.go
 ├── crypto
 │   └── crypto.go
 ├── certificate
