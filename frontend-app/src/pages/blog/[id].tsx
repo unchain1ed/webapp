@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import Container from "@material-ui/core/Container";
+import Container from "@mui/material/Container";
 import { Box, Typography } from "@mui/material";
-import Chip from "@material-ui/core/Chip";
-import Avatar from "@material-ui/core/Avatar";
+import Chip from "@mui/material/Chip";
 import { useRouter } from "next/router";
 import { GetServerSideProps } from "next";
 import axios from "axios";
@@ -25,29 +23,8 @@ type BlogProps = {
   blog: Blog;
 };
 
-const useStyles = makeStyles((theme) => ({
-  name: {
-    lineHeight: 1,
-  },
-  content: {
-    [theme.breakpoints.up("md")]: {
-      paddingLeft: theme.spacing(8),
-      paddingRight: theme.spacing(8),
-    },
-  },
-  paragraph: {
-    marginBottom: theme.spacing(3),
-  },
-  image: {
-    maxWidth: "100%",
-    borderRadius: theme.shape.borderRadius,
-  },
-}));
-
 export default function Blog({ id }) {
-  const classes = useStyles();
   const router = useRouter();
-  // const { id } = router.query; // idを取得
   const [propsBlog, setBlogProps] = useState<Blog>({
     id: "",
     loginID: "",
@@ -61,13 +38,11 @@ export default function Blog({ id }) {
   const content = {
     date: `${format(new Date(propsBlog.createdAt), "yyyy/MM/dd")}`,
     "header-p1": `${propsBlog.title}`,
-    // 'avatar': 'jpg',　//TODO
     name: `${propsBlog.loginID}`,
     paragraph1: `${propsBlog.content}`,
   };
 
   useEffect(() => {
-    console.log(id)
     const getBlogContent = async () => {
       const hostname = process.env.NODE_ENV === "production" ? "server-app" : "localhost";
 
@@ -77,10 +52,7 @@ export default function Blog({ id }) {
         });
         
         const blog: Blog = response.data.blog;
-        console.log(response.data.blog)
-        console.log(blog)
-        setBlogProps(blog)
-        console.log(propsBlog)
+        setBlogProps(blog);
 
       } catch (error) {
         console.error("エラーが発生しました", error);
@@ -123,9 +95,8 @@ export default function Blog({ id }) {
                 </Typography>
               </Box>
               <Box display="flex" justifyContent="center" alignItems="center">
-                {/* <Avatar alt="" src={content['avatar']} /> */}
                 <Box ml={2} textAlign="left">
-                  <Typography variant="subtitle1" component="h2" className={classes.name}>
+                  <Typography variant="subtitle1" component="h2" style={{ lineHeight: 1 }}>
                     {content["name"]}
                   </Typography>
                   <Typography variant="subtitle1" component="h3" color="textSecondary">
@@ -135,18 +106,17 @@ export default function Blog({ id }) {
               </Box>
             </Container>
           </Box>
-          <Box className={classes.content}>
+          <Box>
             <Typography
               variant="subtitle1"
-              style={{ whiteSpace: "pre-wrap" }}
+              style={{ whiteSpace: "pre-wrap", marginBottom: "16px" }}
               color="textPrimary"
               paragraph={true}
-              className={classes.paragraph}
             >
               {content["paragraph1"]}
             </Typography>
             <Box my={4}>
-              <img src={content["image"]} alt="" className={classes.image} />
+              <img src={content["image"]} alt="" style={{ maxWidth: "100%", borderRadius: "4px" }} />
             </Box>
           </Box>
         </Box>
@@ -154,36 +124,13 @@ export default function Blog({ id }) {
     </section>
   );
 }
-  export async function getServerSideProps(context) {
-    // ここで context.params を使用して id を取得
-    const { id } = context.params;
 
-    // 例えば、この id を使ってデータを取得する処理などを行う
+export async function getServerSideProps(context) {
+  const { id } = context.params;
 
-    // ページコンポーネントに props として id を渡す
-    return {
-      props: {
-        id,
-      },
-    };
-  }
-
-// export const getServerSideProps: GetServerSideProps<BlogProps> = async (context) => {
-//   const { id } = context.params; // idを取得
-//   const hostname = process.env.NODE_ENV === "production" ? "server-app" : "localhost";
-
-//   const response = await axios.get(`http://${hostname}:8080/blog/overview/post/${id}`, {
-//     headers: {
-//       "Content-Type": "application/x-www-form-urlencoded",
-//     },
-//     withCredentials: true,
-//   });
-
-//   const blog: Blog = response.data.blog;
-
-//   return {
-//     props: {
-//       blog,
-//     },
-//   };
-// };
+  return {
+    props: {
+      id,
+    },
+  };
+}

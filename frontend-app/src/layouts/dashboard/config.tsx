@@ -24,7 +24,7 @@ export const itemsLogin = [
     path: '/',
     icon: (
       <SvgIcon fontSize="small">
-        <DocumentIcon />
+        <ChartBarIcon />
       </SvgIcon>
     )
   },

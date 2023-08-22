@@ -1,4 +1,4 @@
-package controller
+package setting
 
 import (
 	"os"
@@ -13,7 +13,7 @@ import (
 )
 
 // 会員情報編集(id)
-func postUpdateId(c *gin.Context) {
+func PostUpdateId(c *gin.Context) {
 	user := entity.UserIdChange{}
 	//リクエストをGo構造体にバインド
 	err := c.ShouldBindJSON(&user);
@@ -23,7 +23,7 @@ func postUpdateId(c *gin.Context) {
 		err := service.ValidationCheck(c, err);
 		if err != nil {
 			log.Printf("セッションidが一致しませんでした。user.ChangeId: %s, user.NowId: %s, err: %v", user.ChangeId, user.NowId, err.Error());
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 			return
 		}
 	}
@@ -47,7 +47,7 @@ func postUpdateId(c *gin.Context) {
 }
 
 // 会員情報編集(password)
-func postUpdatePw(c *gin.Context) {
+func PostUpdatePw(c *gin.Context) {
 	user := entity.UserPwChange{}
 
 	//リクエストをGo構造体にバインド

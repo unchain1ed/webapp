@@ -28,7 +28,7 @@ services:
     container_name: frontend-app
     environment:
       - DOCKER_ENV=true
-      - NODE_ENV=production
+      - NODE_ENV=development
     build:
       context: ./frontend-app/build/frontend
       dockerfile: Dockerfile
@@ -78,50 +78,6 @@ services:
       - 6379:6379
     networks:
       - golang_network
-
-
-  # db:
-  #   container_name: db
-  #   build:
-  #     context: ./build/db
-  #     dockerfile: Dockerfile
-  #   tty: true
-  #   platform: linux/x86_64
-  #   ports:
-  #     - 3306:3306
-  #   env_file:
-  #     - ./mysql/.env
-  #   volumes:
-  #     - type: volume
-  #       source: mysql_test_volume
-  #       target: /var/lib/mysql
-  #     - type: bind
-  #       source: ./mysql/init
-  #       target: /docker-entrypoint-initdb.d
-  #   networks:
-  #     - golang_test_network
-
-#   db:
-#     container_name: db
-#     build:
-#       context: ./build/db
-#       dockerfile: Dockerfile
-#     tty: true
-#     platform: linux/amd64
-#     ports:
-#       - 3306:3306
-#     env_file:
-#       - ./build/db/.env
-#     volumes:
-#       - type: volume
-#         source: go_volume
-#         target: /var/lib/mysql
-
-#   redis:
-#     container_name: redis
-#     image: redis:latest
-#     ports:
-#       - 6379:6379
 
 volumes:
   go_volume:
