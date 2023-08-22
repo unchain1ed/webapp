@@ -28,7 +28,7 @@ services:
     container_name: frontend-app
     environment:
       - DOCKER_ENV=true
-      - NODE_ENV=production
+      - NODE_ENV=development
     build:
       context: ./frontend-app/build/frontend
       dockerfile: Dockerfile

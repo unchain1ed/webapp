@@ -81,7 +81,7 @@ const Overview = ({ blogs }: BlogProps, { value }: ClickValue) => {
         }
       } catch (error) {
         console.error("エラーが発生しました", error);
-        if (error.response.status === 302) {
+        if (error.response.status === 302 || error.response.status === 400) {
           router.push("/auth/login");
         }
       }
