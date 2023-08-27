@@ -61,7 +61,7 @@ func Signup(userId, password string) (*entity.User, error){
 	}
 
 	user = entity.User{UserId: userId, Password: encryptPw}
-	Db.Create(&user)
+	Db.Table("USERS").Create(&user)
 	return &user, nil
 }
 

@@ -13,7 +13,6 @@ services:
       - 8080:8080
     env_file:
       - ./server-app/build/app/.env
-    #   - ./build/db/.env
     depends_on:
       - db
       - redis

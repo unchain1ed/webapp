@@ -5,46 +5,57 @@ import Card from '@mui/material/Card';
 import CardActionArea from '@mui/material/CardActionArea';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
+import router from 'next/router';
 
-interface FeaturedPostProps {
+type FeaturedPostProps = {
   post: {
-    date: string;
-    description: string;
-    image: string;
-    imageLabel: string;
+    id: string;
+    loginID: string;
     title: string;
+    content: string;
+    createdAt: Date;
+    updatedAt: Date;
+    deletedAt: Date;
   };
 }
 
-export default function FeaturedPost(props: FeaturedPostProps) {
+// export default function FeaturedPost(props: FeaturedPostProps) {
+export const FeaturedPost: React.FC<FeaturedPostProps> = (props: FeaturedPostProps) => {
   const { post } = props;
+
+  const handleContainerClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    // プルダウン以外の部分がクリックされた場合の処理
+      router.push(`/blog/${post.id}`); // ブログ記事の詳細ページに遷移
+  };
 
   return (
     <Grid item xs={12} md={6}>
-      <CardActionArea component="a" href="#">
+      <CardActionArea component="a">
         <Card sx={{ display: 'flex' }}>
-          <CardContent sx={{ flex: 1 }}>
+          <CardContent sx={{ flex: 1 }} onClick={handleContainerClick}>
             <Typography component="h2" variant="h5">
               {post.title}
             </Typography>
-            <Typography variant="subtitle1" color="text.secondary">
-              {post.date}
-            </Typography>
+            {/* <Typography variant="subtitle1" color="text.secondary">
+              {post.createdAt}
+            </Typography> */}
             <Typography variant="subtitle1" paragraph>
-              {post.description}
+              {post.title}
             </Typography>
             <Typography variant="subtitle1" color="primary">
               Continue reading...
             </Typography>
           </CardContent>
-          <CardMedia
+          {/* <CardMedia
             component="img"
             sx={{ width: 160, display: { xs: 'none', sm: 'block' } }}
             image={post.image}
             alt={post.imageLabel}
-          />
+          /> */}
         </Card>
       </CardActionArea>
     </Grid>
   );
 }
+
+// export default FeaturedPost;

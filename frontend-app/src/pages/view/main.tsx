@@ -4,14 +4,22 @@ import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import Markdown from './markdown';
 
-interface MainProps {
-  posts: ReadonlyArray<string>;
+type Blog = {
+  id: string;
+  loginID: string;
   title: string;
+  content: string;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt: Date;
+};
+
+interface MainProps {
+  posts: Blog[];
 }
 
 export default function Main(props: MainProps) {
-  const { posts, title } = props;
-
+  const { posts } = props;
   return (
     <Grid
       item
@@ -24,14 +32,12 @@ export default function Main(props: MainProps) {
       }}
     >
       <Typography variant="h6" gutterBottom>
-        {title}
+        {posts.length > 0 ? posts[0].title : ""}
       </Typography>
-      <Divider />
-      {posts.map((post) => (
-        <Markdown className="markdown" key={post.substring(0, 40)}>
-          {post}
+      <Divider />           
+        <Markdown className="markdown" key={posts.length > 0 ? posts[0].title : ""}>
+          {posts.length > 0 ? posts[0].content : ""}
         </Markdown>
-      ))}
     </Grid>
   );
 }
