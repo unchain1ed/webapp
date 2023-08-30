@@ -12,7 +12,7 @@ func Create(loginID, title, content string) (*entity.Blog, error){
 	blog := entity.Blog{}
 	blog = entity.Blog{LoginID: loginID, Title: title, Content: content}
 
-	result := Db.Create(&blog)
+	result := Db.Table("BLOGS").Create(&blog)
 	if result.Error != nil {
 		log.Println("error", result.Error);
 		// エラーが発生した場合はエラーを返す
@@ -71,7 +71,6 @@ func DeleteBlogInfoById(id string) (*entity.Blog, error) {
 	// 文字列をuintに変換
 	uintId, err := strconv.ParseUint(id, 10, 64)
 	if err != nil {
-		// c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid number"})
 		log.Println("error", err);
 		return nil, err
 	}

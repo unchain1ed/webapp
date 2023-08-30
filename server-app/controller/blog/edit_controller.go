@@ -1,6 +1,9 @@
 package blog
 
 import (
+	"errors"
+	"os"
+	"github.com/unchain1ed/server-app/model/redis"
 	"net/http"
 	"log"
 
@@ -15,6 +18,22 @@ func PostEditBlog(c *gin.Context) {
 	if err := c.ShouldBindJSON(&blogPost); err != nil {
 		log.Printf("ブログ編集画面リクエストJSON形式で構造体にバインドを失敗しました。" + err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error in c.ShouldBindJSON": err.Error()})
+		return
+	}
+
+	//セッションからloginIDを取得
+	cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
+	id, err := redis.GetSession(c, cookieKey)
+	if err != nil {
+		log.Println("セッションからIDの取得に失敗しました。" , err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	// ログインユーザーと編集対象のブログのLoginIDを比較
+	if id != blogPost.LoginID {
+		err := errors.New("ログインユーザーと編集対象のブログのLoginIDが一致しません。")
+		log.Println(err)
+		c.JSON(http.StatusForbidden, gin.H{"error in blogPost.LoginID": err.Error()})
 		return
 	}
 
