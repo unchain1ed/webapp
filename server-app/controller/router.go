@@ -90,8 +90,20 @@ func GetRouter() *gin.Engine {
 	//第1引数にはポート番号 ":8080" 、第2引数にはTLS証明書のパス、第3引数には秘密鍵のパス
 	// router.RunTLS(":8080", "../../certificate/localhost.crt", "../../certificate/localhost.key")
 
+	//PORT環境変数で定義
+	port := os.Getenv("PORT")
+	if port == "" {
+			port = "8080"
+	} else {
+		log.Printf("PORT is %s", port)
+	}
+	log.Printf("Hello world sample is listening on port %s.", port)
 	//HTTPサーバーを起動
-	router.Run(":8080")
+	// router.Run(":8080")
+	// HTTPサーバーを起動し、エラーログを出力
+	if err := http.ListenAndServe(":"+port, router); err != nil {
+		log.Fatalf("HTTP server failed to start: %v", err)
+	}
 
 	return router
 }
@@ -100,7 +112,6 @@ func GetRouter() *gin.Engine {
 //このハンドラ関数はクライアントのリクエストが処理される前に実行
 func isAuthenticated() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		fmt.Println("通過isAuthenticated")
 		cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
 		//セッションから取得
 		id, err := redis.GetSession(c, cookieKey)
