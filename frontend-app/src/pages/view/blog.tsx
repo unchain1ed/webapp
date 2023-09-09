@@ -32,7 +32,7 @@ type BlogProps = {
 const mainFeaturedPost = {
   title: 'Engineer technical blog',
   description:
-    "Recording everyday events here...",
+    "エンジニアの技術ブログ",
   image: 'https://source.unsplash.com/random?wallpapers',
   imageText: 'main image description',
   linkText: '',
@@ -62,8 +62,17 @@ const defaultTheme = createTheme();
 
 export default function Blog() {
   const [blogsList, setBlogsList] = useState<Blog[]>([]);
+  const [id, setId] = useState("");
+  // const { postid } = id;
+
+  const handleValueChange = (postId) => {
+    setId(postId);
+
+  };
 
   useEffect(() => {
+
+    
     // ブログ情報を取得する関数
     const fetchBlogs = async () => {
       const hostname = process.env.NODE_ENV === "production" ? "server-app" : "localhost";
@@ -106,14 +115,14 @@ export default function Blog() {
           <MainFeaturedPost post={mainFeaturedPost} />
           <Grid container spacing={4}>
           {blogsList.slice(0, 2).map((post) => (
-            <FeaturedPost key={post.title} post={post}/>
+            <FeaturedPost key={post.title} post={post} handleValueChange={handleValueChange}/>
           ))}
           </Grid>
           <Typography variant="h6" gutterBottom>
         {"see all"}
       </Typography>
           <Grid container spacing={5} sx={{ mt: 3 }}>
-            <Main posts={blogsList}/>
+            <Main posts={blogsList} id={id}/>
             <Sidebar
               title={sidebar.title}
               description={sidebar.description}

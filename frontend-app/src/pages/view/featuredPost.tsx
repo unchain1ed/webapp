@@ -6,8 +6,10 @@ import CardActionArea from '@mui/material/CardActionArea';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import router from 'next/router';
+import Blog from './blog';
 
 type FeaturedPostProps = {
+  handleValueChange(id: string): unknown;
   post: {
     id: string;
     loginID: string;
@@ -20,12 +22,17 @@ type FeaturedPostProps = {
 }
 
 // export default function FeaturedPost(props: FeaturedPostProps) {
-export const FeaturedPost: React.FC<FeaturedPostProps> = (props: FeaturedPostProps) => {
+export const FeaturedPost: React.FC<FeaturedPostProps> = (props) => {
   const { post } = props;
 
   const handleContainerClick = (event: React.MouseEvent<HTMLDivElement>) => {
+
+  
+    // return <Blog props={post.id} />;
+
+    props.handleValueChange(post.id);
     // プルダウン以外の部分がクリックされた場合の処理
-      router.push(`/blog/${post.id}`); // ブログ記事の詳細ページに遷移
+      // router.push(`/blog/${post.id}`); // ブログ記事の詳細ページに遷移
   };
 
   return (
