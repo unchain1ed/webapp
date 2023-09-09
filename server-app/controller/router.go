@@ -97,7 +97,7 @@ func GetRouter() *gin.Engine {
 	} else {
 		log.Printf("PORT is %s", port)
 	}
-	log.Printf("Hello world sample is listening on port %s.", port)
+	log.Printf("Listening on port %s.", port)
 	//HTTPサーバーを起動
 	// router.Run(":8080")
 	// HTTPサーバーを起動し、エラーログを出力

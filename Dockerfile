@@ -9,11 +9,11 @@ COPY server-app/build/app/.env /server-app/build/app/.env
 # RUN apk update && apk add git
 WORKDIR /server-app/cmd/webapp
 
-# ポートを開放
-ENV PORT 8080
-# ENV HOST 0.0.0.0
+# # ポートを開放
+# ENV PORT 8080
+# # ENV HOST 0.0.0.0
 
-EXPOSE 8080
+# EXPOSE 8080
 
 # ビルドコマンドや実行コマンド
 RUN go build -o main .
