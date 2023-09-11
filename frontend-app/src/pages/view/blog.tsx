@@ -32,30 +32,36 @@ type BlogProps = {
 const mainFeaturedPost = {
   title: 'Engineer technical blog',
   description:
-    "エンジニアの技術ブログ",
+    "Life is either a daring adventure or nothing at all",
   image: 'https://source.unsplash.com/random?wallpapers',
   imageText: 'main image description',
   linkText: '',
 };
 
 
-const sidebar = {
+const sidebar = 
+{
   title: 'About',
   description:
     '徒然なるままに　エンジニアの技術ブログ',
-  archives: [
-    { title: 'March 2020', url: '#' },
-    { title: 'February 2020', url: '#' },
-    { title: 'January 2020', url: '#' },
-    { title: 'November 1999', url: '#' },
-    { title: 'October 1999', url: '#' },
-    { title: 'September 1999', url: '#' },
-    { title: 'August 1999', url: '#' },
-    { title: 'July 1999', url: '#' },
-    { title: 'June 1999', url: '#' },
-    { title: 'May 1999', url: '#' },
-    { title: 'April 1999', url: '#' },
+  archives: 
+  [
+    { title: 'June 2023', url: '/' },
+    { title: 'February 2020', url: '/' },
+    { title: 'January 2020', url: '/' },
+    { title: 'November 1999', url: '/' },
+    { title: 'October 1999', url: '/' },
+    { title: 'September 1999', url: '/' },
+    { title: 'August 1999', url: '' },
+    { title: 'July 1999', url: '/' },
+    { title: 'June 1999', url: '/' },
+    { title: 'May 1999', url: '/' },
+    { title: 'April 1999', url: '/' },
   ],
+};
+
+const linkStyle = {
+  cursor: 'pointer', // マウスカーソルをポインターに変更
 };
 
 const defaultTheme = createTheme();
@@ -67,12 +73,13 @@ export default function Blog() {
 
   const handleValueChange = (postId) => {
     setId(postId);
+  };
 
+  const handleSeeAll = () => {
+  //  router.push();
   };
 
   useEffect(() => {
-
-    
     // ブログ情報を取得する関数
     const fetchBlogs = async () => {
       const hostname = process.env.NODE_ENV === "production" ? "server-app" : "localhost";
@@ -118,8 +125,8 @@ export default function Blog() {
             <FeaturedPost key={post.title} post={post} handleValueChange={handleValueChange}/>
           ))}
           </Grid>
-          <Typography variant="h6" gutterBottom>
-        {"see all"}
+          <Typography variant="h6" color="primary" gutterBottom onClick={handleSeeAll} style={linkStyle}>
+        {"...see all"}
       </Typography>
           <Grid container spacing={5} sx={{ mt: 3 }}>
             <Main posts={blogsList} id={id}/>

@@ -5,6 +5,7 @@ import Divider from "@mui/material/Divider";
 import Markdown from "./markdown";
 import { useEffect, useState } from "react";
 import closestIndexTo from "date-fns/esm/closestIndexTo";
+import Box from "@mui/material/Box";
 
 type Blog = {
   id: string;
@@ -21,27 +22,38 @@ interface MainProps {
   id: any;
 }
 
+
+
+
 export default function Main(props: MainProps) {
   const { posts } = props;
   const { id } = props;
-
-  // // id に応じて表示内容を選択
-  // let selectedPost = id && posts[id] ? posts[id] : (posts.length > 0 ? posts[0] : null);
-
   const [selectedPost, setSelectedPost] = useState<Blog | null>(null);
+  const [formattedDate, setformattedDate] = useState<String | null>(null);
+
+  
+  const formatDate = (date: any) => {
+    const options: Intl.DateTimeFormatOptions = {
+      year: 'numeric',
+      month: 'long',
+    };
+    if (date != null){
+    return  new Date(date).toLocaleDateString('en-US', options);
+    }
+  };
+
+  
 
   // idが変更されたときに選択された投稿を更新
-  useEffect(() => {
+  useEffect(() => {    
     if (id && posts.length > 0) {
-     
-
       // findIndexメソッドを使用してidを検索し、indexを取得
       const index = posts.findIndex((blog) => blog.id === id);
-
-
       setSelectedPost(posts[index]);
+      setformattedDate(formatDate(posts[index].createdAt));
     } else if (posts.length > 0) {
       setSelectedPost(posts[0]);
+      setformattedDate(formatDate(posts[0].createdAt));
     } else {
       // const newPost = Blog[0].title = "aaa";
       // setSelectedPost(newPost);
@@ -64,9 +76,14 @@ export default function Main(props: MainProps) {
         },
       }}
     >
-      <Typography variant="h6" gutterBottom>
-        {selectedPost.title}
-      </Typography>
+  <Box display="flex" justifyContent="space-between">
+        <Typography variant="h5" display="inline">
+          {selectedPost.title}
+        </Typography>
+        <Typography variant="h6" display="inline" color="textSecondary">
+          {selectedPost.loginID} {formattedDate} {/* スペースを追加 */}
+        </Typography>
+      </Box>
       <Divider />
       <Markdown className="markdown" key={selectedPost.title}>
         {selectedPost.content}
@@ -74,27 +91,3 @@ export default function Main(props: MainProps) {
     </Grid>
   );
 }
-
-// export default function Main(props: MainProps, id: string) {
-//   const { posts } = props;
-//   return (
-//     <Grid
-//       item
-//       xs={12}
-//       md={8}
-//       sx={{
-//         '& .markdown': {
-//           py: 3,
-//         },
-//       }}
-//     >
-//       <Typography variant="h6" gutterBottom>
-//         {posts.length > 0 ? posts[0].title : ""}
-//       </Typography>
-//       <Divider />
-//         <Markdown className="markdown" key={posts.length > 0 ? posts[0].title : ""}>
-//           {posts.length > 0 ? posts[0].content : ""}
-//         </Markdown>
-//     </Grid>
-//   );
-// }
