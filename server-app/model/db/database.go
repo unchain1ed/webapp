@@ -39,7 +39,9 @@ func init() {
 	var err error
 	//Db構造体に取得結果代入
 	if Db , err = gorm.Open(dialector); err != nil {
+		log.Printf("DBの接続に失敗しました。" + err.Error())
 		connect(dialector, 100)
+		// Db = &gorm.DB{} //deploy
 	}
 	log.Println("DB Connected!!")
 }
@@ -50,10 +52,10 @@ func connect(dialector gorm.Dialector, count uint) {
 		if count > 1 {
 			time.Sleep(time.Second * 2)
 			count--
-			log.Printf("retry... count:%v\n", count)
+			log.Printf("retry... connect to database count:%v\n", count)
 			connect(dialector, count)
 			return
 		}
-		log.Panic("Failed to connect to database")
+		log.Printf("Failed to connect to database" + err.Error())
 	}
 }
