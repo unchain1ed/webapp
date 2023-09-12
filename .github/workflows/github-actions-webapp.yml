@@ -30,9 +30,9 @@ jobs:
     needs: setup
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: build
-        run: go build ./...
+        run: go build ../server-app
 
   # testを通す
   test:
@@ -41,7 +41,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: test
-        run: go test ./... -v
+        run: go test ../server-app
 
   # lintを通す
   lint:
