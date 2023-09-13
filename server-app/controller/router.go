@@ -19,8 +19,8 @@ import (
 
 func init() {
 	//環境変数設定
-	//パッケージがインポートされる際に一度だけ実行される初期化処理
-	envErr := godotenv.Load("../../build/app/.env")
+	//main.goからの相対パス指定
+	envErr := godotenv.Load("./build/app/.env")
 	if envErr != nil {
 		fmt.Println("Error loading .env file", envErr)
 	}
