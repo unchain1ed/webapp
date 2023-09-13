@@ -32,7 +32,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: build
-        run:  cd ../../server-app && go build -v ./...
+        run:  cd ../../server-app
+        run:  go build -v ./... 
 
   # testを通す
   test:
@@ -41,7 +42,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: test
-        run: cd ../../server-app && go test -v ./...
+        run: cd ../../server-app &&
+        run: go test -v ./...
 
   # lintを通す
   lint:
