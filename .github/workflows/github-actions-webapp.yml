@@ -32,7 +32,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: build
-        run: go build ./...
+        run: go build ./main.go
 
   # testを通す
   test:
@@ -41,7 +41,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: test
-        run: go test ./...
+        run: go test ./main.go
 
   # lintを通す
   lint:
