@@ -32,8 +32,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: build
-        working-directory: ./server-app
-        run:  go build -v ./main.go
+        # working-directory: ./server-app
+        run:  go build -v ./...
 
   # testを通す
   test:
@@ -42,15 +42,14 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: test
-        working-directory: ./server-app
-        run: go test -v ./main.go
+        # working-directory: ./server-app
+        run: go test -v ./...
 
   # lintを通す
   lint:
     needs: setup
     runs-on: ubuntu-latest
     steps:
-      working-directory: ./server-app
       - uses: actions/checkout@v3
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v3
