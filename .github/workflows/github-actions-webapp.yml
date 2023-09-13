@@ -49,8 +49,8 @@ jobs:
   lint:
     needs: setup
     runs-on: ubuntu-latest
-    working-directory: ./server-app
     steps:
+      working-directory: ./server-app
       - uses: actions/checkout@v3
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v3
