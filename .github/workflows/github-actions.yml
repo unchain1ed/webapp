@@ -50,9 +50,20 @@ jobs:
     needs: setup
     runs-on: ubuntu-latest
     steps:
-      - run: cd ./server-app  # インデントされた行でコマンドを実行
+      - name: Change Directory
+        working-directory: ./server-app
       - uses: actions/checkout@v3
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v3
         with:
           version: v1.29
+  # lint:
+  #   needs: setup
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - run: cd ./server-app  # インデントされた行でコマンドを実行
+  #     - uses: actions/checkout@v3
+  #     - name: golangci-lint
+  #       uses: golangci/golangci-lint-action@v3
+  #       with:
+  #         version: v1.29
