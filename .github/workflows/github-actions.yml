@@ -61,7 +61,7 @@ jobs:
   # Run pwd /home/runner/work/webapp/webapp
   # lint:
   #   needs: setup
-  #   runs-on: ubuntu-latest
+  #   runs-on: ubuntu-latestx
   #   steps:
   #     - run: ls
   #     # - run: cd server-app  # インデントされた行でコマンドを実行
