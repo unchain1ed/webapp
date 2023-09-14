@@ -50,10 +50,9 @@ jobs:
     needs: setup
     runs-on: ubuntu-latest
     steps:
-      - name: Change Directory
-        working-directory: ./server-app
       - uses: actions/checkout@v3
       - name: golangci-lint
+        working-directory: ./server-app
         uses: golangci/golangci-lint-action@v3
         with:
           version: v1.29
