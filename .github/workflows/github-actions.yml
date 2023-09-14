@@ -74,10 +74,6 @@ jobs:
       - uses: actions/checkout@v3
       - name: golangci-lint
         working-directory: ./server-app
-      - uses: golangci/golangci-lint-action@v3
-      - name: golangci/golangci-lint-action@v3
-        with:
-          version: v1.29
 
 
   # Run pwd /home/runner/work/webapp/webapp
