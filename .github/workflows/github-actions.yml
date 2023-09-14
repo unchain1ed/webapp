@@ -46,28 +46,27 @@ jobs:
         run: go test -v ./...
 
   # lintを通す
-  # lint:
-  #   needs: setup
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Change Directory
-  #       working-directory: ./server-app
-  #     - name: Checkout code
-  #       uses: actions/checkout@v3
-  #     - name: golangci-lint
-  #       uses: golangci/golangci-lint-action@v3
-  #       with:
-  #         version: v1.29
-
-  # Run pwd /home/runner/work/webapp/webapp
   lint:
     needs: setup
     runs-on: ubuntu-latest
     steps:
-      - run: ls
-      # - run: cd server-app  # インデントされた行でコマンドを実行
+      - name: Change Directory
+        working-directory: ./server-app
       - uses: actions/checkout@v3
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v3
         with:
           version: v1.29
+
+  # Run pwd /home/runner/work/webapp/webapp
+  # lint:
+  #   needs: setup
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - run: ls
+  #     # - run: cd server-app  # インデントされた行でコマンドを実行
+  #     - uses: actions/checkout@v3
+  #     - name: golangci-lint
+  #       uses: golangci/golangci-lint-action@v3
+  #       with:
+  #         version: v1.29
