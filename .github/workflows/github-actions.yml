@@ -58,12 +58,14 @@ jobs:
   #       uses: golangci/golangci-lint-action@v3
   #       with:
   #         version: v1.29
+
+  # Run pwd /home/runner/work/webapp/webapp
   lint:
     needs: setup
     runs-on: ubuntu-latest
     steps:
-      - run: pwd
-      # - run: cd ./server-app  # インデントされた行でコマンドを実行
+      # - run: pwd
+      - run: cd server-app  # インデントされた行でコマンドを実行
       - uses: actions/checkout@v3
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v3
