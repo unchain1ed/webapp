@@ -58,14 +58,14 @@ jobs:
   #         version: v1.29
 
   lint:
-  needs: setup
-  runs-on: ubuntu-latest
-  steps:
-    - uses: actions/checkout@v3
-    - name: golangci-lint
-      working-directory: ./server-app
-      with:
-        version: v1.29
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: golangci-lint
+        working-directory: ./server-app
+        with:
+          version: v1.29
 
   # Run pwd /home/runner/work/webapp/webapp
   # lint:
