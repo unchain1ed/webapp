@@ -7,7 +7,7 @@ COPY server-app/ /server-app
 COPY server-app/build/app/.env /server-app/build/app/.env
 
 # RUN apk update && apk add git
-WORKDIR /server-app/cmd/webapp
+WORKDIR /server-app
 
 # # ポートを開放
 # ENV PORT 8080

@@ -18,7 +18,8 @@ var conn *redis.Client
 
 func init() {
 	//環境変数設定
-	envErr := godotenv.Load("../../build/db/data/.env")
+	//main.goからの相対パス指定
+	envErr := godotenv.Load("./build/db/data/.env")
 	if envErr != nil {
 		log.Println("Error loading .env file", envErr)
 	}
