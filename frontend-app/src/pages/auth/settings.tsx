@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import { Box, Container, Stack, Typography } from '@mui/material';
-import { SettingsPassword } from '../sections/settings/settings-password';
-import Layout from '../layouts/dashboard/layout';
+import { SettingsPassword } from '../../sections/settings/settings-password';
+import Layout from '../../layouts/dashboard/layout';
 import React from 'react';
 
 const Page = () => (

@@ -21,7 +21,7 @@ export const itemsLogin = [
   // },
   {
     title: 'Blog',
-    path: '/',
+    path: '/auth/overview',
     icon: (
       <SvgIcon fontSize="small">
         <ChartBarIcon />
@@ -30,7 +30,7 @@ export const itemsLogin = [
   },
   {
     title: 'Account',
-    path: '/account',
+    path: '/auth/account',
     icon: (
       <SvgIcon fontSize="small">
         <UserIcon />
@@ -39,7 +39,7 @@ export const itemsLogin = [
   },
   {
     title: 'Settings',
-    path: '/settings',
+    path: '/auth/settings',
     icon: (
       <SvgIcon fontSize="small">
         <CogIcon />
@@ -87,7 +87,7 @@ export const itemsLogout = [
   },
   {
     title: 'Account',
-    path: '/account',
+    path: '/auth/account',
     icon: (
       <SvgIcon fontSize="small">
         <UserIcon />
@@ -96,7 +96,7 @@ export const itemsLogout = [
   },
   {
     title: 'Settings',
-    path: '/settings',
+    path: '/auth/settings',
     icon: (
       <SvgIcon fontSize="small">
         <CogIcon />

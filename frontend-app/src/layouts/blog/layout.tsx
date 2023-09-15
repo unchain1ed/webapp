@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import NextLink from "next/link";
-import { Box, Typography, Unstable_Grid2 as Grid } from "@mui/material";
+import { Box, Typography, Unstable_Grid2 as Grid, Button } from "@mui/material";
 import { Logo } from "../../../src/components/logo";
 
 export const Layout = (props) => {
@@ -27,7 +27,7 @@ export const Layout = (props) => {
         >
           <Box
             component={NextLink}
-            href="/"
+            href="/auth/overview"
             sx={{
               display: "inline-flex",
               height: 32,

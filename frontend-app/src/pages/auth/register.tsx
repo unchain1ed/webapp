@@ -75,7 +75,7 @@ const Register: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => Re
 
       // ログイン成功時の処理
       await auth.signIn(userId, password);
-      router.push("/");
+      router.push("/auth/overview");
       // ログイン成功時の追加の処理を追記する場合はここに記述する
     } catch (error) {
       // ログイン失敗時の処理
@@ -103,7 +103,7 @@ const Register: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => Re
 
   const handleSkip = useCallback(() => {
     auth.skip();
-    router.push("/");
+    router.push("/auth/overview");
   }, [auth, router]);
 
   return (

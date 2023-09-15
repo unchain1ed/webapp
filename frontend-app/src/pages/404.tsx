@@ -60,7 +60,7 @@ const Page = () => (
           </Typography>
           <Button
             component={NextLink}
-            href="/"
+            href="/auth/overview"
             startIcon={(
               <SvgIcon fontSize="small">
                 <ArrowLeftIcon />

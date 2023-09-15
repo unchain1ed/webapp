@@ -39,9 +39,9 @@ export const Layout = (props) => {
               width: '100%'
             }}
           >
-            <Box
+            {/* <Box
               component={NextLink}
-              href="/"
+              href="/auth/overview"
               sx={{
                 display: 'inline-flex',
                 height: 32,
@@ -49,7 +49,7 @@ export const Layout = (props) => {
               }}
             >
               <Logo />
-            </Box>
+            </Box> */}
           </Box>
           {children}
         </Grid>

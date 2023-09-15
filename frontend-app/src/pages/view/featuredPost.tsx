@@ -6,7 +6,7 @@ import CardActionArea from '@mui/material/CardActionArea';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import router from 'next/router';
-import Blog from './blog';
+import Blog from '..';
 
 type FeaturedPostProps = {
   handleValueChange(id: string): unknown;

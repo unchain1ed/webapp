@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import { Box, Container, Stack, Typography, Unstable_Grid2 as Grid } from '@mui/material';
-import Layout from '../layouts/dashboard/layout';
-import { AccountProfileDetails } from '../sections/account/account-profile-details';
+import Layout from '../../layouts/dashboard/layout';
+import { AccountProfileDetails } from '../../sections/account/account-profile-details';
 import React from 'react';
 
 const Page = () => (
