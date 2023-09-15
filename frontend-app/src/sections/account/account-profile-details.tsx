@@ -81,7 +81,7 @@ export const AccountProfileDetails = () => {
     } finally {
       // 処理が終了したので false にセット
       setPosting(false);
-      router.push("/");
+      router.push("/auth/overview");
     }
   };
 

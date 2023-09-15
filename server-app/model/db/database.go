@@ -40,8 +40,7 @@ func init() {
 	var err error
 	//Db構造体に取得結果代入
 	if Db , err = gorm.Open(dialector); err != nil {
-		log.Println("DBConnetctPath:",path)
-		log.Printf("DBの接続に失敗しました。" + err.Error() + user+pw+db_name+dbHost)
+		log.Println("DBの接続に失敗しました。Path:",path)
 		connect(dialector, 100)
 		// Db = &gorm.DB{} //deploy
 	}

@@ -69,7 +69,7 @@ export default function Blog({ id }) {
       <Box sx={{ p: 3 }}>
         <Box
           component={NextLink}
-          href="/"
+          href="/auth/overview"
           sx={{
             display: "inline-flex",
             height: 32,

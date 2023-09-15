@@ -54,7 +54,7 @@ export const SideNav: React.FC<SideNavProps> = ({ onClose, open, loginID }) => {
         <Box sx={{ p: 3 }}>
           <Box
             component={NextLink}
-            href="/"
+            href="/auth/overview"
             sx={{
               display: 'inline-flex',
               height: 32,
@@ -134,7 +134,9 @@ export const SideNav: React.FC<SideNavProps> = ({ onClose, open, loginID }) => {
             py: 3
           }}
         >
-          {/* Additional content */}
+          <Button size="small" variant="contained" href="/" >
+        Home
+      </Button>
         </Box>
       </Box>
     </Scrollbar>

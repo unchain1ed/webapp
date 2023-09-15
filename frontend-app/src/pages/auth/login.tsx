@@ -73,7 +73,7 @@ const Page: NextPage<HomeProps> & { getLayout: (page: React.ReactNode) => React.
       );
       // ログイン成功時の処理
       // await auth.signIn(userId, password);
-      router.push("/");
+      router.push("/auth/overview");
       // ログイン成功時の追加の処理を追記する場合はここに記述する
     } catch (error) {
       // ログイン失敗時の処理

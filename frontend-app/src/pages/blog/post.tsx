@@ -47,7 +47,7 @@ const Post: React.FC = () => {
 
   const handleSubmit = (e: FormEvent) => {
     // ブログ投稿後にブログ一覧ページにリダイレクト
-    router.push("/");
+    router.push("/auth/overview");
   };
 
   const handlePost = async (event: React.MouseEvent<HTMLElement>) => {
@@ -103,7 +103,7 @@ const Post: React.FC = () => {
       <Box sx={{ p: 3 }}>
         <Box
           component={NextLink}
-          href="/"
+          href="/auth/overview"
           sx={{
             display: "inline-flex",
             height: 32,

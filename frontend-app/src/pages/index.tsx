@@ -1,22 +1,19 @@
-import Head from "next/head";
-import ArrowUpOnSquareIcon from "@heroicons/react/24/solid/ArrowUpOnSquareIcon";
-import ArrowDownOnSquareIcon from "@heroicons/react/24/solid/ArrowDownOnSquareIcon";
-import PlusIcon from "@heroicons/react/24/solid/PlusIcon";
-import {
-  Box,
-  Button,
-  Container,
-  Pagination,
-  Stack,
-  SvgIcon,
-  Typography,
-  Unstable_Grid2 as Grid,
-} from "@mui/material";
-import Layout from "../layouts/dashboard/layout";
-import { BlogCard } from "../sections/blog/blog-card";
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { useRouter } from "next/router";
+import * as React from 'react';
+import CssBaseline from '@mui/material/CssBaseline';
+import Grid from '@mui/material/Grid';
+import Container from '@mui/material/Container';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import Header from './view/header';
+import MainFeaturedPost from './view/mainFeaturedPost';
+import Main from './view/main';
+import Sidebar from './view/sidebar';
+import Footer from './view/footer';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import router from 'next/router';
+import { Typography } from '@mui/material';
+import { FeaturedPost } from './view/featuredPost';
+
 
 type Blog = {
   id: string;
@@ -32,29 +29,55 @@ type BlogProps = {
   blogs: Blog[];
 };
 
-type ClickValue = {
-  value: string;
+const mainFeaturedPost = {
+  title: 'Engineer technical blog',
+  description:
+    "Life is either a daring adventure or nothing at all",
+  image: 'https://source.unsplash.com/random?wallpapers',
+  imageText: 'main image description',
+  linkText: '',
 };
 
 
+const sidebar = 
+{
+  title: 'About',
+  description:
+    '徒然なるままに　エンジニアの技術ブログ',
+  archives: 
+  [
+    { title: 'June 2023', url: '/' },
+    { title: 'February 2020', url: '/' },
+    { title: 'January 2020', url: '/' },
+    { title: 'November 1999', url: '/' },
+    { title: 'October 1999', url: '/' },
+    { title: 'September 1999', url: '/' },
+    { title: 'August 1999', url: '' },
+    { title: 'July 1999', url: '/' },
+    { title: 'June 1999', url: '/' },
+    { title: 'May 1999', url: '/' },
+    { title: 'April 1999', url: '/' },
+  ],
+};
 
-const Overview = ({ blogs }: BlogProps, { value }: ClickValue) => {
-  const router = useRouter();
+const linkStyle = {
+  cursor: 'pointer', // マウスカーソルをポインターに変更
+};
 
-  const handleAdd = () => {
-    // ブログ作成画面へ遷移
-    router.push("/blog/post");
-   
-  };
+const defaultTheme = createTheme();
 
-  const handleBlogClick = (id: string) => {
-    // ブログ詳細画面へ遷移
-    router.push(`/blog/${id}`);
-  
-  };
-
-  // blogsが未定義またはnullの場合、空の配列を初期値として設定
+export default function Blog() {
   const [blogsList, setBlogsList] = useState<Blog[]>([]);
+  const [id, setId] = useState("");
+  // const { postid } = id;
+
+  const handleValueChange = (postId) => {
+    setId(postId);
+  };
+
+  const handleSeeAll = () => {
+  //  router.push();
+  };
 
   useEffect(() => {
     // ブログ情報を取得する関数
@@ -82,62 +105,43 @@ const Overview = ({ blogs }: BlogProps, { value }: ClickValue) => {
       } catch (error) {
         console.error("エラーが発生しました", error);
         if (error.response.status === 302 || error.response.status === 400) {
-          router.push("/auth/login");
+  
         }
       }
     };
-
     // ブログ情報を取得する関数を呼び出す
     fetchBlogs();
-  }, []); // 空の依存配列を渡すことで、初回のみ実行される
-
+  }, []);
+  
   return (
-    <>
-      <Head>
-        <title>Blog</title>
-      </Head>
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          py: 8,
-        }}
-      >
-        <Container maxWidth="xl">
-          <Stack spacing={3}>
-            <Stack direction="row" justifyContent="space-between" spacing={4}>
-              <Stack spacing={1}>
-                <Typography variant="h4">Blog</Typography>
-                <Stack alignItems="center" direction="row" spacing={1}></Stack>
-              </Stack>
-              <div>
-                <Button
-                  startIcon={
-                    <SvgIcon fontSize="small">
-                      <PlusIcon />
-                    </SvgIcon>
-                  }
-                  variant="contained"
-                  onClick={handleAdd}
-                >
-                  Create New Blog
-                </Button>
-              </div>
-            </Stack>
-            <Grid container spacing={3}>
-              {blogsList.map((blog) => (
-                <Grid xs={12} md={6} lg={4} key={blog.id}>
-                  <BlogCard blog={blog} clickValue={value} onClick={() => handleBlogClick(blog.id)} />
-                </Grid>
-              ))}
-            </Grid>
-          </Stack>
-        </Container>
-      </Box>
-    </>
+    <ThemeProvider theme={defaultTheme}>
+      <CssBaseline />
+      <Container maxWidth="lg">
+        <Header title="Blog" sections={[]}/>
+        <main>
+          <MainFeaturedPost post={mainFeaturedPost} />
+          <Grid container spacing={4}>
+          {blogsList.slice(0, 2).map((post) => (
+            <FeaturedPost key={post.title} post={post} handleValueChange={handleValueChange}/>
+          ))}
+          </Grid>
+          <Typography variant="h6" color="primary" gutterBottom onClick={handleSeeAll} style={linkStyle}>
+        {"...see all"}
+      </Typography>
+          <Grid container spacing={5} sx={{ mt: 3 }}>
+            <Main posts={blogsList} id={id}/>
+            <Sidebar
+              title={sidebar.title}
+              description={sidebar.description}
+              archives={sidebar.archives}
+            />
+          </Grid>
+        </main>
+        <Footer
+        title="Footer"
+        description=""
+      />
+      </Container>
+    </ThemeProvider>
   );
-};
-
-Overview.getLayout = (page: any) => <Layout>{page}</Layout>;
-
-export default Overview;
+}
