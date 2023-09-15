@@ -24,7 +24,7 @@
 <img width="1439" alt="ログイン" src="https://github.com/unchain1ed/webapp/assets/73862261/d6f7680b-2731-433b-a6e6-a67a54d5458a">
 
 ├── ブログ記事一覧画面
-<img width="1440" alt="概要" src="https://github.com/unchain1ed/webapp/assets/73862261/04a1bb87-c1ce-4d9c-9cc2-928dbcfab934">
+<img width="1440" alt="blogoverview" src="https://github.com/unchain1ed/webapp/assets/73862261/11d4a9fa-259a-40f9-99cb-c634212e4ff1">
 
 ├── 個別ブログ閲覧画面（編集確認モード）
 <img width="1440" alt="個別ブログ" src="https://github.com/unchain1ed/webapp/assets/73862261/815fe02c-fd2f-4cf0-a79f-acdf1782266e">
