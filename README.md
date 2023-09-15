@@ -8,21 +8,25 @@
  Docker v20.10.22
  
  【機能】
- ブログ記事閲覧、新規作成、編集、消去
+ ブログ記事閲覧画面（メイン）
+ ブログ記事閲覧（編集確認モード）、新規作成、編集、消去
  会員情報新規登録、編集
  会員情報承認
  
 
  【画面】
 
-・ログイン画面
+ ・ブログ記事閲覧画面（メイン）
+<img width="1437" alt="mainblog" src="https://github.com/unchain1ed/webapp/assets/73862261/c17fe1bb-4f17-4291-a02e-fa771e592d70">
+
+
+├──ログイン画面
 <img width="1439" alt="ログイン" src="https://github.com/unchain1ed/webapp/assets/73862261/d6f7680b-2731-433b-a6e6-a67a54d5458a">
 
+├── ブログ記事一覧画面
+<img width="1440" alt="blogoverview" src="https://github.com/unchain1ed/webapp/assets/73862261/11d4a9fa-259a-40f9-99cb-c634212e4ff1">
 
-・ブログ記事一覧画面
-<img width="1440" alt="概要" src="https://github.com/unchain1ed/webapp/assets/73862261/04a1bb87-c1ce-4d9c-9cc2-928dbcfab934">
-
-├── 個別ブログ閲覧画面
+├── 個別ブログ閲覧画面（編集確認モード）
 <img width="1440" alt="個別ブログ" src="https://github.com/unchain1ed/webapp/assets/73862261/815fe02c-fd2f-4cf0-a79f-acdf1782266e">
 
 
@@ -46,50 +50,3 @@
 
 ・ログアウト画面
 <img width="1439" alt="ログアウト" src="https://github.com/unchain1ed/webapp/assets/73862261/b82d8cb8-b009-4d98-ad16-ae4f6a6d53d4">
-
-
- 【サーバーサイド構成】
-server-app
-├── build
-│   ├── app
-│   │   ├──.env
-│   │   └── Dockerfile
-│   └── db
-│       ├──my.cnf
-│       ├── Dockerfile
-│       └──data
-│  			└──.env
-│       └──init
-│  			└──1_create.sql
-├── cmd
-│   └── webapp
-│       └── main.go
-├── controller
-│   ├── common_controller.go
-│   ├── delete_controller.go
-│   ├── edit_controller.go
-│   ├── regist_controller.go
-│   ├── setting_controller.go
-│   ├── login_controller.go
-│   ├── router.go
-│   └── home_controller.go
-├── crypto
-│   └── crypto.go
-├── certificate
-│    └──  localhost.crt
-│    └──  localhost.key
-├── model
-│   └── entity
-│       └── blog_entity.go
-│       └── user_dto.go
-│   └── db
-│       └── blog_model.go
-│       └── user_model.go
-│       └── database.go
-│   └── redis
-│       └── redis.go
-├── service
-│   └──  validator.go
-├── docker-compose.yml
-├── go.mod
-├── go.sum
