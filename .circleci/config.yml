@@ -2,7 +2,7 @@ version: 2
 jobs:
   test:
     docker:
-      - image: circleci/golang:1.20
+      - image: circleci/golang:1.13.5-node
     working_directory: ./server-app
     steps:
       - checkout
@@ -11,7 +11,7 @@ jobs:
       - run: go test -v -cover ./...
   build:
     docker:
-      - image: circleci/golang:1.20
+      - image: circleci/golang:1.13.5-node
     working_directory: ./server-app
 
     steps:
