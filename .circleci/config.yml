@@ -3,7 +3,8 @@ jobs:
   test:
     docker:
       - image: circleci/golang:1.13.5-node
-    working_directory: /go/src/github.com/{{ORG_NAME}}/{{REPO_NAME}}
+    working_directory: /go/src/github.com/unchain1ed/webapp
+    
     steps:
       - checkout
       - run: go version
@@ -12,7 +13,7 @@ jobs:
   build:
     docker:
       - image: circleci/golang:1.13.5-node
-    working_directory: /go/src/github.com/{{ORG_NAME}}/{{REPO_NAME}}
+     working_directory: /go/src/github.com/unchain1ed/webapp
 
     steps:
       - checkout
