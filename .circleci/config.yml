@@ -13,7 +13,7 @@ jobs:
   build:
     docker:
       - image: circleci/golang:1.13.5-node
-     working_directory: /go/src/github.com/unchain1ed/webapp
+    working_directory: /go/src/github.com/unchain1ed/webapp
 
     steps:
       - checkout
