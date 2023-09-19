@@ -11,7 +11,7 @@ jobs:
       # 新しいリポジトリのURLで git clone を実行するステップを追加
       - run:
           name: Clone webapp repository
-          command: git clone -- https://github.com/unchain1ed/webapp.git .
+          command: git clone -- https://github.com/unchain1ed/webapp.git go/src/github.com/unchain1ed/webapp
       - run: go version
       - run: go get -v -t -d ./...
       - run: go test -v -cover ./...
@@ -24,7 +24,7 @@ jobs:
       - checkout
       - run:
           name: Clone webapp repository
-          command: git clone -- https://github.com/unchain1ed/webapp.git .
+          command: git clone -- https://github.com/unchain1ed/webapp.git go/src/github.com/unchain1ed/webapp
       - run: go get -v -t -d ./...
       - run: go build
 
