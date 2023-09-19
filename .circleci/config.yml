@@ -12,6 +12,7 @@ jobs:
       - run:
           name: Clone webapp repository
           command: git clone -- https://github.com/unchain1ed/webapp.git go/src/github.com/unchain1ed/webapp
+      - run: cd go/src/github.com/unchain1ed/webapp
       - run: go version
       - run: go get -v -t -d ./...
       - run: go test -v -cover ./...
@@ -25,6 +26,7 @@ jobs:
       - run:
           name: Clone webapp repository
           command: git clone -- https://github.com/unchain1ed/webapp.git go/src/github.com/unchain1ed/webapp
+      - run: cd go/src/github.com/unchain1ed/webapp
       - run: go get -v -t -d ./...
       - run: go build
 
