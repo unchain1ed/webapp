@@ -1,8 +1,8 @@
-version: 2.1
+version: 2
 jobs:
   test:
     docker:
-      - image: cimg/go:1.21.1
+      - image: circleci/golang:1.9
     working_directory: /go/src/github.com/unchain1ed/webapp/server-app
     
     steps:
@@ -23,7 +23,7 @@ jobs:
       - run: go test -v -cover ./...
   build:
     docker:
-      - image: cimg/go:1.21.1
+      - image: circleci/golang:1.9
     working_directory: /go/src/github.com/unchain1ed/webapp/server-app
 
     steps:
