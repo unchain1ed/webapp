@@ -4,8 +4,8 @@ import (
 	"log"
 	"errors"
 
-	"github.com/unchain1ed/server-app/crypto"
-	"github.com/unchain1ed/server-app/model/entity"
+	"github.com/unchain1ed/webapp/crypto"
+	"github.com/unchain1ed/webapp/model/entity"
 )
 
 func init() {

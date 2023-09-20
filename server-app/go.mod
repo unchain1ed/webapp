@@ -1,4 +1,4 @@
-module github.com/unchain1ed/server-app
+module github.com/unchain1ed/webapp
 
 go 1.20
 

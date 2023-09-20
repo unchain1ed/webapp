@@ -5,11 +5,11 @@ import (
 	"os"
 	"net/http"
 
-	"github.com/unchain1ed/server-app/service"
+	"github.com/unchain1ed/webapp/service"
 	"github.com/gin-gonic/gin"
-	"github.com/unchain1ed/server-app/model/entity"
-	"github.com/unchain1ed/server-app/model/redis"
-	"github.com/unchain1ed/server-app/model/db"
+	"github.com/unchain1ed/webapp/model/entity"
+	"github.com/unchain1ed/webapp/model/redis"
+	"github.com/unchain1ed/webapp/model/db"
 )
 
 func GetLogin(c *gin.Context) {
