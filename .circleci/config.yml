@@ -14,8 +14,11 @@ jobs:
           command: git clone -- https://github.com/unchain1ed/webapp.git go/src/github.com/unchain1ed/webapp
       - run: cd go/src/github.com/unchain1ed/webapp
       - run: go version
+      - run: pwd
+      - run: ls
       - run: go clean -modcache
       # - run: go get -v -t -d ./...
+      - run: go mod init github.com/unchain1ed/webapp
       - run: go mod tidy
       - run: go test -v -cover ./...
   build:
@@ -30,9 +33,12 @@ jobs:
           command: git clone -- https://github.com/unchain1ed/webapp.git go/src/github.com/unchain1ed/webapp
       - run: cd go/src/github.com/unchain1ed/webapp
       - run: go clean -modcache
+      - run: pwd
+      - run: ls
       # - run: go get -v -t -d ./...
+      - run: go mod init github.com/unchain1ed/webapp
       - run: go mod tidy
-      - run: go build
+      - run: go build main.go
 
 workflows:
   version: 2
