@@ -12,7 +12,7 @@ jobs:
       - run:
           name: Clone webapp repository
           command: git clone -- https://github.com/unchain1ed/webapp.git go/src/github.com/unchain1ed/webapp
-      - run: cd go/src/github.com/unchain1ed/webapp/server-app
+      - run: cd server-app
       - run: go version
       - run: pwd
       - run: ls
@@ -31,7 +31,7 @@ jobs:
       - run:
           name: Clone webapp repository
           command: git clone -- https://github.com/unchain1ed/webapp.git go/src/github.com/unchain1ed/webapp
-      - run: cd go/src/github.com/unchain1ed/webapp/server-app
+      - run: cd server-app
       - run: go clean -modcache
       - run: pwd
       - run: ls
