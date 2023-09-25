@@ -21,6 +21,13 @@ func init() {
     if envErr != nil {
         fmt.Println("Error loading .env file", envErr)
     }
+
+	// テストケース内で環境変数を設定
+	os.Setenv("MYSQL_USER", "root")
+	os.Setenv("MYSQL_PASSWORD", "password")
+	os.Setenv("MYSQL_DATABASE", "user_info")
+	os.Setenv("MYSQL_LOCAL_HOST", "localhost:3306")
+
 	//環境変数取得
 	user := os.Getenv("MYSQL_USER")
 	pw := os.Getenv("MYSQL_PASSWORD")

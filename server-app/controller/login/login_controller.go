@@ -23,9 +23,9 @@ func GetLogin(c *gin.Context) {
 		return
 	}
 
-	if UserId != nil {
+	if UserId != "" {
 		var err error
-		user, err = db.GetOneUser(UserId.(string))
+		user, err = db.GetOneUser(UserId)
 		if err != nil {
 			log.Printf("ログイン画面DB上の会員情報のセッションから取得に失敗しました。err: %v", err.Error());
 			c.JSON(http.StatusUnauthorized, gin.H{"error in db.GetOneUser of getLogin": err.Error()})
