@@ -27,7 +27,7 @@
 <img width="1440" alt="blogoverview" src="https://github.com/unchain1ed/webapp/assets/73862261/11d4a9fa-259a-40f9-99cb-c634212e4ff1">
 
 ├── 個別ブログ閲覧画面（編集確認モード）
-<img width="1440" alt="個別ブログ" src="https://github.com/unchain1ed/webapp/assets/73862261/815fe02c-fd2f-4cf0-a79f-acdf1782266e">
+<img width="1438" alt="Go" src="https://github.com/unchain1ed/webapp/assets/73862261/b6577276-d539-4967-b217-029659d9d74d">
 
 
 ├── 記事新規作成画面
