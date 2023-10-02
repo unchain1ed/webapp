@@ -80,7 +80,7 @@ jobs:
   #         cd ./server-app
   #         golangci-lint run --out-format=github-actions
 
-    # golangci:
+    # golangci
     name: lint
     runs-on: ubuntu-latest
     steps:
