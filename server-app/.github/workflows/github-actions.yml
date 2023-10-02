@@ -32,7 +32,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: build
-        working-directory: ./server-app
         run:  go build -v ./...
 
   # testを通す
@@ -42,7 +41,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: test
-        working-directory: ./server-app
         run: go test -v ./...
 
 # lintを実行
@@ -54,11 +52,8 @@ jobs:
         with:
           go-version: ^1.19
       - uses: actions/checkout@v3
-      - name: Install golangci-lint
-        run: |
-          curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s v1.54.2
-          sudo mv ./bin/golangci-lint /usr/local/bin/
-      - name: Change directory and run golangci-lint
-        run: |
-          cd ./server-app
-          golangci-lint run --out-format=github-actions
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v3
+        with:
+          # Optional: version of golangci-lint to use in form of v1.2 or v1.2.3 or `latest` to use the latest version
+          version: latest
