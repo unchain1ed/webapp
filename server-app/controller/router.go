@@ -122,7 +122,7 @@ func isAuthenticated() gin.HandlerFunc {
 		}
 
 		// セッションにログイン情報が保存されているかどうかをチェックする
-		if id == nil {
+		if id == "" {
 			fmt.Println("セッションにユーザーIDが存在していません")
 			// ログインしていない場合はログイン画面にリダイレクトする
 			// c.Redirect(http.StatusFound, "/auth/login")
