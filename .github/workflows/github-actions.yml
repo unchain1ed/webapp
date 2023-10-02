@@ -54,8 +54,8 @@ jobs:
         with:
           go-version: ^1.19
       - uses: actions/checkout@v3
-      - name: golangci-lint
-        uses: golangci/golangci-lint-action@v3
-        with:
-          version: latest
-        working-directory: ./server-app # ここでディレクトリを設定
+      - name: Change directory and run golangci-lint
+        run: |
+          cd ./server-app
+          golangci-lint run --out-format=github-actions
+
