@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/unchain1ed/server-app/model/db"
+	"github.com/unchain1ed/webapp/model/db"
 )
 
 func GetDeleteBlog(c *gin.Context) {

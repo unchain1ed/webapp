@@ -1,26 +1,48 @@
-# Use the latest 2.1 version of CircleCI pipeline process engine.
-# See: https://circleci.com/docs/configuration-reference
-version: 2.1
-
-# Define a job to be invoked later in a workflow.
-# See: https://circleci.com/docs/configuration-reference/#jobs
+version: 2
 jobs:
-  say-hello:
-    # Specify the execution environment. You can specify an image from Docker Hub or use one of our convenience images from CircleCI's Developer Hub.
-    # See: https://circleci.com/docs/configuration-reference/#executor-job
+  test:
     docker:
-      - image: cimg/base:stable
-    # Add steps to the job
-    # See: https://circleci.com/docs/configuration-reference/#steps
+      - image: circleci/golang:1.9
+    working_directory: /go/src/github.com/unchain1ed/webapp/server-app
+    
+    steps:
+      - checkout  # デフォルトでリポジトリをクローンするステップ
+
+      # 新しいリポジトリのURLで git clone を実行するステップを追加
+      - run:
+          name: Clone webapp repository
+          command: git clone -- https://github.com/unchain1ed/webapp.git go/src/github.com/unchain1ed/webapp
+      - run: cd server-app
+      - run: go version
+      - run: pwd
+      - run: ls
+      # - run: go clean -modcache
+      # - run: go get -v -t -d ./...
+      # - run: go mod init github.com/unchain1ed/webapp
+      # - run: go mod tidy
+      - run: go test -v -cover ./server-app
+  build:
+    docker:
+      - image: circleci/golang:1.9
+    working_directory: /go/src/github.com/unchain1ed/webapp/server-app
+
     steps:
       - checkout
       - run:
-          name: "Say hello"
-          command: "echo Hello, World!"
+          name: Clone webapp repository
+          command: git clone -- https://github.com/unchain1ed/webapp.git go/src/github.com/unchain1ed/webapp
+      - run: cd server-app
+      # - run: go clean -modcache
+      - run: pwd
+      - run: ls
+      # - run: go get -v -t -d ./...
+      # - run: go mod init github.com/unchain1ed/webapp
+      # - run: go mod tidy
+      - run: go build ./server-app
 
-# Orchestrate jobs using workflows
-# See: https://circleci.com/docs/configuration-reference/#workflows
 workflows:
-  say-hello-workflow:
+  version: 2
+  test and build:
     jobs:
-      - say-hello
+      - test
+      - build

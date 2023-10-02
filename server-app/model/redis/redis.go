@@ -78,27 +78,27 @@ func NewSession(c *gin.Context, cookieKey, redisValue string) error {
 	return nil
 }
 
-func GetSession(c *gin.Context, cookieKey string) (interface{}, error) {
+func GetSession(c *gin.Context, cookieKey string) (string, error) {
 	//クライアントのリクエストに含まれるセッションのクッキー値を取得
 	redisKey, err := c.Cookie(cookieKey)
 	if err != nil {
 		log.Println("セッションのクッキーが見つかりませんでした。,err:", err.Error())
-		return nil, err
+		return "", err
 	}
 
 	//取得したセッションのクッキー値を使用して、Redisから対応するセッションデータを取得
 	redisValue, err := conn.Get(c, redisKey).Result()
 	if err != nil {
 		log.Printf("Redisから対応するセッションデータを取得に失敗しました。redisKey: %s, redisValue: %s, err: %v", redisKey, redisValue, err)
-		return nil, err
+		return "", err
 	}
 	switch {
 	case err == redis.Nil:
 		log.Println("SessionKeyが登録されていません。", err.Error())
-		return nil, err
+		return "", err
 	case err != nil:
 		log.Println("Session取得時にエラー発生:", err.Error())
-		return nil, err
+		return "", err
 	}
 
 	log.Printf("redisからセッション情報のIDを取得に成功。 ID: %s", redisValue)

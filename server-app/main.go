@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/unchain1ed/server-app/controller"
+	"github.com/unchain1ed/webapp/controller"
 )
 
 func main() {

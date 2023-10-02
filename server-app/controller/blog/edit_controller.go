@@ -3,13 +3,13 @@ package blog
 import (
 	"errors"
 	"os"
-	"github.com/unchain1ed/server-app/model/redis"
+	"github.com/unchain1ed/webapp/model/redis"
 	"net/http"
 	"log"
 
 	"github.com/gin-gonic/gin"
-	"github.com/unchain1ed/server-app/model/entity"
-	"github.com/unchain1ed/server-app/model/db"
+	"github.com/unchain1ed/webapp/model/entity"
+	"github.com/unchain1ed/webapp/model/db"
 )
 
 func PostEditBlog(c *gin.Context) {
