@@ -45,7 +45,7 @@ jobs:
         working-directory: ./server-app
         run: go test -v ./...
 
- # lintを実行
+  # lintを実行
   golangci:
     name: lint
     runs-on: ubuntu-latest
@@ -55,7 +55,7 @@ jobs:
           go-version: ^1.19
       - uses: actions/checkout@v3
       - name: golangci-lint
-        working-directory: ./server-app
         uses: golangci/golangci-lint-action@v3
-        # with:
-        #   version: latest
+        with:
+          version: latest
+        working-directory: ./server-app # ここでディレクトリを設定
