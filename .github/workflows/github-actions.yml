@@ -45,7 +45,7 @@ jobs:
         working-directory: ./server-app
         run: go test -v ./...
 
-  # lintを実行
+# lintを実行
   golangci:
     name: lint
     runs-on: ubuntu-latest
@@ -54,8 +54,11 @@ jobs:
         with:
           go-version: ^1.19
       - uses: actions/checkout@v3
+      - name: Install golangci-lint
+        run: |
+          curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s v1.54.2
+          sudo mv ./bin/golangci-lint /usr/local/bin/
       - name: Change directory and run golangci-lint
         run: |
           cd ./server-app
           golangci-lint run --out-format=github-actions
-
