@@ -80,19 +80,34 @@ jobs:
   #         cd ./server-app
   #         golangci-lint run --out-format=github-actions
 
-    # golangci
-    name: lint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/setup-go@v3
-        with:
-          go-version: ^1.19
-      - uses: actions/checkout@v3
-      - name: Install golangci-lint
-        uses: golangci/golangci-lint-action@v3
-        with:
-          version: latest
-      - name: Change directory and run golangci-lint
-        run: |
-          cd ./server-app
-          golangci-lint run --out-format=github-actions
+    # # golangci
+    # name: lint
+    # runs-on: ubuntu-latest
+    # steps:
+    #   - uses: actions/setup-go@v3
+    #     with:
+    #       go-version: ^1.19
+    #   - uses: actions/checkout@v3
+    #   - name: Install golangci-lint
+    #     uses: golangci/golangci-lint-action@v3
+    #     with:
+    #       version: latest
+    #   - name: Change directory and run golangci-lint
+    #     run: |
+    #       cd ./server-app
+    #       golangci-lint run --out-format=github-actions
+
+  #golangci
+  golangci:
+  name: lint
+  runs-on: ubuntu-latest
+  steps:
+    - uses: actions/setup-go@v3
+      with:
+        go-version: ^1.19
+    - uses: actions/checkout@v3
+    - name: golangci-lint
+      run: cd ./server-app
+      uses: golangci/golangci-lint-action@v3
+      with:
+        version: latest
