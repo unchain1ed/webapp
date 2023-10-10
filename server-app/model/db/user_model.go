@@ -1,8 +1,8 @@
 package db
 
 import (
-	"log"
 	"errors"
+	"log"
 
 	"github.com/unchain1ed/webapp/crypto"
 	"github.com/unchain1ed/webapp/model/entity"
@@ -14,34 +14,34 @@ func init() {
 	Db.Table("USERS").Set("gorm:table_options", "ENGINE = InnoDB").AutoMigrate(entity.User{})
 }
 
-//送られてきたUserIdと一致するUserを取得
-//取得したUserの暗号化済みPasswordと送られてきたPasswordをCompareHashAndPassword関数でチェック
+// 送られてきたUserIdと一致するUserを取得
+// 取得したUserの暗号化済みPasswordと送られてきたPasswordをCompareHashAndPassword関数でチェック
 func CheckUser(userId, password string) (*entity.User, error) {
 	user := entity.User{}
 	//MySQLからuserIdに一致する構造体userを取得
-	Db.Table("USERS").Where("user_id = ?",userId).First(&user)
+	Db.Table("USERS").Where("user_id = ?", userId).First(&user)
 
-		if user.ID == 0 {
-			err := errors.New("ユーザー名が一致しません。")
-			log.Println(err)
-			return nil, err
-		}
+	if user.ID == 0 {
+		err := errors.New("ユーザー名が一致しません。")
+		log.Println(err)
+		return nil, err
+	}
 
-		//ハッシュ化したpasswordを比較
-		compareErr := crypto.CompareHashAndPassword(user.Password, password)
-	
-		if compareErr != nil {
-			err := errors.New("パスワードが一致しません。:"+ compareErr.Error())
-			log.Println(err)
-			return nil, err
-		}
-		return &user, nil
+	//ハッシュ化したpasswordを比較
+	compareErr := crypto.CompareHashAndPassword(user.Password, password)
+
+	if compareErr != nil {
+		err := errors.New("パスワードが一致しません。:" + compareErr.Error())
+		log.Println(err)
+		return nil, err
+	}
+	return &user, nil
 }
 
-//送られてきたUserId,Passwordと一致するUserが既に登録されているか確認
-//PasswordEncrypt関数で送られてきたPasswordを暗号化
-//gormのCreate関数で新規会員登録
-func Signup(userId, password string) (*entity.User, error){
+// 送られてきたUserId,Passwordと一致するUserが既に登録されているか確認
+// PasswordEncrypt関数で送られてきたPasswordを暗号化
+// gormのCreate関数で新規会員登録
+func Signup(userId, password string) (*entity.User, error) {
 	user := entity.User{}
 
 	Db.Table("USERS").Where("user_id = ?", userId).First(&user)
@@ -65,23 +65,23 @@ func Signup(userId, password string) (*entity.User, error){
 	return &user, nil
 }
 
-//gormのUpdate関数でID情報編集
-func UpdateId(changeId string, nowId string) (*entity.User, error){
+// gormのUpdate関数でID情報編集
+func UpdateId(changeId string, nowId string) (*entity.User, error) {
 	user := entity.User{}
 
 	if err := Db.Table("USERS").Where("user_id = ?", changeId).First(&user).Error; err == nil {
-			log.Println("UserIdが重複するユーザーが存在しています。")
-			log.Println("Error duplicate id from DB",user)
-			return nil, errors.New("UserIdが重複するユーザーが存在しています。")
+		log.Println("UserIdが重複するユーザーが存在しています。")
+		log.Println("Error duplicate id from DB", user)
+		return nil, errors.New("UserIdが重複するユーザーが存在しています。")
 	} else {
-		log.Println("重複するユーザーはDBに存在しません。",err)
-		log.Println("Request id from client",changeId)
+		log.Println("重複するユーザーはDBに存在しません。", err)
+		log.Println("Request id from client", changeId)
 	}
 
 	// 既存のUSER情報を取得
 	newUser := entity.User{}
 	if err := Db.Table("USERS").Where("user_id = ?", nowId).First(&newUser).Error; err != nil {
-		log.Printf("USER情報の取得に失敗しました。nowId: %s, err: %v", nowId, err.Error());
+		log.Printf("USER情報の取得に失敗しました。nowId: %s, err: %v", nowId, err.Error())
 		return nil, err
 	}
 
@@ -93,15 +93,15 @@ func UpdateId(changeId string, nowId string) (*entity.User, error){
 	}
 
 	//成功消去の場合、消去されたBLOG情報をログ出力
-	log.Println("IDの変更に成功しました。",newUser.UserId)	
+	log.Println("IDの変更に成功しました。", newUser.UserId)
 	return &newUser, nil
 }
 
-//gormのUpdate関数でPW情報編集
+// gormのUpdate関数でPW情報編集
 func UpdatePassword(userId, nowPassword string, newPassword string) (*entity.User, error) {
 	user := entity.User{}
 	//MySQLからuserIdに一致する構造体userを取得
-	Db.Table("USERS").Where("user_id = ?",userId).First(&user)
+	Db.Table("USERS").Where("user_id = ?", userId).First(&user)
 	if user.ID == 0 {
 		err := errors.New("ユーザー名が一致しません。")
 		log.Println(err)
@@ -111,7 +111,7 @@ func UpdatePassword(userId, nowPassword string, newPassword string) (*entity.Use
 	//DB登録されているPWとリクエストされたPWを比較
 	compareErr := crypto.CompareHashAndPassword(user.Password, nowPassword)
 	if compareErr != nil {
-		err := errors.New("パスワードが一致しません。:"+ compareErr.Error())
+		err := errors.New("パスワードが一致しません。:" + compareErr.Error())
 		log.Println(err)
 		return nil, err
 	}
@@ -136,13 +136,13 @@ func UpdatePassword(userId, nowPassword string, newPassword string) (*entity.Use
 	return &user, nil
 }
 
-//gormのUpdate関数でuserIdに一致する構造体userを取得
+// gormのUpdate関数でuserIdに一致する構造体userを取得
 func GetOneUser(UserId string) (entity.User, error) {
 	user := entity.User{}
 	//MySQLからuserIdに一致する構造体userを取得
 	result := Db.Table("USERS").Where("user_id = ?", UserId).First(&user)
 	if result.Error != nil {
-		log.Println("error", result.Error);
+		log.Println("error", result.Error)
 		// エラーが発生した場合はエラーを返す
 		return user, result.Error
 	}

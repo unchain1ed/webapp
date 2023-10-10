@@ -1,26 +1,27 @@
 package db
 
 import (
-	"log"
 	"fmt"
+	"log"
 	"os"
 	"time"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	
+
 	"github.com/joho/godotenv"
 )
 
 var Db *gorm.DB
 
-//DB接続用初期設定
+// DB接続用初期設定
 func init() {
 	//環境変数設定
 	//main.goからの相対パス指定
 	envErr := godotenv.Load("./build/db/data/.env")
-    if envErr != nil {
-        fmt.Println("Error loading .env file", envErr)
-    }
+	if envErr != nil {
+		fmt.Println("Error loading .env file", envErr)
+	}
 
 	// テストケース内で環境変数を設定
 	os.Setenv("MYSQL_USER", "root")
@@ -46,8 +47,8 @@ func init() {
 	dialector := mysql.Open(path)
 	var err error
 	//Db構造体に取得結果代入
-	if Db , err = gorm.Open(dialector); err != nil {
-		log.Println("DBの接続に失敗しました。Path:",path)
+	if Db, err = gorm.Open(dialector); err != nil {
+		log.Println("DBの接続に失敗しました。Path:", path)
 		connect(dialector, 100)
 		// Db = &gorm.DB{} //deploy
 	}
@@ -56,7 +57,7 @@ func init() {
 
 func connect(dialector gorm.Dialector, count uint) {
 	var err error
-	if Db, err = gorm.Open(dialector); err!= nil {
+	if Db, err = gorm.Open(dialector); err != nil {
 		if count > 1 {
 			time.Sleep(time.Second * 2)
 			count--

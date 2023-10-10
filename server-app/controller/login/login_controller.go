@@ -33,13 +33,6 @@ func GetLogin(c *gin.Context) {
 		}
 	}
 
-	// 	user, err := db.GetOneUser("root")
-	// 			if err != nil {
-	// 	log.Printf("ログイン画面DB上の会員情報のセッションから取得に失敗しました。err: %v", err.Error());
-	// 	c.JSON(http.StatusUnauthorized, gin.H{"error in db.GetOneUser of getLogin": err.Error()})
-	// 	return
-	// }
-
 	//取得成功結果をレスポンス
 	log.Printf("Get user in LoginView from DB :user %+v", user)
 	c.JSON(http.StatusOK, gin.H{"user": user})
