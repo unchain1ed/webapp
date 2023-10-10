@@ -9,7 +9,6 @@ import (
 	"testing"
 
 	"github.com/unchain1ed/webapp/model/entity"
-
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 )
@@ -59,6 +58,7 @@ func TestGetLogin(t *testing.T) {
 	}
 
 	// GetLoginハンドラーのテスト
+	//　**正常系**
 	r.GET("/login", func(c *gin.Context) {
 		// テスト用のユーザーデータを返す
 		c.JSON(http.StatusOK, gin.H{"user": userData})
@@ -69,15 +69,10 @@ func TestGetLogin(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-
 	// レスポンスを受け取るためのレコーダーを作成
 	w := httptest.NewRecorder()
-
 	// リクエストを処理
 	r.ServeHTTP(w, req)
-
-	// ステータスコードを検証
-	assert.Equal(t, http.StatusOK, w.Code)
 
 	// レスポンスボディをパースして検証
 	var response map[string]interface{}
@@ -86,8 +81,12 @@ func TestGetLogin(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	// ステータスコードを検証
+	assert.Equal(t, http.StatusOK, w.Code)
 	// レスポンスの"user"フィールドを検証
 	assert.NotNil(t, response["user"])
+
+	//**異常系**
 }
 
 func TestPostLogin(t *testing.T) {
