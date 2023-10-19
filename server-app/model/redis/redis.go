@@ -80,10 +80,9 @@ func NewSession(c *gin.Context, cookieKey, redisValue string) error {
 
 func GetSession(c *gin.Context, cookieKey string) (string, error) {
 	//クライアントのリクエストに含まれるセッションのクッキー値を取得
-	cookieKey = "loginUserIdKey"
 	redisKey, err := c.Cookie(cookieKey)
 	if err != nil {
-		log.Println("セッションのクッキーが見つかりませんでした。,err:cookieKey, redisKey", err.Error(), cookieKey, redisKey)
+		log.Printf("セッションのクッキーが見つかりませんでした。redisKey: %s, cookieKey: %s, err: %v", redisKey, cookieKey, err)
 		return "", err
 	}
 
