@@ -12,7 +12,7 @@ import (
 	"github.com/unchain1ed/webapp/service"
 )
 
-func GetLogin(c *gin.Context) {
+func GetLogin(c *gin.Context, redis redis.SessionStore) {
 	user := entity.User{}
 	//セッションからuserを取得
 	cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
@@ -38,7 +38,7 @@ func GetLogin(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"user": user})
 }
 
-func PostLogin(c *gin.Context) {
+func PostLogin(c *gin.Context, redis redis.SessionStore) {
 	//構造体をインスタンス化
 	loginUser := entity.FormUser{}
 	//JSONデータのリクエストボディを構造体にバインドしてバリデーションを実行

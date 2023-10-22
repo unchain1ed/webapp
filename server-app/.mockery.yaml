@@ -1,0 +1,11 @@
+with-expecter: false
+disable-version-string: true
+recursive: true
+all: true
+filename: "{{.InterfaceNameSnake}}.go"
+mockname: "{{.InterfaceName}}"
+outpkg: "{{.PackageName}}_mock"
+packages:
+  github.com/unchain1ed/webapp/model/redis:
+    config:
+      dir: model/redis/mock

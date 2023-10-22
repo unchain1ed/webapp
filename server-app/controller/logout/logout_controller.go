@@ -12,7 +12,7 @@ import (
 )
 
 // ログアウト処理
-func DecideLogout(c *gin.Context) {
+func DecideLogout(c *gin.Context, redis redis.SessionStore) {
 	//構造体をインスタンス化
 	logoutUser := entity.FormUser{}
 	//JSONデータのリクエストボディを構造体にバインドしてバリデーションを実行
