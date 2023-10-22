@@ -9,14 +9,14 @@ import (
 	"github.com/unchain1ed/webapp/model/redis"
 )
 
-//セッションからログインIDを取得するAPI
-func GetLoginIdBySession(c *gin.Context) {
+// セッションからログインIDを取得するAPI
+func GetLoginIdBySession(c *gin.Context, redis redis.SessionStore) {
 	//セッションからuserを取得
 	cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
 	//セッションから取得
 	id, err := redis.GetSession(c, cookieKey)
 	if err != nil {
-		log.Println("セッションからIDの取得に失敗しました。" , err.Error())
+		log.Println("セッションからIDの取得に失敗しました。", err.Error())
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}

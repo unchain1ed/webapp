@@ -2,17 +2,18 @@ package blog
 
 import (
 	"errors"
-	"os"
-	"github.com/unchain1ed/webapp/model/redis"
-	"net/http"
 	"log"
+	"net/http"
+	"os"
+
+	"github.com/unchain1ed/webapp/model/redis"
 
 	"github.com/gin-gonic/gin"
-	"github.com/unchain1ed/webapp/model/entity"
 	"github.com/unchain1ed/webapp/model/db"
+	"github.com/unchain1ed/webapp/model/entity"
 )
 
-func PostEditBlog(c *gin.Context) {
+func PostEditBlog(c *gin.Context, redis redis.SessionStore) {
 	// JSON形式のリクエストボディを構造体にバインドする
 	blogPost := entity.BlogPost{}
 	if err := c.ShouldBindJSON(&blogPost); err != nil {
@@ -25,7 +26,7 @@ func PostEditBlog(c *gin.Context) {
 	cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
 	id, err := redis.GetSession(c, cookieKey)
 	if err != nil {
-		log.Println("セッションからIDの取得に失敗しました。" , err.Error())
+		log.Println("セッションからIDの取得に失敗しました。", err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -40,7 +41,7 @@ func PostEditBlog(c *gin.Context) {
 	//DBにブログ記事内容を登録
 	blog, err := db.Edit(blogPost.ID, blogPost.LoginID, blogPost.Title, blogPost.Content)
 	if err != nil {
-		log.Println("error", err.Error());
+		log.Println("error", err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error in db.Edit": err.Error()})
 		return
 	}

@@ -1,10 +1,12 @@
 package login
 
 import (
-	"testing"
 	"net/http"
 	"net/http/httptest"
+	"testing"
+
 	"github.com/gin-gonic/gin"
+	"github.com/unchain1ed/webapp/model/redis"
 )
 
 // func TestGetLogin(t *testing.T) {
@@ -28,7 +30,6 @@ import (
 // 	}
 // }
 
-
 func TestGetLogin(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
@@ -40,8 +41,8 @@ func TestGetLogin(t *testing.T) {
 		c *gin.Context
 	}
 	tests := []struct {
-		name string
-		args args
+		name           string
+		args           args
 		expectedStatus int
 	}{
 		// 正常系: セッションからユーザー情報を取得できる場合
@@ -57,8 +58,9 @@ func TestGetLogin(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			response := httptest.NewRecorder()
+			redis := redis.NewRedisSessionStore()
 			// c, _ := gin.CreateTestContext(response)
-			GetLogin(tt.args.c)
+			GetLogin(tt.args.c, redis)
 			if response.Code != tt.expectedStatus {
 				t.Errorf("HTTP Statusコードが期待値と一致しません。期待値: %d, 実際: %d", tt.expectedStatus, response.Code)
 			}

@@ -4,34 +4,35 @@ import (
 	"log"
 	"net/http"
 	"os"
+
 	"github.com/gin-gonic/gin"
 
+	"github.com/unchain1ed/webapp/model/db"
 	"github.com/unchain1ed/webapp/model/entity"
 	"github.com/unchain1ed/webapp/model/redis"
-	"github.com/unchain1ed/webapp/model/db"
 )
 
-func GetTop(c *gin.Context) {
+func GetTop(c *gin.Context, redis redis.SessionStore) {
 	//セッションからloginIDを取得
 	cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
 	id, err := redis.GetSession(c, cookieKey)
 	if err != nil {
-		log.Println("セッションからIDの取得に失敗しました。" , err.Error())
+		log.Println("セッションからIDの取得に失敗しました。", err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	log.Println("Get LoginId in TopView from Session :id", id); 
+	log.Println("Get LoginId in TopView from Session :id", id)
 	c.JSON(http.StatusOK, gin.H{"id": id})
 }
 
 // マイページ画面
-func GetMypage(c *gin.Context) {
+func GetMypage(c *gin.Context, redis redis.SessionStore) {
 	//セッションからuserを取得
 	cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
 	user, err := redis.GetSession(c, cookieKey)
 	if err != nil {
-		log.Println("セッションからIDの取得に失敗しました。" , err.Error())
+		log.Println("セッションからIDの取得に失敗しました。", err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -40,7 +41,7 @@ func GetMypage(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"user": user})
 }
 
-func PostBlog(c *gin.Context) {	
+func PostBlog(c *gin.Context) {
 	// JSON形式のリクエストボディを構造体にバインドする
 	blogPost := entity.BlogPost{}
 	if err := c.ShouldBindJSON(&blogPost); err != nil {
@@ -52,7 +53,7 @@ func PostBlog(c *gin.Context) {
 	//DBにブログ記事内容を登録
 	blog, err := db.Create(blogPost.LoginID, blogPost.Title, blogPost.Content)
 	if err != nil {
-		log.Println("error", err.Error());
+		log.Println("error", err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -68,7 +69,7 @@ func GetBlogOverview(c *gin.Context) {
 	var err error
 	blogs, err = db.GetBlogOverview()
 	if err != nil {
-		log.Printf("Error in GetBlogOverview of getBlogOverview ブログ概要画面でDBからブログ情報の取得に失敗しました。err: %v", err.Error());
+		log.Printf("Error in GetBlogOverview of getBlogOverview ブログ概要画面でDBからブログ情報の取得に失敗しました。err: %v", err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error in db.GetBlogOverview of getBlogOverview": err.Error()})
 		return
 	}
@@ -83,7 +84,7 @@ func GetBlogViewById(c *gin.Context) {
 
 	blog, err := db.GetBlogViewInfoById(id)
 	if err != nil {
-		log.Printf("Error in GetBlogViewInfoById of getBlogViewById ブログ概要画面でDBからIDの取得に失敗しました。err: %v", err.Error());
+		log.Printf("Error in GetBlogViewInfoById of getBlogViewById ブログ概要画面でDBからIDの取得に失敗しました。err: %v", err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error in db.GetBlogViewInfoById of getBlogViewById": err.Error()})
 		return
 	}
