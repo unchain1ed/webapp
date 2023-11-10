@@ -15,30 +15,6 @@ import (
 	redis_mock "github.com/unchain1ed/webapp/model/redis/mock"
 )
 
-// func TestGetLoginIdBySession(t *testing.T) {
-// 	// Arrange ---
-// 	response := httptest.NewRecorder()
-// 	c, _ := gin.CreateTestContext(response)
-// 	c.Request, _ = http.NewRequest(
-// 		http.MethodGet,
-// 		"/api/login-id",
-// 		nil,
-// 	)
-
-// 	redis.NewSession(c, "loginUserIdKey","root")
-
-// 	// Act ---
-// 	common.GetLoginIdBySession(c)
-
-// 	// Assert ---
-// 	// var product products.Product
-// 	// err := json.Unmarshal(response.Body.Bytes(), "root")
-// 	assert.EqualValues(t, http.StatusOK, response.Code)
-// 	// assert.Nil(t, err)
-// 	// fmt.Println(product)
-// 	// assert.EqualValues(t, uint64(123), product.ID)
-// }
-
 func TestGetLoginIdBySession(t *testing.T) {
 	t.Run("integration, happy path", func(t *testing.T) {
 		//GetLoginIdBySessionインテグレーションテスト、正常系（redisアクセス）
