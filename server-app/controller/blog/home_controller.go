@@ -18,7 +18,7 @@ func GetTop(c *gin.Context, redis redis.SessionStore) {
 	id, err := redis.GetSession(c, cookieKey)
 	if err != nil {
 		log.Println("セッションからIDの取得に失敗しました。", err.Error())
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -33,7 +33,7 @@ func GetMypage(c *gin.Context, redis redis.SessionStore) {
 	user, err := redis.GetSession(c, cookieKey)
 	if err != nil {
 		log.Println("セッションからIDの取得に失敗しました。", err.Error())
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
 

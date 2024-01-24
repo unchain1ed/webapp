@@ -32,10 +32,6 @@ services:
       context: ./frontend-app/build/frontend
       dockerfile: Dockerfile
     tty: true
-    # volumes:
-    #   - type: bind
-    #     source: ./frontend-app
-    #     target: /frontend-app
     volumes:
       - ./frontend-app:/frontend-app
     working_dir: /frontend-app
