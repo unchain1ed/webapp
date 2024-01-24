@@ -1,4 +1,4 @@
-# ブログ記事管理システム
+# ブログ記事管理
 
  Go v1.2.0 (Gin v1.9.0)
  React v18.2.0 (Next.js v13.1.6 MUI v5 TypeScript v5.1.3)
