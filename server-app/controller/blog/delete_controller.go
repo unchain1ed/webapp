@@ -4,8 +4,9 @@ import (
 	"log"
 	"net/http"
 
+	db "github.com/unchain1ed/webapp/model/db"
+
 	"github.com/gin-gonic/gin"
-	"github.com/unchain1ed/webapp/model/db"
 )
 
 func GetDeleteBlog(c *gin.Context) {

@@ -4,7 +4,7 @@ import (
 	"log"
 	"strconv"
 
-	"github.com/unchain1ed/webapp/model/entity"
+	entity "github.com/unchain1ed/webapp/model/entity"
 )
 
 // 送られてきたタイトルと内容をDBに登録
